@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TEBE · OPHILYA — Visual Merchandising</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet">
 <style>
 :root{
   --ivory:#f8f6f1;
@@ -40,11 +43,12 @@ button{font:inherit;cursor:pointer}
   text-align:center;
 }
 .logo-name{
-  font-size:15px;
-  letter-spacing:.22em;
+  font-size:16px;
+  letter-spacing:.16em;
   font-weight:400;
   color:var(--gold);
   text-transform:uppercase;
+  white-space:nowrap;
 }
 .line{height:1px;background:var(--line);margin:0 8px 27px}
 .label{
@@ -60,6 +64,7 @@ nav button{
   text-align:left;
   padding:12px 10px;
   font-size:13px;
+  font-family:'Fraunces',serif;
   color:var(--taupe-dark);
 }
 nav button:hover,
@@ -193,6 +198,7 @@ h1{
   margin:36px 0 8px;
   font-size:17px;
   font-weight:400;
+  font-family:'Fraunces',serif;
 }
 .card p{
   margin:0;
@@ -227,6 +233,7 @@ h1{
   margin:0 0 6px;
   font-size:17px;
   font-weight:400;
+  font-family:'Fraunces',serif;
 }
 .wide-card p{
   margin:0;
@@ -417,28 +424,28 @@ nav button .soon-tag{
       <div class="cards">
         <a class="card" data-link="cartelli_semplici.html">
           <div class="number">01</div>
-          <h2>Cartello semplice</h2>
+          <h2>Cartello Semplice</h2>
           <p>Prezzo, prodotto e marchio in una composizione pulita.</p>
           <div class="arrow">↗</div>
         </a>
 
         <a class="card" data-link="cartelli_outlet.html">
           <div class="number">02</div>
-          <h2>Cartello outlet</h2>
+          <h2>Cartello Outlet</h2>
           <p>Prezzo precedente, prezzo finale e comunicazione sale.</p>
           <div class="arrow">↗</div>
         </a>
 
-        <div class="card soon">
+        <a class="card" data-link="cartellopercentuale.html">
           <div class="number">03</div>
-          <h2>Promozione</h2>
+          <h2>Cartello Percentuale</h2>
           <p>Sconti e campagne con una gerarchia più evidente.</p>
-          <div class="soon-tag">presto</div>
-        </div>
+          <div class="arrow">↗</div>
+        </a>
 
         <div class="card soon">
           <div class="number">04</div>
-          <h2>Multi articolo</h2>
+          <h2>Multi Articolo</h2>
           <p>Più prodotti nello stesso cartello, ordinati e leggibili.</p>
           <div class="soon-tag">presto</div>
         </div>
@@ -469,7 +476,7 @@ nav button .soon-tag{
       <div class="lower">
         <a class="wide-card" data-link="genera_loghi.html">
           <div>
-            <h2>Crea logo brand</h2>
+            <h2>Crea Logo Brand</h2>
             <p>Aggiungi un logo personalizzato con sfondo trasparente e gestisci la tua lista.</p>
           </div>
           <div class="arrow">↗</div>
@@ -477,7 +484,7 @@ nav button .soon-tag{
 
         <a class="wide-card" data-link="gestisci_lista.html">
           <div>
-            <h2>Gestisci lista loghi</h2>
+            <h2>Gestisci Lista Loghi</h2>
             <p>Riordina, rinomina, esporta o rimuovi i loghi personalizzati salvati.</p>
           </div>
           <div class="arrow">↗</div>
