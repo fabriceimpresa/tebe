@@ -407,9 +407,6 @@ nav button .soon-tag{
         <div>
           <div class="eyebrow">VISUAL MERCHANDISING</div>
           <h1 id="title">TEBE</h1>
-          <p id="description">
-            Strumenti essenziali per creare cartelli, cartellini e materiali di vendita coerenti con l'identità del negozio.
-          </p>
         </div>
 
         <div class="identity">
@@ -532,14 +529,12 @@ const stores = {
     name:"TEBE",
     sub:"VIA DEL CORSO 269",
     detail:"MODA DONNA · BRAND · PROPRIA LINEA",
-    description:"Strumenti essenziali per creare cartelli, cartellini e materiali di vendita coerenti con l'identità del negozio.",
     logo:"assets/img/tebeoro.png"
   },
   ophilya:{
     name:"OPHILYA",
     sub:"LEATHER GOODS · MADE IN ITALY",
     detail:"BORSE · PELLE · MADE IN ITALY · GENUINE LEATHER",
-    description:"Cartelli e materiali minimali per borse in pelle italiana, accessori e articoli in ecopelle selezionati.",
     logo:"assets/img/ophilyagold.png"
   }
 };
@@ -563,7 +558,6 @@ function changeStore(store){
   document.getElementById("title").textContent=s.name;
   document.getElementById("identity").textContent=s.sub;
   document.getElementById("detail").textContent=s.detail;
-  document.getElementById("description").textContent=s.description;
 
   document.getElementById("tebe").classList.toggle("selected",store==="tebe");
   document.getElementById("ophilya").classList.toggle("selected",store==="ophilya");
