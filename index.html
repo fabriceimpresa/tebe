@@ -178,8 +178,8 @@ h1{
 }
 .card{
   position:relative;
-  min-height:170px;
-  padding:23px;
+  min-height:220px;
+  padding:20px;
   background:var(--white);
   border:1px solid var(--line);
   transition:.18s ease;
@@ -196,6 +196,20 @@ h1{
   font-size:10px;
   color:var(--gold);
   letter-spacing:.16em;
+}
+.card-thumb{
+  width:100%;
+  aspect-ratio:16 / 9;
+  margin:12px 0 16px;
+  background:var(--cream);
+  border:1px solid var(--line);
+  overflow:hidden;
+}
+.card-thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
 }
 .card h2{
   margin:auto 0 0 0;
@@ -215,7 +229,7 @@ h1{
 .arrow{
   position:absolute;
   right:20px;
-  bottom:23px;
+  bottom:20px;
   color:var(--taupe);
   font-size:17px;
   line-height:1;
@@ -437,13 +451,23 @@ nav button .soon-tag{
         </a>
 
         <a class="card" data-link="cartelli_outlet.html">
-          <div class="number">02</div>
+          <div>
+            <div class="number">02</div>
+            <div class="card-thumb">
+              <img src="assets/img/salethumb.png" alt="Sale">
+            </div>
+          </div>
           <h2>Sale</h2>
           <div class="arrow">↗</div>
         </a>
 
         <a class="card" data-link="cartellopercentuale.html">
-          <div class="number">03</div>
+          <div>
+            <div class="number">03</div>
+            <div class="card-thumb">
+              <img src="assets/img/percentualethumb.png" alt="Percentuale">
+            </div>
+          </div>
           <h2>Percentuale</h2>
           <div class="arrow">↗</div>
         </a>
