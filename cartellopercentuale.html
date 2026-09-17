@@ -77,7 +77,7 @@
       box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
     }
 
-    /* CAMPO PERCENTUALE con simbolo % e frecce sempre visibili */
+    /* CAMPO PERCENTUALE con frecce sempre visibili */
     .percent-input-wrapper {
       display: flex;
       align-items: stretch;
@@ -93,8 +93,8 @@
     }
 
     .percent-input-wrapper input#discountValue {
-      width: 3.2rem;
-      flex: 0 0 auto;
+      flex: 1 1 auto;
+      width: auto;
       text-align: left;
       border: none;
       background: transparent;
@@ -112,15 +112,6 @@
     .percent-input-wrapper input#discountValue::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
-    }
-
-    .percent-input-wrapper .percent-suffix {
-      display: flex;
-      align-items: center;
-      flex: 1 1 auto;
-      color: #665e54;
-      font-size: 0.82rem;
-      pointer-events: none;
     }
 
     .percent-input-wrapper .percent-stepper {
@@ -455,8 +446,7 @@
       <div class="form-group">
         <label>Percentuale Sconto:</label>
         <div class="percent-input-wrapper">
-          <input type="number" id="discountValue" value="50" min="1" max="99" placeholder="es. 50" oninput="updateCard()">
-          <span class="percent-suffix">%</span>
+          <input type="number" id="discountValue" value="50" min="1" max="99" oninput="updateCard()">
           <div class="percent-stepper">
             <button type="button" aria-label="Aumenta percentuale" onclick="stepDiscount(1)">▲</button>
             <button type="button" aria-label="Diminuisci percentuale" onclick="stepDiscount(-1)">▼</button>
