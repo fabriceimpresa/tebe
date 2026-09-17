@@ -33,28 +33,17 @@ button{font:inherit;cursor:pointer}
   flex-direction:column;
 }
 .logo{
-  padding:0 8px 8px;
+  padding:0 8px 28px;
   display:flex;
   flex-direction:column;
   align-items:center;
   text-align:center;
 }
-.logo-mark{
-  width:100%;
-  max-width:140px;
-  height:auto;
-  display:block;
-}
 .logo-name{
-  font-size:25px;
+  font-size:15px;
   letter-spacing:.22em;
   font-weight:400;
-}
-.logo-sub{
-  margin-top:38px;
-  font-size:9px;
-  letter-spacing:.22em;
-  color:var(--taupe-dark);
+  color:var(--gold);
   text-transform:uppercase;
 }
 .line{height:1px;background:var(--line);margin:0 8px 27px}
@@ -140,6 +129,12 @@ h1{
   font-size:42px;
   font-weight:400;
   letter-spacing:.04em;
+}
+.hero-logo{
+  display:block;
+  max-width:320px;
+  width:100%;
+  height:auto;
 }
 .hero p{
   margin:13px 0 0;
@@ -361,8 +356,7 @@ nav button .soon-tag{
 
   <aside class="sidebar">
     <div class="logo">
-      <img class="logo-mark" id="sideLogo" src="assets/img/tebeoro.png" alt="TEBE">
-      <div class="logo-sub" id="sideSub">VIA DEL CORSO 269</div>
+      <div class="logo-name">STORE // CRAFT</div>
     </div>
 
     <div class="line"></div>
@@ -406,7 +400,7 @@ nav button .soon-tag{
       <div class="hero">
         <div>
           <div class="eyebrow">VISUAL MERCHANDISING</div>
-          <h1 id="title">TEBE</h1>
+          <img id="title" class="hero-logo" src="assets/img/tebeblack.png" alt="TEBE">
         </div>
 
         <div class="identity">
@@ -529,13 +523,13 @@ const stores = {
     name:"TEBE",
     sub:"VIA DEL CORSO 269",
     detail:"MODA DONNA · BRAND · PROPRIA LINEA",
-    logo:"assets/img/tebeoro.png"
+    logo:"assets/img/tebeblack.png"
   },
   ophilya:{
     name:"OPHILYA",
     sub:"LEATHER GOODS · MADE IN ITALY",
     detail:"BORSE · PELLE · MADE IN ITALY · GENUINE LEATHER",
-    logo:"assets/img/ophilyagold.png"
+    logo:"assets/img/ophilyablack.png"
   }
 };
 
@@ -551,11 +545,9 @@ function changeStore(store){
   currentStore = store;
   const s=stores[store];
 
-  const sideLogo = document.getElementById("sideLogo");
-  sideLogo.src = s.logo;
-  sideLogo.alt = s.name;
-  document.getElementById("sideSub").textContent=s.sub;
-  document.getElementById("title").textContent=s.name;
+  const titleImg = document.getElementById("title");
+  titleImg.src = s.logo;
+  titleImg.alt = s.name;
   document.getElementById("identity").textContent=s.sub;
   document.getElementById("detail").textContent=s.detail;
 
