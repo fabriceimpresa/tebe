@@ -942,6 +942,26 @@
       updateCards();
     }
 
+    function setMultilineText(element, value) {
+      const text = String(value || '');
+      const splitIndex = text.indexOf(' ');
+      element.replaceChildren();
+      if (splitIndex === -1) {
+        element.textContent = text;
+        return;
+      }
+      element.append(document.createTextNode(text.slice(0, splitIndex)), document.createElement('br'), document.createTextNode(text.slice(splitIndex + 1)));
+    }
+
+    function setHeaderContent(elementId, markup, value) {
+      const element = document.getElementById(elementId);
+      if (markup) {
+        element.innerHTML = markup;
+        return;
+      }
+      setMultilineText(element, value);
+    }
+
     function updateCards() {
       // Cartello 1
       const b1 = document.getElementById('brandSelect1').value;
@@ -953,14 +973,16 @@
       const hasBrand1 = !!(cb1 || b1);
       
       if (cb1) {
-        brandContainer1.innerHTML = `<img src="${cb1}" alt="Custom Logo">`;
+        brandContainer1.replaceChildren(document.createElement('img'));
+        brandContainer1.querySelector('img').alt = 'Custom Logo';
         brandContainer1.classList.add('has-logo');
         PrintLogoColors.getBrandLogoSrc(cb1, '', '', 'red').then(src => {
           const imgEl = brandContainer1.querySelector('img');
           if (imgEl) imgEl.src = src;
         });
       } else if (b1) {
-        brandContainer1.innerHTML = `<img src="${LOGO_PATH + b1}" alt="Brand Logo">`;
+        brandContainer1.replaceChildren(document.createElement('img'));
+        brandContainer1.querySelector('img').alt = 'Brand Logo';
         brandContainer1.classList.add('has-logo');
         PrintLogoColors.getBrandLogoSrc('', b1, '', 'red').then(src => {
           const imgEl = brandContainer1.querySelector('img');
@@ -982,8 +1004,8 @@
       const xmasMarkupLeft = '<img class="claim-flag claim-flag-left" src="assets/img/tema_xmas.png" alt="Natale">';
       const xmasMarkupRight = '<img class="claim-flag claim-flag-right" src="assets/img/tema_xmas.png" alt="Natale">';
       document.getElementById('card1').classList.toggle('xmas-active', xmasActive[1]);
-      document.getElementById('headLeft1').innerHTML = xmasActive[1] ? xmasMarkupLeft : (madeInItalyClaimsActive[1] ? claimMarkupLeft : document.getElementById('left1').value.replace(' ', '<br>'));
-      document.getElementById('headRight1').innerHTML = xmasActive[1] ? xmasMarkupRight : (madeInItalyClaimsActive[1] ? claimMarkupRight : document.getElementById('right1').value.replace(' ', '<br>'));
+      setHeaderContent('headLeft1', xmasActive[1] ? xmasMarkupLeft : (madeInItalyClaimsActive[1] ? claimMarkupLeft : ''), document.getElementById('left1').value);
+      setHeaderContent('headRight1', xmasActive[1] ? xmasMarkupRight : (madeInItalyClaimsActive[1] ? claimMarkupRight : ''), document.getElementById('right1').value);
       
       const pn1 = document.getElementById('pNew1').value;
       document.getElementById('priceNewDisplay1').innerText = pn1 ? '€ ' + pn1 : '';
@@ -998,14 +1020,16 @@
       const hasBrand2 = !!(cb2 || b2);
       
       if (cb2) {
-        brandContainer2.innerHTML = `<img src="${cb2}" alt="Custom Logo">`;
+        brandContainer2.replaceChildren(document.createElement('img'));
+        brandContainer2.querySelector('img').alt = 'Custom Logo';
         brandContainer2.classList.add('has-logo');
         PrintLogoColors.getBrandLogoSrc(cb2, '', '', 'red').then(src => {
           const imgEl = brandContainer2.querySelector('img');
           if (imgEl) imgEl.src = src;
         });
       } else if (b2) {
-        brandContainer2.innerHTML = `<img src="${LOGO_PATH + b2}" alt="Brand Logo">`;
+        brandContainer2.replaceChildren(document.createElement('img'));
+        brandContainer2.querySelector('img').alt = 'Brand Logo';
         brandContainer2.classList.add('has-logo');
         PrintLogoColors.getBrandLogoSrc('', b2, '', 'red').then(src => {
           const imgEl = brandContainer2.querySelector('img');
@@ -1023,8 +1047,8 @@
       noteDisplay2.classList.toggle('made-in-italy-active', madeInItalyClaimsActive[2]);
 
       document.getElementById('card2').classList.toggle('xmas-active', xmasActive[2]);
-      document.getElementById('headLeft2').innerHTML = xmasActive[2] ? xmasMarkupLeft : (madeInItalyClaimsActive[2] ? claimMarkupLeft : document.getElementById('left2').value.replace(' ', '<br>'));
-      document.getElementById('headRight2').innerHTML = xmasActive[2] ? xmasMarkupRight : (madeInItalyClaimsActive[2] ? claimMarkupRight : document.getElementById('right2').value.replace(' ', '<br>'));
+      setHeaderContent('headLeft2', xmasActive[2] ? xmasMarkupLeft : (madeInItalyClaimsActive[2] ? claimMarkupLeft : ''), document.getElementById('left2').value);
+      setHeaderContent('headRight2', xmasActive[2] ? xmasMarkupRight : (madeInItalyClaimsActive[2] ? claimMarkupRight : ''), document.getElementById('right2').value);
       
       const pn2 = document.getElementById('pNew2').value;
       document.getElementById('priceNewDisplay2').innerText = pn2 ? '€ ' + pn2 : '';

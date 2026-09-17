@@ -431,6 +431,10 @@
       })[character]);
     }
 
+    function isSafeImageDataUrl(value) {
+      return /^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(value || '');
+    }
+
     function renderSavedLogos() {
       const container = document.getElementById('customLogosContainer');
       const logos = JSON.parse(localStorage.getItem('custom_brand_logos') || '[]');
@@ -448,20 +452,43 @@
         return;
       }
 
-      container.innerHTML = sortedLogos.map(({ item, index }) => `
-        <div class="saved-item">
-          <div class="saved-item-preview">
-            <img src="${item.data}" alt="${escapeHtml(item.name)}">
-          </div>
-          <div class="saved-item-details">
-            <input type="text" id="editName_${index}" value="${escapeHtml(item.name)}">
-          </div>
-          <div class="saved-item-actions">
-            <button class="btn-update" onclick="updateLogoName(${index})">Aggiorna Nome</button>
-            <button class="btn-delete" onclick="deleteLogo(${index})">Elimina</button>
-          </div>
-        </div>
-      `).join('');
+      container.replaceChildren();
+      sortedLogos.forEach(({ item, index }) => {
+        const row = document.createElement('div');
+        row.className = 'saved-item';
+
+        const preview = document.createElement('div');
+        preview.className = 'saved-item-preview';
+        if (isSafeImageDataUrl(item.data)) {
+          const image = document.createElement('img');
+          image.src = item.data;
+          image.alt = item.name;
+          preview.appendChild(image);
+        }
+
+        const details = document.createElement('div');
+        details.className = 'saved-item-details';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = `editName_${index}`;
+        input.value = item.name;
+        details.appendChild(input);
+
+        const actions = document.createElement('div');
+        actions.className = 'saved-item-actions';
+        const updateButton = document.createElement('button');
+        updateButton.className = 'btn-update';
+        updateButton.textContent = 'Aggiorna Nome';
+        updateButton.addEventListener('click', () => updateLogoName(index));
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn-delete';
+        deleteButton.textContent = 'Elimina';
+        deleteButton.addEventListener('click', () => deleteLogo(index));
+        actions.append(updateButton, deleteButton);
+
+        row.append(preview, details, actions);
+        container.appendChild(row);
+      });
     }
 
     function setLogoSortOrder(sortOrder) {

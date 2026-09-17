@@ -162,8 +162,15 @@
   </main>
 
   <script>
+    function getSafePdfPath(value) {
+      if (!value) return '';
+      const normalized = decodeURIComponent(value);
+      if (normalized.includes('..')) return '';
+      return /^assets\/pdf\/[A-Za-z0-9._/-]+\.pdf$/i.test(normalized) ? normalized : '';
+    }
+
     const params = new URLSearchParams(window.location.search);
-    const filePath = params.get('file');
+    const filePath = getSafePdfPath(params.get('file'));
     const frame = document.getElementById('pdf-frame');
     const title = document.getElementById('document-title');
     const errorMessage = document.getElementById('error-message');

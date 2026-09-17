@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Etichette DYMO // STORE CRAFT</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="assets/js/qrcode.min.js"></script>
 
   <style>
     :root {
@@ -222,6 +222,10 @@
     const LOGO_PATH = "assets/logos/";
     const PLACEHOLDER_TEXT = "🔴 ━━━  SELEZIONA BRAND  ━━━ 🔴";
 
+    function getSafeLogoPath(fileName) {
+      return /^[A-Za-z0-9._-]+$/.test(fileName || '') ? LOGO_PATH + fileName : '';
+    }
+
     function cleanBrandName(filename) {
       return filename.replace(/\.(png|jpg|jpeg|webp|svg)$/i, '').replace(/[-_]/g, ' ');
     }
@@ -311,7 +315,13 @@
       const textElement = document.getElementById('labelFallbackText');
 
       if (selectedFile) {
-        imgElement.src = LOGO_PATH + selectedFile;
+        const brandLogo = getSafeLogoPath(selectedFile);
+        if (!brandLogo) {
+          imgElement.style.display = 'none';
+          textElement.style.display = 'block';
+          return;
+        }
+        imgElement.src = brandLogo;
         imgElement.style.display = 'block';
         textElement.style.display = 'none';
       } else {

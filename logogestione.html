@@ -361,6 +361,15 @@
     })[ch]);
   }
 
+  function isSafePreviewUrl(value) {
+    try {
+      const parsed = new URL(value || '', window.location.href);
+      return parsed.protocol === 'blob:' || /^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(value || '');
+    } catch (error) {
+      return false;
+    }
+  }
+
   function renderList() {
     const container = document.getElementById('logoList');
     const countInfo = document.getElementById('countInfo');
@@ -382,18 +391,45 @@
       return;
     }
 
-    container.innerHTML = filtered.map(entry => `
-      <div class="logo-item" data-name="${escapeHtml(entry.name)}">
-        <div class="logo-item-preview">
-          ${entry.previewUrl ? `<img src="${entry.previewUrl}" alt="${escapeHtml(entry.name)}">` : '⚠'}
-        </div>
-        <div class="logo-item-name">${escapeHtml(entry.name)}</div>
-        <span class="row-status ${entry.status === 'deleted' ? 'deleted' : entry.status === 'deleting' ? 'deleting' : entry.status === 'error' ? 'error' : ''}">
-          ${entry.status === 'deleted' ? '✅ Eliminato' : entry.status === 'deleting' ? '⏳ Eliminazione...' : entry.status === 'error' ? '❌ Errore' : ''}
-        </span>
-        <button type="button" class="btn-delete-row" ${entry.status === 'deleting' ? 'disabled' : ''} onclick="deleteLogo('${entry.name.replace(/'/g, "\\'")}')">🗑 Elimina</button>
-      </div>
-    `).join('');
+    container.replaceChildren();
+    filtered.forEach(entry => {
+      const row = document.createElement('div');
+      row.className = 'logo-item';
+      row.dataset.name = entry.name;
+
+      const preview = document.createElement('div');
+      preview.className = 'logo-item-preview';
+      if (entry.previewUrl && isSafePreviewUrl(entry.previewUrl)) {
+        const image = document.createElement('img');
+        image.src = entry.previewUrl;
+        image.alt = entry.name;
+        preview.appendChild(image);
+      } else {
+        preview.textContent = '⚠';
+      }
+
+      const name = document.createElement('div');
+      name.className = 'logo-item-name';
+      name.textContent = entry.name;
+
+      const status = document.createElement('span');
+      status.className = `row-status ${entry.status === 'deleted' ? 'deleted' : entry.status === 'deleting' ? 'deleting' : entry.status === 'error' ? 'error' : ''}`;
+      status.textContent = entry.status === 'deleted'
+        ? '✅ Eliminato'
+        : entry.status === 'deleting'
+          ? '⏳ Eliminazione...'
+          : entry.status === 'error' ? '❌ Errore' : '';
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'btn-delete-row';
+      button.disabled = entry.status === 'deleting';
+      button.textContent = '🗑 Elimina';
+      button.addEventListener('click', () => deleteLogo(entry.name));
+
+      row.append(preview, name, status, button);
+      container.appendChild(row);
+    });
   }
 
   function askDeleteConfirm(fileName) {

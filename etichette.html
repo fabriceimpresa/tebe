@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Etichette DYMO // STORE CRAFT</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="assets/js/qrcode.min.js"></script>
   <!-- COLLEGAMENTO AL FILE CENTRALIZZATO LOGHI -->
   <script src="assets/js/logos.js"></script>
   <!-- STAMPA DIRETTA DYMO: RASTERIZZAZIONE ETICHETTA + WEB SERVICE DYMO CONNECT -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="assets/js/html2canvas.min.js"></script>
   <script src="assets/js/dymo-direct.js"></script>
 
   <style>
@@ -595,6 +595,14 @@
   <script>
     const LOGO_PATH = "assets/logos/";
     const PLACEHOLDER_TEXT = "🔴 ━━━  SELEZIONA BRAND  ━━━ 🔴";
+
+    function getSafeLogoPath(fileName) {
+      return /^[A-Za-z0-9._-]+$/.test(fileName || '') ? LOGO_PATH + fileName : '';
+    }
+
+    function getSafeDataImage(value) {
+      return /^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(value || '') ? value : '';
+    }
     const SIZE_OPTIONS = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '54', '56', '58', '60'];
     const DEFAULT_SIZES = ['S', 'M', 'L', 'XL', '2XL', '3XL'];
 
@@ -961,11 +969,23 @@
 
       if (imgElement) {
         if (selectedCustomLogo) {
-          imgElement.src = selectedCustomLogo;
+          const customLogo = getSafeDataImage(selectedCustomLogo);
+          if (!customLogo) {
+            imgElement.style.display = 'none';
+            if (textElement) textElement.style.display = 'block';
+            return;
+          }
+          imgElement.src = customLogo;
           imgElement.style.display = 'block';
           if (textElement) textElement.style.display = 'none';
         } else if (selectedBrand) {
-          imgElement.src = LOGO_PATH + selectedBrand;
+          const brandLogo = getSafeLogoPath(selectedBrand);
+          if (!brandLogo) {
+            imgElement.style.display = 'none';
+            if (textElement) textElement.style.display = 'block';
+            return;
+          }
+          imgElement.src = brandLogo;
           imgElement.style.display = 'block';
           if (textElement) textElement.style.display = 'none';
         } else {

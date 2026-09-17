@@ -1059,6 +1059,38 @@
       updateCards();
     }
 
+    function setMultilineText(element, value) {
+      const text = String(value || '');
+      const splitIndex = text.indexOf(' ');
+      element.replaceChildren();
+      if (splitIndex === -1) {
+        element.textContent = text;
+        return;
+      }
+      element.append(document.createTextNode(text.slice(0, splitIndex)), document.createElement('br'), document.createTextNode(text.slice(splitIndex + 1)));
+    }
+
+    function setHeaderContent(elementId, markup, value) {
+      const element = document.getElementById(elementId);
+      if (markup) {
+        element.innerHTML = markup;
+        return;
+      }
+      setMultilineText(element, value);
+    }
+
+    function setPriceWithEuroSymbol(elementId, value) {
+      const element = document.getElementById(elementId);
+      element.replaceChildren();
+      if (!value) {
+        return;
+      }
+      const euro = document.createElement('span');
+      euro.className = 'euro-symbol';
+      euro.textContent = '€';
+      element.append(euro, document.createTextNode(value));
+    }
+
     function copyCard1ToCard2() {
       document.getElementById('brandSelect2').value = document.getElementById('brandSelect1').value;
       document.getElementById('brandSelect2Bis').value = document.getElementById('brandSelect1Bis').value;
@@ -1198,21 +1230,21 @@
         document.getElementById('headLeft1').innerHTML = claimMarkupLeft;
         document.getElementById('headRight1').innerHTML = claimMarkupRight;
       } else {
-        document.getElementById('headLeft1').innerHTML = document.getElementById('left1').value.replace(' ', '<br>');
-        document.getElementById('headRight1').innerHTML = document.getElementById('right1').value.replace(' ', '<br>');
+        setHeaderContent('headLeft1', '', document.getElementById('left1').value);
+        setHeaderContent('headRight1', '', document.getElementById('right1').value);
       }
       
       document.getElementById('descDisplay1_1').innerText = document.getElementById('desc1_1').value;
       const pn1_1 = document.getElementById('pNew1_1').value;
-      document.getElementById('priceNewDisplay1_1').innerHTML = pn1_1 ? '<span class="euro-symbol">€</span>' + pn1_1 : '';
+      setPriceWithEuroSymbol('priceNewDisplay1_1', pn1_1);
 
       document.getElementById('descDisplay1_2').innerText = document.getElementById('desc1_2').value;
       const pn1_2 = document.getElementById('pNew1_2').value;
-      document.getElementById('priceNewDisplay1_2').innerHTML = pn1_2 ? '<span class="euro-symbol">€</span>' + pn1_2 : '';
+      setPriceWithEuroSymbol('priceNewDisplay1_2', pn1_2);
 
       document.getElementById('descDisplay1_3').innerText = document.getElementById('desc1_3').value;
       const pn1_3 = document.getElementById('pNew1_3').value;
-      document.getElementById('priceNewDisplay1_3').innerHTML = pn1_3 ? '<span class="euro-symbol">€</span>' + pn1_3 : '';
+      setPriceWithEuroSymbol('priceNewDisplay1_3', pn1_3);
 
       // --- CARTELLO 2 ---
       const card2 = document.getElementById('card2');
@@ -1240,21 +1272,21 @@
         document.getElementById('headLeft2').innerHTML = claimMarkupLeft;
         document.getElementById('headRight2').innerHTML = claimMarkupRight;
       } else {
-        document.getElementById('headLeft2').innerHTML = document.getElementById('left2').value.replace(' ', '<br>');
-        document.getElementById('headRight2').innerHTML = document.getElementById('right2').value.replace(' ', '<br>');
+        setHeaderContent('headLeft2', '', document.getElementById('left2').value);
+        setHeaderContent('headRight2', '', document.getElementById('right2').value);
       }
       
       document.getElementById('descDisplay2_1').innerText = document.getElementById('desc2_1').value;
       const pn2_1 = document.getElementById('pNew2_1').value;
-      document.getElementById('priceNewDisplay2_1').innerHTML = pn2_1 ? '<span class="euro-symbol">€</span>' + pn2_1 : '';
+      setPriceWithEuroSymbol('priceNewDisplay2_1', pn2_1);
 
       document.getElementById('descDisplay2_2').innerText = document.getElementById('desc2_2').value;
       const pn2_2 = document.getElementById('pNew2_2').value;
-      document.getElementById('priceNewDisplay2_2').innerHTML = pn2_2 ? '<span class="euro-symbol">€</span>' + pn2_2 : '';
+      setPriceWithEuroSymbol('priceNewDisplay2_2', pn2_2);
 
       document.getElementById('descDisplay2_3').innerText = document.getElementById('desc2_3').value;
       const pn2_3 = document.getElementById('pNew2_3').value;
-      document.getElementById('priceNewDisplay2_3').innerHTML = pn2_3 ? '<span class="euro-symbol">€</span>' + pn2_3 : '';
+      setPriceWithEuroSymbol('priceNewDisplay2_3', pn2_3);
     }
 
     window.onload = loadLocalLogos;

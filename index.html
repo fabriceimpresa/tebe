@@ -6,7 +6,7 @@
   <title>STORE // CRAFT</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <!-- Libreria qrcode.js integrata -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="assets/js/qrcode.min.js"></script>
   <style>
     :root {
       --bg: #121110;
@@ -1711,17 +1711,25 @@
         imgUrl = qrElem.toDataURL("image/png");
       }
 
-      if (imgUrl) {
+      if (imgUrl && /^data:image\/|^blob:/i.test(imgUrl)) {
         const printWin = window.open('', '_blank', 'width=450,height=450');
-        printWin.document.write(`
-          <!DOCTYPE html>
-          <html>
-            <head><title>Stampa QR Code</title></head>
-            <body style="display:flex; justify-content:center; align-items:center; height:100vh; margin:0; background:#fff;">
-              <img src="${imgUrl}" style="max-width:80%; height:auto;" onload="window.print(); window.close();" />
-            </body>
-          </html>
-        `);
+        if (!printWin) return;
+        printWin.document.title = 'Stampa QR Code';
+        printWin.document.body.style.display = 'flex';
+        printWin.document.body.style.justifyContent = 'center';
+        printWin.document.body.style.alignItems = 'center';
+        printWin.document.body.style.height = '100vh';
+        printWin.document.body.style.margin = '0';
+        printWin.document.body.style.background = '#fff';
+        const image = printWin.document.createElement('img');
+        image.style.maxWidth = '80%';
+        image.style.height = 'auto';
+        image.onload = () => {
+          printWin.print();
+          printWin.close();
+        };
+        image.src = imgUrl;
+        printWin.document.body.replaceChildren(image);
         printWin.document.close();
       }
     }

@@ -1278,6 +1278,26 @@
       input.setSelectionRange(value.length, value.length);
     }
 
+    function setMultilineText(element, value) {
+      const text = String(value || '');
+      const splitIndex = text.indexOf(' ');
+      element.replaceChildren();
+      if (splitIndex === -1) {
+        element.textContent = text;
+        return;
+      }
+      element.append(document.createTextNode(text.slice(0, splitIndex)), document.createElement('br'), document.createTextNode(text.slice(splitIndex + 1)));
+    }
+
+    function setHeaderContent(elementId, markup, value) {
+      const element = document.getElementById(elementId);
+      if (markup) {
+        element.innerHTML = markup;
+        return;
+      }
+      setMultilineText(element, value);
+    }
+
     function updateCards() {
       const claimMarkupBFLeft = '<img class="claim-flag claim-flag-left" src="assets/img/tema_blackfriday.png" alt="Black Friday">';
       const claimMarkupBFRight = '<img class="claim-flag claim-flag-right" src="assets/img/tema_blackfriday.png" alt="Black Friday">';
@@ -1308,12 +1328,12 @@
       // CARTELLO 1 TESTI E PREZZI
       const claimMarkupLeft = '<img class="claim-flag claim-flag-left" src="assets/img/madeinitaly.png" alt="Made in Italy">';
       const claimMarkupRight = '<img class="claim-flag claim-flag-right" src="assets/img/madeinitaly.png" alt="Made in Italy">';
-      document.getElementById('headLeft1').innerHTML = blackFridayActive[1]
+      setHeaderContent('headLeft1', blackFridayActive[1]
         ? claimMarkupBFLeft
-        : xmasActive[1] ? xmasMarkupLeft : (madeInItalyClaimsActive[1] ? claimMarkupLeft : document.getElementById('left1').value.replace(' ', '<br>'));
-      document.getElementById('headRight1').innerHTML = blackFridayActive[1]
+        : xmasActive[1] ? xmasMarkupLeft : (madeInItalyClaimsActive[1] ? claimMarkupLeft : ''), document.getElementById('left1').value);
+      setHeaderContent('headRight1', blackFridayActive[1]
         ? claimMarkupBFRight
-        : xmasActive[1] ? xmasMarkupRight : (madeInItalyClaimsActive[1] ? claimMarkupRight : document.getElementById('right1').value.replace(' ', '<br>'));
+        : xmasActive[1] ? xmasMarkupRight : (madeInItalyClaimsActive[1] ? claimMarkupRight : ''), document.getElementById('right1').value);
       document.getElementById('promoDesc1').innerText = document.getElementById('desc1').value;
 
       const po1 = document.getElementById('pOld1').value;
@@ -1343,12 +1363,12 @@
       }
 
       // CARTELLO 2 TESTI E PREZZI
-      document.getElementById('headLeft2').innerHTML = blackFridayActive[2]
+      setHeaderContent('headLeft2', blackFridayActive[2]
         ? claimMarkupBFLeft
-        : xmasActive[2] ? xmasMarkupLeft : (madeInItalyClaimsActive[2] ? claimMarkupLeft : document.getElementById('left2').value.replace(' ', '<br>'));
-      document.getElementById('headRight2').innerHTML = blackFridayActive[2]
+        : xmasActive[2] ? xmasMarkupLeft : (madeInItalyClaimsActive[2] ? claimMarkupLeft : ''), document.getElementById('left2').value);
+      setHeaderContent('headRight2', blackFridayActive[2]
         ? claimMarkupBFRight
-        : xmasActive[2] ? xmasMarkupRight : (madeInItalyClaimsActive[2] ? claimMarkupRight : document.getElementById('right2').value.replace(' ', '<br>'));
+        : xmasActive[2] ? xmasMarkupRight : (madeInItalyClaimsActive[2] ? claimMarkupRight : ''), document.getElementById('right2').value);
       document.getElementById('promoDesc2').innerText = document.getElementById('desc2').value;
 
       const po2 = document.getElementById('pOld2').value;

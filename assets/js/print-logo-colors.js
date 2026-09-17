@@ -15,6 +15,12 @@
   const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
   let customLogoCache = new Map(); // chiave: `${sourceData}|${colorKey}`
 
+  function isSafeImageSource(source) {
+    return /^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(source || '')
+      || /^assets\/logos\/[A-Za-z0-9._-]+$/i.test(source || '')
+      || /^assets\/img\/printlogos\/[A-Za-z0-9._-]+$/i.test(source || '');
+  }
+
   function getOfficialPrintLogoPath(logoFileName, color) {
     return PRINT_LOGOS_PATH + color + getGeneratedLogoFileName(logoFileName);
   }
@@ -107,6 +113,9 @@
     if (!source) {
       return Promise.resolve(source);
     }
+    if (!isSafeImageSource(source)) {
+      return Promise.resolve('');
+    }
 
     const officialMatch = source.match(/assets\/logos\/([^/?#]+)$/);
     if (officialMatch && COLOR_RGB[color]) {
@@ -126,7 +135,7 @@
     }
 
     // Sorgente non riconosciuta (es. placeholder vuoto): restituiamo invariata.
-    return Promise.resolve(source);
+    return Promise.resolve('');
   }
 
   /**
@@ -157,8 +166,10 @@
       return;
     }
     getBrandLogoSrc(customValue, officialFileName, defaultFileName, color).then(resolvedSource => {
-      if (resolvedSource) {
+      if (resolvedSource && isSafeImageSource(resolvedSource)) {
         imgElement.src = resolvedSource;
+      } else {
+        imgElement.removeAttribute('src');
       }
     });
   }

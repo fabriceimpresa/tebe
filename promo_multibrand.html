@@ -410,6 +410,12 @@
     const DEFAULT_TINT_CLASS = 'tint-DEFAULT';
 
     function cleanName(file) { return file.replace(/\.(png|jpg|jpeg|webp|svg)$/i, '').replace(/[-_]/g, ' '); }
+    function getSafeLogoSource(value) {
+      if (/^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(value || '')) {
+        return value;
+      }
+      return /^[A-Za-z0-9._-]+$/.test(value || '') ? LOGO_PATH + value : '';
+    }
     
     function createLogoControls() {
       const container = document.getElementById('logoControls1');
@@ -441,7 +447,14 @@
         const label = document.createElement('label'); label.style.color = '#e5ba73'; label.textContent = '★ Logo Personalizzato ' + index + ':';
         const select = document.createElement('select'); select.id = 'customLogo' + index; select.className = 'custom-select'; select.onchange = updateCards;
         const empty = document.createElement('option'); empty.value = ''; empty.textContent = '-- Nessun Logo Personalizzato --'; select.appendChild(empty);
-        customLogos.forEach(item => { const option = document.createElement('option'); option.value = item.data; option.textContent = '★ ' + item.name; select.appendChild(option); });
+        customLogos.forEach(item => {
+          const safeValue = getSafeLogoSource(item.data);
+          if (!safeValue) return;
+          const option = document.createElement('option');
+          option.value = safeValue;
+          option.textContent = '★ ' + item.name;
+          select.appendChild(option);
+        });
         group.append(label, select); container.appendChild(group);
       }
     }
@@ -453,10 +466,16 @@
         const file = custom || document.getElementById('logo' + index + 'Card1').value;
         const slot = document.createElement('div'); slot.className = 'brand-slot slot' + index;
         if (file) { 
+          const safeSource = getSafeLogoSource(file);
+          if (!safeSource) {
+            slot.classList.add('empty');
+            board.appendChild(slot);
+            continue;
+          }
           const img = document.createElement('img'); 
           img.className = tintClass; 
           img.alt = 'Logo ' + index; 
-          img.src = file.startsWith('data:') ? file : LOGO_PATH + file; 
+          img.src = safeSource; 
           slot.appendChild(img); 
         } else {
           slot.classList.add('empty');
@@ -468,10 +487,15 @@
         const file = custom || document.getElementById('logo' + index + 'Card1').value;
         const slot = document.getElementById('brandBottom' + index + 'Card' + card); slot.innerHTML = '';
         if (file) { 
+          const safeSource = getSafeLogoSource(file);
+          if (!safeSource) {
+            slot.classList.add('empty');
+            return;
+          }
           const img = document.createElement('img'); 
           img.className = tintClass; 
           img.alt = 'Logo ' + index; 
-          img.src = file.startsWith('data:') ? file : LOGO_PATH + file; 
+          img.src = safeSource; 
           slot.appendChild(img); 
           slot.classList.remove('empty'); 
         } else {

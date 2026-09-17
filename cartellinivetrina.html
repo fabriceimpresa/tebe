@@ -377,6 +377,18 @@
       return filename.replace(/\.(png|jpg|jpeg|webp|svg)$/i, '').replace(/[-_]/g, ' ');
     }
 
+    function isSafeDataImage(value) {
+      return /^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(value || '');
+    }
+
+    function appendSelectOption(select, value, text, className = '') {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = text;
+      if (className) option.className = className;
+      select.appendChild(option);
+    }
+
     function getLogoFilename(brand) {
       if (!brand) return '';
       if (typeof LOGO_FILES !== 'undefined' && Array.isArray(LOGO_FILES)) {
@@ -490,24 +502,32 @@
 
     function populateLogoDropdowns() {
       const brandSelect = document.getElementById('inp-brand');
+      brandSelect.replaceChildren();
 
       if (typeof LOGO_FILES !== 'undefined' && Array.isArray(LOGO_FILES)) {
         // Brand prioritari (stagionali) mostrati per primi ed evidenziati, poi il resto in ordine alfabetico
         const { priorityFiles, remainingFiles } = getSortedLogoFiles();
-        brandSelect.innerHTML = [...priorityFiles, ...remainingFiles].map(file => {
+        [...priorityFiles, ...remainingFiles].forEach(file => {
           const displayName = cleanBrandName(file);
-          return priorityFiles.includes(file)
-            ? `<option value="${file}" class="priority-brand-option">⭐ ${displayName}</option>`
-            : `<option value="${file}">${displayName}</option>`;
-        }).join('');
+          appendSelectOption(
+            brandSelect,
+            file,
+            priorityFiles.includes(file) ? `⭐ ${displayName}` : displayName,
+            priorityFiles.includes(file) ? 'priority-brand-option' : ''
+          );
+        });
       } else {
-        brandSelect.innerHTML = '<option value="">nessun logo caricato</option>';
+        appendSelectOption(brandSelect, '', 'nessun logo caricato');
       }
 
       const savedLogos = JSON.parse(localStorage.getItem('custom_brand_logos') || '[]');
-      const customOptions = '<option value="">-- Nessun Logo Personalizzato --</option>' +
-        savedLogos.map((logo, index) => `<option value="${logo.data}">★ ${logo.name || 'Logo Custom #' + (index + 1)}</option>`).join('');
-      document.getElementById('inp-custom-logo').innerHTML = customOptions;
+      const customSelect = document.getElementById('inp-custom-logo');
+      customSelect.replaceChildren();
+      appendSelectOption(customSelect, '', '-- Nessun Logo Personalizzato --');
+      savedLogos.forEach((logo, index) => {
+        if (!isSafeDataImage(logo.data)) return;
+        appendSelectOption(customSelect, logo.data, `★ ${logo.name || 'Logo Custom #' + (index + 1)}`);
+      });
     }
 
     function loadEditorData() {

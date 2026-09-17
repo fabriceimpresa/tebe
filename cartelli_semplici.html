@@ -1096,6 +1096,26 @@
       window.print();
     }
 
+    function setMultilineText(element, value) {
+      const text = String(value || '');
+      const splitIndex = text.indexOf(' ');
+      element.replaceChildren();
+      if (splitIndex === -1) {
+        element.textContent = text;
+        return;
+      }
+      element.append(document.createTextNode(text.slice(0, splitIndex)), document.createElement('br'), document.createTextNode(text.slice(splitIndex + 1)));
+    }
+
+    function setHeaderContent(elementId, markup, value) {
+      const element = document.getElementById(elementId);
+      if (markup) {
+        element.innerHTML = markup;
+        return;
+      }
+      setMultilineText(element, value);
+    }
+
     function toggleBlackFriday(cardIndex) {
       blackFridayActive[cardIndex] = !blackFridayActive[cardIndex];
 
@@ -1216,8 +1236,8 @@
         document.getElementById('headLeft1').innerHTML = claimMarkupLeft;
         document.getElementById('headRight1').innerHTML = claimMarkupRight;
       } else {
-        document.getElementById('headLeft1').innerHTML = document.getElementById('left1').value.replace(' ', '<br>');
-        document.getElementById('headRight1').innerHTML = document.getElementById('right1').value.replace(' ', '<br>');
+        setHeaderContent('headLeft1', '', document.getElementById('left1').value);
+        setHeaderContent('headRight1', '', document.getElementById('right1').value);
       }
 
       document.getElementById('descDisplay1').innerText = document.getElementById('desc1').value;
@@ -1264,8 +1284,8 @@
         document.getElementById('headLeft2').innerHTML = claimMarkupLeft;
         document.getElementById('headRight2').innerHTML = claimMarkupRight;
       } else {
-        document.getElementById('headLeft2').innerHTML = document.getElementById('left2').value.replace(' ', '<br>');
-        document.getElementById('headRight2').innerHTML = document.getElementById('right2').value.replace(' ', '<br>');
+        setHeaderContent('headLeft2', '', document.getElementById('left2').value);
+        setHeaderContent('headRight2', '', document.getElementById('right2').value);
       }
 
       document.getElementById('descDisplay2').innerText = document.getElementById('desc2').value;
