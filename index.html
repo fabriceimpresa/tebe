@@ -12,7 +12,7 @@
   --taupe:#a79b8b;
   --taupe-dark:#665e54;
   --ink:#282522;
-  --gold:#b49a62;
+  --gold:#ad8a3e;
   --white:#fffdfa;
   --line:rgba(60,52,44,.14);
 }
@@ -77,10 +77,15 @@ main{min-width:0}
 .topbar{
   height:80px;
   border-bottom:1px solid var(--line);
+}
+.topbar-inner{
+  max-width:1450px;
+  height:100%;
+  margin:auto;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 43px;
+  padding:0 50px;
 }
 .switch{
   display:flex;
@@ -290,7 +295,7 @@ nav button .soon-tag{
 @media(max-width:720px){
   .app{grid-template-columns:1fr}
   .sidebar{display:none}
-  .topbar{padding:0 18px}
+  .topbar-inner{padding:0 18px}
   .content{padding:32px 20px}
   .hero{display:block}
   .identity{text-align:left;margin-top:24px}
@@ -300,6 +305,7 @@ nav button .soon-tag{
 
 .bottom{
   margin-top:auto;
+  margin-bottom:32px;
   width:100%;
   padding:34px 8px 2px;
   text-align:center;
@@ -384,11 +390,13 @@ nav button .soon-tag{
 
   <main>
     <header class="topbar">
-      <div class="switch">
-        <button id="tebe" class="selected" onclick="changeStore('tebe')">TEBE</button>
-        <button id="ophilya" onclick="changeStore('ophilya')">OPHILYA</button>
+      <div class="topbar-inner">
+        <div class="switch">
+          <button id="tebe" class="selected" onclick="changeStore('tebe')">TEBE</button>
+          <button id="ophilya" onclick="changeStore('ophilya')">OPHILYA</button>
+        </div>
+        <div class="status" id="statusLabel">VISUAL MERCHANDISING</div>
       </div>
-      <div class="status" id="statusLabel">VISUAL MERCHANDISING</div>
     </header>
 
     <section class="content">
