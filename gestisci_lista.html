@@ -442,11 +442,18 @@
     }
 
     function isValidCustomLogo(logo) {
+      const imageData = typeof logo?.data === 'string' ? logo.data.trim().toLowerCase() : '';
       return logo
         && typeof logo.id === 'string'
         && typeof logo.name === 'string'
         && typeof logo.data === 'string'
-        && logo.data.startsWith('data:image/');
+        && (
+          imageData.startsWith('data:image/png;base64,')
+          || imageData.startsWith('data:image/jpeg;base64,')
+          || imageData.startsWith('data:image/jpg;base64,')
+          || imageData.startsWith('data:image/gif;base64,')
+          || imageData.startsWith('data:image/webp;base64,')
+        );
     }
 
     function escapeHtml(value) {

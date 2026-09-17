@@ -223,7 +223,7 @@
     const PLACEHOLDER_TEXT = "🔴 ━━━  SELEZIONA BRAND  ━━━ 🔴";
 
     function getSafeLogoPath(fileName) {
-      return /^[A-Za-z0-9._-]+$/.test(fileName || '') ? LOGO_PATH + fileName : '';
+      return /^[A-Za-z0-9._-]+\.png$/i.test(fileName || '') ? LOGO_PATH + fileName : '';
     }
 
     function cleanBrandName(filename) {

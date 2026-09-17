@@ -411,10 +411,18 @@
 
     function cleanName(file) { return file.replace(/\.(png|jpg|jpeg|webp|svg)$/i, '').replace(/[-_]/g, ' '); }
     function getSafeLogoSource(value) {
-      if (/^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(value || '')) {
-        return value;
+      const normalized = (value || '').trim();
+      const lowerValue = normalized.toLowerCase();
+      if (
+        lowerValue.startsWith('data:image/png;base64,')
+        || lowerValue.startsWith('data:image/jpeg;base64,')
+        || lowerValue.startsWith('data:image/jpg;base64,')
+        || lowerValue.startsWith('data:image/gif;base64,')
+        || lowerValue.startsWith('data:image/webp;base64,')
+      ) {
+        return normalized;
       }
-      return /^[A-Za-z0-9._-]+$/.test(value || '') ? LOGO_PATH + value : '';
+      return /^[A-Za-z0-9._-]+\.png$/i.test(normalized) ? LOGO_PATH + normalized : '';
     }
     
     function createLogoControls() {

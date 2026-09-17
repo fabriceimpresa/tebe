@@ -234,13 +234,15 @@
   <script>
     const LOGO_PATH = "assets/logos/";
     const PLACEHOLDER_TEXT = "🔴 ━━━  SELEZIONA BRAND  ━━━ 🔴";
+    const SAFE_DATA_IMAGE_PREFIXES = ['data:image/png;base64,', 'data:image/jpeg;base64,', 'data:image/jpg;base64,', 'data:image/gif;base64,', 'data:image/webp;base64,'];
 
     function getSafeLogoPath(fileName) {
-      return /^[A-Za-z0-9._-]+$/.test(fileName || '') ? LOGO_PATH + fileName : '';
+      return /^[A-Za-z0-9._-]+\.png$/i.test(fileName || '') ? LOGO_PATH + fileName : '';
     }
 
     function getSafeDataImage(value) {
-      return /^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(value || '') ? value : '';
+      const normalized = (value || '').trim();
+      return SAFE_DATA_IMAGE_PREFIXES.some(prefix => normalized.toLowerCase().startsWith(prefix)) ? normalized : '';
     }
 
     let selectedBrand = '';

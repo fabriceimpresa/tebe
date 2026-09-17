@@ -973,21 +973,19 @@
       const hasBrand1 = !!(cb1 || b1);
       
       if (cb1) {
-        brandContainer1.replaceChildren(document.createElement('img'));
-        brandContainer1.querySelector('img').alt = 'Custom Logo';
+        const brandImage1 = document.createElement('img');
+        brandImage1.id = 'brandContainer1Image';
+        brandImage1.alt = 'Custom Logo';
+        brandContainer1.replaceChildren(brandImage1);
         brandContainer1.classList.add('has-logo');
-        PrintLogoColors.getBrandLogoSrc(cb1, '', '', 'red').then(src => {
-          const imgEl = brandContainer1.querySelector('img');
-          if (imgEl) imgEl.src = src;
-        });
+        PrintLogoColors.setBrandLogoSrc('brandContainer1Image', cb1, '', '', 'red');
       } else if (b1) {
-        brandContainer1.replaceChildren(document.createElement('img'));
-        brandContainer1.querySelector('img').alt = 'Brand Logo';
+        const brandImage1 = document.createElement('img');
+        brandImage1.id = 'brandContainer1Image';
+        brandImage1.alt = 'Brand Logo';
+        brandContainer1.replaceChildren(brandImage1);
         brandContainer1.classList.add('has-logo');
-        PrintLogoColors.getBrandLogoSrc('', b1, '', 'red').then(src => {
-          const imgEl = brandContainer1.querySelector('img');
-          if (imgEl) imgEl.src = src;
-        });
+        PrintLogoColors.setBrandLogoSrc('brandContainer1Image', '', b1, '', 'red');
       } else {
         brandContainer1.innerHTML = '';
         brandContainer1.classList.remove('has-logo');
@@ -1020,21 +1018,19 @@
       const hasBrand2 = !!(cb2 || b2);
       
       if (cb2) {
-        brandContainer2.replaceChildren(document.createElement('img'));
-        brandContainer2.querySelector('img').alt = 'Custom Logo';
+        const brandImage2 = document.createElement('img');
+        brandImage2.id = 'brandContainer2Image';
+        brandImage2.alt = 'Custom Logo';
+        brandContainer2.replaceChildren(brandImage2);
         brandContainer2.classList.add('has-logo');
-        PrintLogoColors.getBrandLogoSrc(cb2, '', '', 'red').then(src => {
-          const imgEl = brandContainer2.querySelector('img');
-          if (imgEl) imgEl.src = src;
-        });
+        PrintLogoColors.setBrandLogoSrc('brandContainer2Image', cb2, '', '', 'red');
       } else if (b2) {
-        brandContainer2.replaceChildren(document.createElement('img'));
-        brandContainer2.querySelector('img').alt = 'Brand Logo';
+        const brandImage2 = document.createElement('img');
+        brandImage2.id = 'brandContainer2Image';
+        brandImage2.alt = 'Brand Logo';
+        brandContainer2.replaceChildren(brandImage2);
         brandContainer2.classList.add('has-logo');
-        PrintLogoColors.getBrandLogoSrc('', b2, '', 'red').then(src => {
-          const imgEl = brandContainer2.querySelector('img');
-          if (imgEl) imgEl.src = src;
-        });
+        PrintLogoColors.setBrandLogoSrc('brandContainer2Image', '', b2, '', 'red');
       } else {
         brandContainer2.innerHTML = '';
         brandContainer2.classList.remove('has-logo');

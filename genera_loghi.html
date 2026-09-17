@@ -432,7 +432,12 @@
     }
 
     function isSafeImageDataUrl(value) {
-      return /^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(value || '');
+      const normalized = (value || '').trim().toLowerCase();
+      return normalized.startsWith('data:image/png;base64,')
+        || normalized.startsWith('data:image/jpeg;base64,')
+        || normalized.startsWith('data:image/jpg;base64,')
+        || normalized.startsWith('data:image/gif;base64,')
+        || normalized.startsWith('data:image/webp;base64,');
     }
 
     function renderSavedLogos() {

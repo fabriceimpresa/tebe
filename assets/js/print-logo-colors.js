@@ -13,12 +13,21 @@
 (() => {
   const PRINT_LOGOS_PATH = 'assets/img/printlogos/';
   const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
+  const SAFE_DATA_IMAGE_PREFIXES = [
+    'data:image/png;base64,',
+    'data:image/jpeg;base64,',
+    'data:image/jpg;base64,',
+    'data:image/gif;base64,',
+    'data:image/webp;base64,'
+  ];
   let customLogoCache = new Map(); // chiave: `${sourceData}|${colorKey}`
 
   function isSafeImageSource(source) {
-    return /^data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$/i.test(source || '')
-      || /^assets\/logos\/[A-Za-z0-9._-]+$/i.test(source || '')
-      || /^assets\/img\/printlogos\/[A-Za-z0-9._-]+$/i.test(source || '');
+    const normalized = (source || '').trim();
+    const lowerSource = normalized.toLowerCase();
+    return SAFE_DATA_IMAGE_PREFIXES.some(prefix => lowerSource.startsWith(prefix))
+      || /^assets\/logos\/[A-Za-z0-9._-]+\.png$/i.test(normalized)
+      || /^assets\/img\/printlogos\/[A-Za-z0-9._-]+\.png$/i.test(normalized);
   }
 
   function getOfficialPrintLogoPath(logoFileName, color) {
