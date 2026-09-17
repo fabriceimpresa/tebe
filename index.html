@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TEBE · OPHILIA — Visual Merchandising</title>
+<title>TEBE · OPHILYA — Visual Merchandising</title>
 <style>
 :root{
   --ivory:#f8f6f1;
@@ -34,6 +34,16 @@ button{font:inherit;cursor:pointer}
 }
 .logo{
   padding:0 8px 28px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+.logo-mark{
+  width:100%;
+  max-width:140px;
+  height:auto;
+  display:block;
 }
 .logo-name{
   font-size:25px;
@@ -351,7 +361,7 @@ nav button .soon-tag{
 
   <aside class="sidebar">
     <div class="logo">
-      <div class="logo-name" id="sideName">TEBE</div>
+      <img class="logo-mark" id="sideLogo" src="assets/img/tebeoro.png" alt="TEBE">
       <div class="logo-sub" id="sideSub">VIA DEL CORSO 269</div>
     </div>
 
@@ -386,7 +396,7 @@ nav button .soon-tag{
     <header class="topbar">
       <div class="switch">
         <button id="tebe" class="selected" onclick="changeStore('tebe')">TEBE</button>
-        <button id="ophilia" onclick="changeStore('ophilia')">OPHILIA</button>
+        <button id="ophilya" onclick="changeStore('ophilya')">OPHILYA</button>
       </div>
       <div class="status">STUDIO · CARTELLI</div>
     </header>
@@ -522,13 +532,15 @@ const stores = {
     name:"TEBE",
     sub:"VIA DEL CORSO 269",
     detail:"MODA DONNA · BRAND · PROPRIA LINEA",
-    description:"Strumenti essenziali per creare cartelli, cartellini e materiali di vendita coerenti con l'identità del negozio."
+    description:"Strumenti essenziali per creare cartelli, cartellini e materiali di vendita coerenti con l'identità del negozio.",
+    logo:"assets/img/tebeoro.png"
   },
-  ophilia:{
-    name:"OPHILIA",
+  ophilya:{
+    name:"OPHILYA",
     sub:"LEATHER GOODS · MADE IN ITALY",
     detail:"BORSE · PELLE · MADE IN ITALY · GENUINE LEATHER",
-    description:"Cartelli e materiali minimali per borse in pelle italiana, accessori e articoli in ecopelle selezionati."
+    description:"Cartelli e materiali minimali per borse in pelle italiana, accessori e articoli in ecopelle selezionati.",
+    logo:"assets/img/ophilyagold.png"
   }
 };
 
@@ -544,7 +556,9 @@ function changeStore(store){
   currentStore = store;
   const s=stores[store];
 
-  document.getElementById("sideName").textContent=s.name;
+  const sideLogo = document.getElementById("sideLogo");
+  sideLogo.src = s.logo;
+  sideLogo.alt = s.name;
   document.getElementById("sideSub").textContent=s.sub;
   document.getElementById("title").textContent=s.name;
   document.getElementById("identity").textContent=s.sub;
@@ -552,7 +566,7 @@ function changeStore(store){
   document.getElementById("description").textContent=s.description;
 
   document.getElementById("tebe").classList.toggle("selected",store==="tebe");
-  document.getElementById("ophilia").classList.toggle("selected",store==="ophilia");
+  document.getElementById("ophilya").classList.toggle("selected",store==="ophilya");
 
   updateLinks();
 }
@@ -564,7 +578,7 @@ function goTo(sectionId){
 (function init(){
   const params = new URLSearchParams(window.location.search);
   const store = params.get("store");
-  if(store === "ophilia"){ changeStore("ophilia"); }
+  if(store === "ophilya"){ changeStore("ophilya"); }
   else { updateLinks(); }
 })();
 </script>
