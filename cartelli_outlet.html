@@ -51,7 +51,7 @@
       text-transform: uppercase;
     }
 
-    /* SELETTORE MODALITA' (stile identico al toggle TEBE/OPHILYA di index.html) */
+    /* SELETTORE MODALITA' */
     .mode-switch {
       display: flex;
       gap: 4px;
@@ -117,7 +117,7 @@
 
     .price-inputs-row .form-group { flex: 1; margin-bottom: 0; }
 
-    /* CAMPO PERCENTUALE con frecce sempre visibili (stesso pattern di cartellopercentuale.html) */
+    /* CAMPO PERCENTUALE con frecce sempre visibili */
     .percent-input-wrapper {
       display: flex;
       align-items: stretch;
@@ -212,13 +212,14 @@
       height: 297mm;
       background: white;
       box-shadow: 0 20px 60px rgba(40,34,28,.18);
+      padding: 14.56mm 0 0 0; /* Bordo/distanziatore superiore identico */
       display: flex;
       flex-direction: column;
       align-items: center;
       overflow: hidden;
     }
 
-    /* CARTELLO OUTLET — stesse proporzioni fisiche del Cartello Percentuale (210mm x 118.35mm) */
+    /* CARTELLO OUTLET — dimensioni 210mm x 118.35mm */
     .card {
       width: 210mm;
       height: 118.35mm;
@@ -240,9 +241,6 @@
       transform: translateY(-6mm);
     }
 
-    /* Il secondo cartello è lo stesso contenuto, capovolto: i bordi devono coincidere in un'unica linea
-       (rimuoviamo il bordo che, dopo la rotazione di 180°, finirebbe a contatto con il cartello superiore,
-       lasciando intatto il bordo esterno inferiore necessario per il ritaglio) */
     #cardBottom {
       border-bottom: none;
       transform: rotate(180deg);
@@ -403,7 +401,7 @@
       .print-sheet {
         box-shadow: none;
         margin: 0 auto !important;
-        padding: 0 !important;
+        padding: 14.56mm 0 0 0 !important; /* Mantenuta la stessa misura anche in stampa */
         width: 210mm;
         height: 297mm !important;
         max-height: 297mm !important;
