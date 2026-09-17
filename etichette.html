@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Etichette DYMO // STORE CRAFT</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Etichette DYMO · TEBE · OPHILIA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <!-- COLLEGAMENTO AL FILE CENTRALIZZATO LOGHI -->
   <script src="assets/js/logos.js"></script>
@@ -14,16 +14,16 @@
 
   <style>
     :root {
-      --bg: #121110;
-      --sidebar: #181715;
-      --card: #1e1d1a;
-      --border: #2e2b27;
-      --accent: #d4a373;
-      --accent-hover: #e5ba73;
-      --text: #f4f1ea;
-      --text-muted: #8c857b;
+      --bg: #f8f6f1;
+      --sidebar: #eee8dd;
+      --card: #fffdfa;
+      --border: #e3dacb;
+      --accent: #b49a62;
+      --accent-hover: #8a6a35;
+      --text: #282522;
+      --text-muted: #665e54;
       --success: #2a9d8f;
-      --error: #e76f51;
+      --error: #c0533b;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,7 +31,7 @@
 
     /* SIDEBAR CON GALLERIA TEMPLATES */
     aside { width: 300px; background: var(--sidebar); border-right: 1px solid var(--border); padding: 1.5rem 1rem; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
-    .brand { font-family: 'Cinzel', serif; font-size: 1.1rem; letter-spacing: 2px; color: var(--accent); margin-bottom: 1rem; text-align: center; }
+    .brand { font-family: Arial, Helvetica, sans-serif; font-size: 1rem; letter-spacing: 3px; color: var(--accent); margin-bottom: 1rem; text-align: center; text-transform: uppercase; }
     .nav-btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.5rem; color: var(--text-muted); text-decoration: none; border-radius: 6px; font-size: 0.8rem; font-weight: 500; border: 1px solid var(--border); transition: all 0.2s; margin-bottom: 1.2rem; }
     .nav-btn:hover { color: var(--text); border-color: var(--accent); }
 
@@ -81,10 +81,10 @@
 
     main { flex: 1; padding: 2rem 3rem; overflow-y: auto; display: flex; gap: 2rem; }
     .editor-section { flex: 1; max-width: 450px; }
-    .preview-section { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0a0908; border-radius: 8px; border: 1px solid var(--border); padding: 2rem; position: relative; }
+    .preview-section { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--sidebar); border-radius: 8px; border: 1px solid var(--border); padding: 2rem; position: relative; }
 
     header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.2rem; }
-    header h1 { font-family: 'Cinzel', serif; font-size: 1.4rem; }
+    header h1 { font-family: Arial, Helvetica, sans-serif; font-weight: 400; font-size: 1.4rem; letter-spacing: 1px; }
     header p { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.2rem; }
 
     .usb-status {
@@ -97,7 +97,7 @@
       border-radius: 6px;
       margin-bottom: 1.2rem;
     }
-    .status-badge { font-size: 0.75rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 4px; background: #333; color: #aaa; }
+    .status-badge { font-size: 0.75rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 4px; background: var(--sidebar); color: var(--text-muted); }
     .status-badge.connected { background: rgba(42, 157, 143, 0.2); color: var(--success); border: 1px solid var(--success); }
     .status-badge.disconnected { background: rgba(231, 111, 81, 0.2); color: var(--error); border: 1px solid var(--error); }
 
@@ -106,7 +106,7 @@
 
     .form-group { margin-bottom: 1rem; }
     .form-group label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 0.4rem; font-weight: 600; }
-    .form-control { width: 100%; padding: 0.65rem; background: var(--card); border: 1px solid var(--border); color: #fff; border-radius: 4px; font-size: 0.9rem; outline: none; }
+    .form-control { width: 100%; padding: 0.65rem; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 4px; font-size: 0.9rem; outline: none; }
     .form-control:focus { border-color: var(--accent); }
     .row { display: flex; gap: 0.8rem; }
 
@@ -122,7 +122,7 @@
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #e5ba73;
+      color: var(--accent-hover);
       font-weight: 700;
       margin-bottom: 0.6rem;
       display: flex;
@@ -130,20 +130,20 @@
       gap: 0.4rem;
     }
     .form-control.custom-select {
-      background: #141312;
-      border: 1px solid #b48b37;
-      color: #f3d5a3;
+      background: var(--card);
+      border: 1px solid var(--accent);
+      color: #6b4f1f;
       font-weight: 600;
     }
     .form-control.custom-select:focus {
-      border-color: #e5ba73;
-      box-shadow: 0 0 6px rgba(229, 186, 115, 0.3);
+      border-color: var(--accent-hover);
+      box-shadow: 0 0 6px rgba(180, 154, 98, 0.3);
     }
 
     /* EVIDENZIA LE VOCI STAGIONALI PRIORITARIE (SPRING/SUMMER/WINTER SALE) NEL MENU A CASCATA */
     select option.priority-brand-option {
-      background-color: #2e2b27;
-      color: #e5ba73;
+      background-color: var(--sidebar);
+      color: #6b4f1f;
       font-weight: bold;
     }
 
@@ -310,7 +310,7 @@
         right: 0;
         height: 140px;
         z-index: 9990;
-        background: #0a0908;
+        background: var(--sidebar);
         border-radius: 0 0 10px 10px;
         border: none;
         border-bottom: 1px solid var(--accent);
@@ -446,7 +446,7 @@
 
   <aside>
     <div>
-      <div class="brand">STORE // CRAFT</div>
+      <div class="brand">TEBE · OPHILIA</div>
       <a href="index.html" class="nav-btn">← Torna al Dashboard</a>
 
       <div class="gallery-title">Galleria Modelli (57x32)</div>

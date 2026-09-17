@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Cartello Semplice</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
   <script src="assets/js/logos.js"></script>
   <script src="assets/js/print-logo-colors.js"></script>
   <script src="assets/js/print-white-logos.js"></script>
@@ -45,7 +44,7 @@
     /* Sfondo principale UI */
     body {
       font-family: Arial, sans-serif;
-      background-color: #212529;
+      background-color: #f8f6f1;
       padding: 20px;
       display: flex;
       gap: 20px;
@@ -56,20 +55,7 @@
 
     /* Filigrana di sfondo UI */
     body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-image: url('assets/img/LUXURYOUTLET_BACK.png');
-      background-repeat: repeat;
-      background-size: 650px auto;
-      background-position: center;
-      opacity: 0.18;
-      filter: contrast(1.1);
-      pointer-events: none;
-      z-index: 0;
+      display: none;
     }
 
     /* Contenitore Pannelli di Sinistra */
@@ -85,33 +71,33 @@
 
     /* Pannelli di Controllo */
     .controls {
-      background: #1e1d1a;
-      color: #f4f1ea;
+      background: #fffdfa;
+      color: #282522;
       padding: 1rem;
       border-radius: 8px;
       box-shadow: none;
-      border: 1px solid #2e2b27;
+      border: 1px solid #e3dacb;
     }
 
     .controls h2 {
-      font-family: 'Cinzel', serif;
+      font-family: Arial, Helvetica, sans-serif;
       font-size: 1.1rem;
-      color: #d4a373;
-      border-bottom: 1px solid #2e2b27;
-      padding-bottom: 0.4rem;
+      color: #b49a62;
+      border-bottom: 1px solid #e3dacb;
+      padding-bottom: 0.6rem;
       margin-bottom: 1.2rem;
-      letter-spacing: 1.5px;
+      letter-spacing: 2.5px;
       text-align: center;
       text-transform: uppercase;
     }
 
     .section-title {
-      font-size: 0.9rem;
-      font-weight: bold;
-      color: #e5ba73;
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: #8a6a35;
       background-color: transparent;
       border-left: none;
-      border-bottom: 1px solid rgba(212, 163, 115, 0.9);
+      border-bottom: 1px solid rgba(180, 154, 98, 0.4);
       padding: 0 0 0.6rem;
       border-radius: 0;
       margin-top: 1rem;
@@ -127,55 +113,57 @@
       font-size: 0.72rem;
       font-weight: normal;
       margin-bottom: 0.3rem;
-      color: #8c857b;
+      color: #665e54;
     }
 
     .form-group input, .form-group select {
       width: 100%;
       padding: 0.5rem;
-      border: 1px solid #2e2b27;
+      border: 1px solid #e3dacb;
       border-radius: 4px;
       font-size: 0.82rem;
-      background-color: #0a0908;
-      color: #fff;
+      background-color: #f8f6f1;
+      color: #282522;
     }
 
     .form-group select.custom-select {
-      border-color: #b48b37;
-      color: #f3d5a3;
+      border-color: #b49a62;
+      color: #6b5628;
     }
 
     /* EVIDENZIA LE VOCI STAGIONALI PRIORITARIE (SPRING/SUMMER/WINTER SALE) NEL MENU A CASCATA */
     select option.priority-brand-option {
-      background-color: #2e2b27;
-      color: #e5ba73;
+      background-color: #eee8dd;
+      color: #8a6a35;
       font-weight: bold;
     }
 
     .form-group input:focus, .form-group select:focus {
       outline: none;
-      border-color: #b48b37;
-      box-shadow: 0 0 4px rgba(180, 139, 55, 0.5);
+      border-color: #b49a62;
+      box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
     }
 
     select option:first-child {
-      color: #b48b37 !important;
+      color: #8a6a35 !important;
       font-weight: bold !important;
     }
 
     /* PULSANTI TOGGLE */
     .btn-toggle-2nd-brand {
       width: 100%;
-      background: linear-gradient(135deg, #d4a373 0%, #b8860b 100%);
-      color: #000000;
-      border: 1px solid #e5ba73;
+      background: #b49a62;
+      color: #fffdfa;
+      border: 1px solid #b49a62;
       padding: 10px;
-      font-size: 0.88rem;
-      font-weight: bold;
-      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: 4px;
       cursor: pointer;
       margin: 10px 0 0 0;
-      box-shadow: 0 4px 10px rgba(212, 163, 115, 0.3);
+      box-shadow: none;
       transition: all 0.2s ease-in-out;
       display: flex;
       align-items: center;
@@ -184,65 +172,71 @@
     }
 
     .btn-toggle-2nd-brand:hover {
-      background: linear-gradient(135deg, #e5ba73 0%, #d4a373 100%);
-      box-shadow: 0 6px 14px rgba(212, 163, 115, 0.5);
+      background: #8a6a35;
+      box-shadow: none;
       transform: translateY(-1px);
     }
 
     .btn-toggle-2nd-brand.active {
-      background: linear-gradient(135deg, #c82333 0%, #a71d2a 100%);
+      background: #8a3b3b;
       color: #ffffff;
-      border-color: #dc3545;
-      box-shadow: 0 4px 10px rgba(200, 35, 51, 0.4);
+      border-color: #8a3b3b;
+      box-shadow: none;
     }
 
     .btn-copy {
       width: 100%;
-      background-color: #28a745;
+      background-color: #4c7a5b;
       color: white;
       border: none;
       padding: 8px;
-      font-size: 0.85rem;
-      font-weight: bold;
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
       margin: 10px 0;
     }
 
-    .btn-copy:hover { background-color: #218838; }
+    .btn-copy:hover { background-color: #3d6249; }
 
     /* PULSANTI STAMPA */
     .btn-print {
       width: 100%;
-      background-color: #e00000;
+      background-color: #96382b;
       color: #ffffff;
-      border: 1px solid #b30000;
+      border: 1px solid #96382b;
       padding: 10px;
-      font-size: 0.95rem;
-      font-weight: bold;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
       margin-top: 10px;
       transition: background-color 0.2s;
     }
 
-    .btn-print:hover { background-color: #cc0000; }
+    .btn-print:hover { background-color: #7a2d22; }
 
     .btn-print-single {
       width: 100%;
-      background-color: #0056b3;
+      background-color: #43586b;
       color: #ffffff;
-      border: 1px solid #004085;
+      border: 1px solid #43586b;
       padding: 10px;
-      font-size: 0.95rem;
-      font-weight: bold;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
       margin-top: 6px;
       transition: background-color 0.2s;
     }
 
-    .btn-print-single:hover { background-color: #003d80; }
+    .btn-print-single:hover { background-color: #344654; }
 
     /* FOGLIO STAMPA (Riferimento assoluto per le filigrane) */
     .print-sheet {
@@ -251,7 +245,7 @@
       width: 210mm;
       height: 297mm;
       background: white;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      box-shadow: 0 20px 60px rgba(40,34,28,.18);
       padding: 8mm 12mm;
       display: flex;
       flex-direction: column;
@@ -470,8 +464,8 @@
       right: 1.5rem;
       width: 36px;
       height: 36px;
-      background-color: #d4a373;
-      color: #000000;
+      background-color: #b49a62;
+      color: #fffdfa;
       border: none;
       border-radius: 50%;
       font-size: 1.2rem;
@@ -487,7 +481,7 @@
     }
 
     .app-close-btn:hover {
-      background-color: #e5ba73;
+      background-color: #8a6a35;
       transform: scale(1.1);
     }
 
@@ -500,7 +494,7 @@
       height: 44px;
       padding: 7px;
       background: #ffffff;
-      border: 1px solid #d4a373;
+      border: 1px solid #b49a62;
       border-radius: 50%;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
@@ -536,7 +530,7 @@
       height: 44px;
       padding: 6px;
       background: #000000;
-      border: 1px solid #d4a373;
+      border: 1px solid #b49a62;
       border-radius: 50%;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
@@ -572,7 +566,7 @@
       height: 44px;
       padding: 0;
       background: #ffffff;
-      border: 1px solid #d4a373;
+      border: 1px solid #b49a62;
       border-radius: 50%;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0,0,0,0.5);
@@ -604,8 +598,8 @@
       position: fixed;
       bottom: 1.5rem;
       right: 1.5rem;
-      background: #181a1d;
-      border: 1px solid #d4a373;
+      background: #fffdfa;
+      border: 1px solid #b49a62;
       border-radius: 8px;
       padding: 0.8rem 1rem;
       box-shadow: 0 8px 24px rgba(0,0,0,0.6);
@@ -617,7 +611,7 @@
 
     .floating-nav-title {
       font-size: 0.65rem;
-      color: #e5ba73;
+      color: #8a6a35;
       text-transform: uppercase;
       letter-spacing: 1.2px;
       font-weight: 700;
@@ -629,7 +623,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      color: #ffffff;
+      color: #282522;
       text-decoration: none;
       font-size: 0.82rem;
       font-weight: 600;
@@ -637,7 +631,7 @@
     }
 
     .floating-nav-btn:hover {
-      color: #e5ba73;
+      color: #8a6a35;
       transform: translateX(-2px);
     }
 
@@ -736,7 +730,7 @@
   </button>
 
   <div class="floating-nav-box">
-    <div class="floating-nav-title">STORE // CRAFT</div>
+    <div class="floating-nav-title">TEBE · OPHILIA</div>
     <a href="index.html" class="floating-nav-btn">
       ← Torna al Menu Principale
     </a>

@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visualizzatore PDF // STORE CRAFT</title>
+  <title>Visualizzatore PDF · TEBE · OPHILIA</title>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #121110;
-      --card: #1e1d1a;
-      --border: #2e2b27;
-      --accent: #d4a373;
-      --accent-hover: #e5ba73;
-      --text: #f4f1ea;
-      --muted: #8c857b;
+      --bg: #f8f6f1;
+      --card: #fffdfa;
+      --border: #e3dacb;
+      --accent: #b49a62;
+      --accent-hover: #8a6a35;
+      --text: #282522;
+      --muted: #665e54;
     }
 
     * { box-sizing: border-box; }
@@ -34,9 +34,9 @@
       gap: 1rem;
       min-height: 68px;
       padding: 0.8rem 1.5rem;
-      background: #181715;
-      border-bottom: 1px solid var(--accent);
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 18px rgba(50,43,36,.06);
     }
 
     .brand {
@@ -74,7 +74,7 @@
       border: 1px solid var(--accent);
       border-radius: 5px;
       background: var(--accent);
-      color: #000;
+      color: var(--bg);
       font: inherit;
       font-size: 0.78rem;
       font-weight: 700;
@@ -83,7 +83,7 @@
       transition: background 0.2s, transform 0.2s;
     }
 
-    .viewer-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .viewer-btn:hover { background: var(--accent-hover); color: #fffdfa; transform: translateY(-1px); }
     .app-close-btn {
       position: fixed;
       top: 1rem;
@@ -97,21 +97,21 @@
       border: none;
       border-radius: 50%;
       background: var(--accent);
-      color: #000;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      color: var(--bg);
+      box-shadow: 0 4px 12px rgba(50,43,36,.18);
       font-size: 1.3rem;
       font-weight: 700;
       text-decoration: none;
       transition: background 0.2s, transform 0.2s;
     }
 
-    .app-close-btn:hover { background: var(--accent-hover); transform: scale(1.1); }
+    .app-close-btn:hover { background: var(--accent-hover); color:#fffdfa; transform: scale(1.1); }
 
     .pdf-stage {
       flex: 1;
       min-height: 0;
       padding: 1rem;
-      background: #0a0908;
+      background: var(--border);
     }
 
     #pdf-frame {
@@ -149,7 +149,7 @@
 </head>
 <body>
   <header class="viewer-header">
-    <div class="brand">STORE // CRAFT</div>
+    <div class="brand">TEBE · OPHILIA</div>
     <div class="document-title" id="document-title">Visualizzatore PDF</div>
     <div class="viewer-actions">
       <a href="index.html" class="app-close-btn" title="Chiudi e torna al menu" aria-label="Chiudi e torna al menu">✕</a>

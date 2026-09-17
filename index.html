@@ -1,1753 +1,572 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>STORE // CRAFT</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-  <!-- Libreria qrcode.js integrata -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <style>
-    :root {
-      --bg: #121110;
-      --sidebar: #181715;
-      --card: #1e1d1a;
-      --border: #2e2b27;
-      --accent: #d4a373;
-      --accent-hover: #e5ba73;
-      --text: #f4f1ea;
-      --text-muted: #8c857b;
-      --gold: #e5ba73;
-      --gold-border: #d4a373;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; display: flex; height: 100vh; overflow: hidden; }
-
-    /* Barra superiore mobile */
-    .mobile-top-bar { display: contents; }
-    .mobile-brand { display: none; }
-    .mobile-nav-toggle { display: none; }
-
-    aside { width: 280px; background: var(--sidebar); border-right: 1px solid var(--border); padding: 2rem 1.2rem; display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; z-index: 1000; overflow-y: auto; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    
-    .sidebar-header {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 2.4rem;
-      width: 100%;
-    }
-
-    .brand { width: 100%; position: relative; font-family: 'Cinzel', serif; font-size: 1.28rem; letter-spacing: 2px; color: var(--accent); text-align: center; background: transparent; border: none; cursor: pointer; }
-    .brand:hover, .brand:focus-visible { animation: brand-hover 0.6s ease-in-out; outline: none; }
-
-    .mobile-close-btn {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 28px;
-      height: 28px;
-      background-color: var(--accent);
-      color: #000000;
-      border: none;
-      border-radius: 50%;
-      font-size: 0.9rem;
-      font-weight: bold;
-      cursor: pointer;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s, background-color 0.2s;
-    }
-
-    .mobile-close-btn:hover {
-      background-color: var(--accent-hover);
-      transform: translateY(-50%) scale(1.1);
-    }
-
-    .sidebar-overlay {
-      display: none;
-    }
-
-    @keyframes brand-hover {
-      0%, 100% { transform: translateY(0) scale(1); }
-      45% { transform: translateY(-3px) scale(1.05); }
-      70% { transform: translateY(0) scale(0.98); }
-    }
-    
-    .menu-label { 
-      font-size: 0.7rem; 
-      color: #ffffff; 
-      text-transform: uppercase; 
-      letter-spacing: 2px; 
-      font-weight: 700;
-      margin: 1.8rem 0 0.6rem 0.5rem; 
-      padding-bottom: 4px;
-      border-bottom: 1px solid rgba(212, 163, 115, 0.2);
-    }
-
-    .menu-group { margin-top: 1.8rem; }
-    .menu-group:first-of-type { margin-top: 0; }
-    .menu-toggle {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      padding: 0 0.5rem 4px;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid rgba(212, 163, 115, 0.2);
-      color: #ffffff;
-      font: inherit;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-weight: 700;
-      text-align: left;
-      cursor: pointer;
-    }
-    .menu-toggle:hover, .menu-toggle:focus-visible { color: var(--accent); outline: none; }
-    .menu-arrow {
-      color: var(--accent);
-      font-size: 1rem;
-      line-height: 0.7;
-      transition: transform 0.25s ease;
-    }
-    .menu-toggle[aria-expanded="false"] .menu-arrow { transform: rotate(-90deg); }
-    .menu-items {
-      overflow: hidden;
-      max-height: 520px;
-      opacity: 1;
-      transition: max-height 0.3s ease, opacity 0.2s ease;
-    }
-    .menu-items.is-collapsed { max-height: 0; opacity: 0; }
-
-    .nav-btn { display: flex; align-items: center; gap: 0.8rem; padding: 0.6rem 0.8rem; color: var(--text-muted); text-decoration: none; border-radius: 6px; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-    .nav-btn:hover, .nav-btn.active { background: rgba(212, 163, 115, 0.08); color: var(--accent); }
-
-    .sidebar-bottom {
-      margin-top: auto;
-      padding-top: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .sidebar-logo {
-      width: 100%;
-      max-width: 195px;
-      height: auto;
-      margin-bottom: 1.2rem;
-      display: block;
-      filter: brightness(0) saturate(100%) invert(73%) sepia(29%) saturate(836%) hue-rotate(352deg) brightness(91%) contrast(87%);
-    }
-
-    .sidebar-footer {
-      font-size: 0.7rem; 
-      color: var(--text-muted); 
-      text-align: center; 
-      line-height: 1.45; 
-      padding-top: 12px; 
-      border-top: 1px solid var(--border);
-      width: 100%;
-    }
-
-    main { flex: 1; padding: 2rem 3rem; overflow-y: auto; position: relative; scroll-behavior: smooth; }
-    header { position: relative; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
-    .home-mark { position: fixed; top: 1rem; left: calc(280px + 3rem); display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.65rem; background: #0a0908; border: 1px solid var(--accent); border-radius: 4px; color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.45); opacity: 0; pointer-events: none; transform: translateY(4px); transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease; z-index: 20; }
-    
-    .mode-switcher { position: fixed; top: 1rem; right: 2rem; display: flex; gap: 0.55rem; z-index: 30; }
-    .mode-btn { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.4rem 0.9rem; background: #0a0908; border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: inherit; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s ease; }
-    .mode-btn:hover { background: var(--accent); color: #000; border-color: var(--accent-hover); }
-    .mode-btn.active { background: var(--accent); color: #000; border-color: var(--accent-hover); box-shadow: 0 0 10px rgba(229,186,115,0.35), 0 4px 14px rgba(0,0,0,0.4); }
-    
-    .menu-group, #generators-section, #seasonal-promo-section, #tickets-section, #dymo-section, #prints-section, #prints-promo-section, #tools-title, #tools { transition: transform 0.25s ease, opacity 0.25s ease; }
-    body.cassiere-mode #tools { margin-bottom: 3rem; }
-    .layout-reorder-anim { opacity: 0.6; transform: translateY(-6px); }
-    body.is-scrolled .home-mark, .home-mark:hover, .home-mark:focus-visible { opacity: 1; pointer-events: auto; transform: translateY(0); outline: none; }
-    .home-mark:hover { background: var(--accent); color: #000000; border-color: var(--accent-hover); box-shadow: 0 0 7px rgba(229,186,115,0.5), 0 4px 16px rgba(0,0,0,0.6); transform: translateY(0) scale(1.05); }
-    .home-mark-icon { font-size: 1.2rem; line-height: 1; }
-    header h1 { font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 500; }
-    header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 0.3rem; }
-
-    .section-title { font-family: 'Cinzel', serif; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 0.8rem; }
-    .promo-lightning {
-      color: var(--gold);
-      font-family: Georgia, serif;
-      font-size: 1.1em;
-      font-weight: 400;
-      text-shadow: 0 0 6px rgba(229, 186, 115, 0.35);
-    }
-    
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; padding-top: 0.4rem; }
-    .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; padding-top: 0.4rem; margin-bottom: 3rem; }
-    
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; text-decoration: none; color: inherit; transition: all 0.25s; }
-    .card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    
-    .preview { height: 140px; background: #0a0908; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); padding: 10px 14px; position: relative; }
-    .preview-image { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; border-radius: 3px; }
-
-    .card-body { padding: 1rem; }
-    .card-body h3 { font-family: 'Cinzel', serif; font-size: 0.95rem; margin-bottom: 0.3rem; }
-    .card-body p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
-
-    /* STILI ESCLUSIVI WIDGET / CARD DORATA CON COLORE LOGO STORE CRAFT (#d4a373 / #e5ba73) */
-    .gold-bf-card {
-      border: 1px solid var(--gold-border) !important;
-      background: linear-gradient(145deg, #1f1a14 0%, #2a2218 100%) !important;
-      box-shadow: 0 0 15px rgba(212, 163, 115, 0.25);
-      position: relative;
-    }
-
-    .gold-bf-card:hover {
-      border-color: var(--gold) !important;
-      box-shadow: 0 0 25px rgba(229, 186, 115, 0.45) !important;
-      transform: translateY(-4px);
-    }
-
-    .gold-bf-card h3 {
-      color: var(--gold) !important;
-      text-shadow: 0 0 8px rgba(212, 163, 115, 0.35);
-    }
-
-    #prints-promo-carousel .card-body h3 {
-      color: var(--gold);
-      text-shadow: 0 0 8px rgba(212, 163, 115, 0.35);
-    }
-
-    #prints-promo-carousel .carousel-card {
-      border-color: var(--gold-border);
-      background: linear-gradient(145deg, #1f1a14 0%, #2a2218 100%);
-      box-shadow: 0 0 15px rgba(212, 163, 115, 0.25);
-    }
-
-    #prints-promo-carousel .carousel-card:hover {
-      border-color: var(--gold);
-      box-shadow: 0 0 25px rgba(229, 186, 115, 0.45);
-    }
-
-    #prints-promo-carousel .compact-title {
-      white-space: nowrap;
-      font-size: 0.9rem;
-      letter-spacing: 0.2px;
-    }
-
-    .gold-badge {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: linear-gradient(135deg, #b88d4c, #f4e3c9, #b88d4c, #e5ba73);
-      color: #000;
-      font-size: 0.62rem;
-      font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-      z-index: 5;
-    }
-
-    /* CAROSELLI CON FRECCE FLOATING */
-    #generators-section, #seasonal-promo-section, #dymo-section, #prints-section, #prints-promo-section { margin-bottom: 3rem; }
-    
-    .carousel-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .carousel-container {
-      display: flex;
-      gap: 1.5rem;
-      overflow-x: auto;
-      padding: 0.4rem 0.2rem 1.2rem 0.2rem;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      width: 100%;
-    }
-    .carousel-container::-webkit-scrollbar {
-      display: none;
-    }
-
-    .carousel-container.two-rows {
-      display: grid;
-      grid-template-rows: repeat(2, auto);
-      grid-auto-flow: column;
-      grid-auto-columns: 250px;
-    }
-
-    .carousel-arrow {
-      position: absolute;
-      top: calc(50% - 0.6rem);
-      transform: translateY(-50%);
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: rgba(18, 17, 16, 0.85);
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      font-size: 1.4rem;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 10;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-      transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease, color 0.25s ease;
-      user-select: none;
-    }
-
-    .carousel-arrow:hover {
-      background: var(--accent);
-      color: #000000;
-      box-shadow: 0 0 10px rgba(212, 163, 115, 0.5);
-      transform: translateY(-50%) scale(1.1);
-    }
-
-    .carousel-arrow.prev { left: -18px; }
-    .carousel-arrow.next { right: -18px; }
-
-    .carousel-card {
-      flex: 0 0 250px;
-      scroll-snap-align: center;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: all 0.25s ease;
-      cursor: pointer;
-      text-decoration: none;
-      color: inherit;
-    }
-    .carousel-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-3px);
-    }
-    .carousel-card .preview-icon {
-      font-size: 3.2rem;
-      color: var(--accent);
-    }
-    .print-pdf-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      width: 100%;
-      margin-top: 0.9rem;
-      text-decoration: none;
-      font-size: 0.75rem;
-      padding: 0.55rem 0.5rem;
-    }
-    
-    /* FIX SPAZIATURA SAFARI PER SEZIONE PROMO STAGIONALI */
-    @supports (-webkit-hyphens: none) {
-      #seasonal-promo-carousel {
-        gap: 0 !important;
-      }
-      #seasonal-promo-carousel .carousel-card {
-        margin-right: 1.5rem !important;
-      }
-      #seasonal-promo-carousel .carousel-card:last-child {
-        margin-right: 0 !important;
-      }
-      @media (max-width: 768px) {
-        #seasonal-promo-carousel .carousel-card {
-          flex: 0 0 calc(100% - 1.5rem) !important;
-          margin-right: 1.5rem !important;
-        }
-        #seasonal-promo-carousel .carousel-card:last-child {
-          flex: 0 0 100% !important;
-          margin-right: 0 !important;
-        }
-      }
-    }
-
-    /* WIDGET ED ESPANSIONE ANIMATA */
-    .widget { 
-      background: var(--card); 
-      border: 1px solid var(--border); 
-      border-radius: 8px; 
-      padding: 1.5rem; 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: space-between; 
-      position: relative;
-      cursor: pointer;
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .widget-compact {
-      padding: 1rem 1.2rem;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .widget:not(.expanded):hover {
-      border-color: var(--accent);
-      transform: translateY(-3px);
-    }
-
-    .widget h3 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
-    .widget-compact h3 { margin-bottom: 0.8rem; }
-
-    .widget.expanded {
-      grid-column: 1 / -1;
-      padding: 2.5rem;
-      background: #161513;
-      border-color: var(--accent);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-      transform: scale(1.01);
-      cursor: default;
-      z-index: 10;
-    }
-
-    body.widget-focused-mode #generators-section,
-    body.widget-focused-mode #seasonal-promo-section,
-    body.widget-focused-mode #tickets-section,
-    body.widget-focused-mode #dymo-section,
-    body.widget-focused-mode #prints-section,
-    body.widget-focused-mode #prints-promo-section,
-    body.widget-focused-mode #tools-title,
-    body.widget-focused-mode header {
-      display: none !important;
-    }
-
-    .widget-header-controls {
-      display: none;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1rem;
-    }
-
-    .widget.expanded .widget-header-controls {
-      display: flex;
-    }
-
-    .close-btn {
-      width: 32px;
-      height: 32px;
-      background-color: var(--accent);
-      color: #000000;
-      border: none;
-      border-radius: 50%;
-      font-size: 1.1rem;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.2s, background-color 0.2s;
-    }
-
-    .close-btn:hover {
-      background-color: var(--accent-hover);
-      transform: scale(1.1);
-    }
-
-    .back-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 0.4rem 0.8rem;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: all 0.2s;
-    }
-
-    .back-btn:hover {
-      color: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .tool-row { display: flex; gap: 0.8rem; margin-bottom: 0.8rem; }
-    .input-group { display: flex; width: 100%; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; background: #0a0908; }
-    .input-prefix { padding: 0.6rem 0.7rem; background: #181715; color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; border-right: 1px solid var(--border); font-weight: bold; display: flex; align-items: center; flex-shrink: 0; }
-    .input-suffix { padding: 0.6rem 0.7rem; background: #181715; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; border-left: 1px solid var(--border); font-weight: 700; display: flex; align-items: center; flex-shrink: 0; letter-spacing: 0.5px; white-space: nowrap; }
-    .tool-input { width: 100%; padding: 0.6rem 0.7rem; background: transparent; border: none; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; outline: none; }
-    .tool-input-select { width: 100%; padding: 0.6rem 0.7rem; background: #0a0908; border: 1px solid var(--border); color: #fff; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; outline: none; }
-    .tool-input-select:focus, .tool-input:focus { border-color: var(--accent); }
-    
-    .tool-btn { 
-      padding: 0.65rem 0.8rem; 
-      background: var(--accent); 
-      color: #000000; 
-      font-weight: 700; 
-      border: none; 
-      border-radius: 4px; 
-      cursor: pointer; 
-      transition: all 0.2s; 
-      font-size: 0.8rem; 
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .tool-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
-    .tool-btn-secondary {
-      background: transparent;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-    }
-    .tool-btn-secondary:hover {
-      background: rgba(212, 163, 115, 0.1);
-      color: var(--accent-hover);
-    }
-
-    .tool-result { font-family: 'JetBrains Mono', monospace; font-size: 1.3rem; color: var(--accent); margin-top: 1.2rem; font-weight: bold; text-align: center; }
-
-    /* STILI WIDGET IVA */
-    .rate-grid-widget {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.4rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .rate-btn-widget {
-      background: #0a0908;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 0.4rem 0;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: center;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .rate-btn-widget:hover {
-      border-color: var(--accent);
-      color: var(--text);
-    }
-
-    .rate-btn-widget.active {
-      background: rgba(212, 163, 115, 0.15);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .qr-preview-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 1rem 0;
-    }
-
-    .qr-preview-wrapper {
-      background: #ffffff;
-      padding: 8px;
-      border-radius: 6px;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    }
-
-    #qrcode img, #qrcode canvas {
-      display: block;
-      margin: 0 auto;
-    }
-
-    /* REGOLE MOBILE */
-    @media (max-width: 768px) {
-      .section-title {
-        text-align: center;
-        font-size: 0.95rem;
-        letter-spacing: 2px;
-        margin-bottom: 1rem;
-      }
-
-      .carousel-container.two-rows {
-        display: grid;
-        grid-template-rows: repeat(2, auto);
-        grid-auto-flow: column;
-        grid-auto-columns: 100%;
-      }
-
-      .carousel-container.two-rows .carousel-card {
-        width: 100%;
-        scroll-snap-align: center;
-      }
-
-      .carousel-container:not(.two-rows) .carousel-card {
-        flex: 0 0 100%;
-        scroll-snap-align: center;
-      }
-
-      .mobile-top-bar {
-        display: flex;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 52px;
-        background: #0a0908;
-        border-bottom: 1px solid var(--border);
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 0.6rem;
-        z-index: 900;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.6);
-      }
-
-      .mobile-nav-toggle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: static;
-        width: 34px;
-        height: 34px;
-        background: #181715;
-        border: 1px solid var(--accent);
-        border-radius: 6px;
-        color: var(--accent);
-        font-size: 1.1rem;
-        cursor: pointer;
-        flex-shrink: 0;
-      }
-
-      .mobile-brand {
-        display: block;
-        font-family: 'Cinzel', serif;
-        font-size: 0.98rem;
-        font-weight: 700;
-        letter-spacing: 1px;
-        color: var(--accent);
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        text-align: center;
-        white-space: nowrap;
-        padding: 0 0.2rem;
-      }
-
-      .mobile-top-bar .mode-switcher {
-        position: static;
-        display: flex;
-        gap: 0.25rem;
-        flex-shrink: 0;
-      }
-
-      .mobile-top-bar .mode-btn {
-        padding: 0.3rem 0.45rem;
-        font-size: 0.62rem;
-        border-radius: 4px;
-        letter-spacing: 0.3px;
-      }
-
-      aside {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: 280px;
-        box-shadow: 4px 0 25px rgba(0,0,0,0.8);
-        transform: translateX(0);
-        z-index: 1000;
-      }
-
-      body.sidebar-collapsed aside {
-        transform: translateX(-100%);
-      }
-
-      .mobile-close-btn {
-        display: flex;
-      }
-
-      .sidebar-overlay {
-        display: block;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.65);
-        backdrop-filter: blur(3px);
-        z-index: 999;
-        opacity: 1;
-        transition: opacity 0.3s ease, visibility 0.3s;
-        visibility: visible;
-      }
-
-      body.sidebar-collapsed .sidebar-overlay {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
-
-      main {
-        padding: 4.2rem 1.2rem 2rem 1.2rem;
-      }
-
-      .home-mark {
-        left: auto;
-        right: 0.8rem;
-        top: 3.8rem;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEBE · OPHILIA — Visual Merchandising</title>
+<style>
+:root{
+  --ivory:#f8f6f1;
+  --cream:#eee8dd;
+  --beige:#e3dacb;
+  --taupe:#a79b8b;
+  --taupe-dark:#665e54;
+  --ink:#282522;
+  --gold:#b49a62;
+  --white:#fffdfa;
+  --line:rgba(60,52,44,.14);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ivory);
+  color:var(--ink);
+  font-family:Arial,Helvetica,sans-serif;
+}
+button{font:inherit;cursor:pointer}
+.app{min-height:100vh;display:grid;grid-template-columns:245px 1fr}
+.sidebar{
+  background:var(--cream);
+  border-right:1px solid var(--line);
+  padding:34px 23px;
+  display:flex;
+  flex-direction:column;
+}
+.logo{
+  padding:0 8px 28px;
+}
+.logo-name{
+  font-size:25px;
+  letter-spacing:.22em;
+  font-weight:400;
+}
+.logo-sub{
+  margin-top:8px;
+  font-size:9px;
+  letter-spacing:.22em;
+  color:var(--taupe-dark);
+  text-transform:uppercase;
+}
+.line{height:1px;background:var(--line);margin:0 8px 27px}
+.label{
+  font-size:9px;
+  letter-spacing:.24em;
+  color:#8b8175;
+  padding:0 9px 10px;
+}
+nav{display:grid;gap:3px}
+nav button{
+  border:0;
+  background:transparent;
+  text-align:left;
+  padding:12px 10px;
+  font-size:13px;
+  color:var(--taupe-dark);
+}
+nav button:hover,
+nav button.active{
+  background:rgba(255,253,250,.7);
+}
+nav button.active{
+  box-shadow:inset 2px 0 var(--gold);
+  color:var(--ink);
+}
+nav button:disabled{
+  opacity:1;
+}
+main{min-width:0}
+.topbar{
+  height:80px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 43px;
+}
+.switch{
+  display:flex;
+  gap:4px;
+  padding:4px;
+  background:var(--cream);
+  border:1px solid var(--line);
+}
+.switch button{
+  border:0;
+  background:transparent;
+  padding:9px 16px;
+  font-size:10px;
+  letter-spacing:.16em;
+  color:#887d70;
+}
+.switch button.selected{
+  background:var(--white);
+  color:var(--ink);
+}
+.status{
+  font-size:9px;
+  letter-spacing:.2em;
+  color:#94897c;
+}
+.content{
+  max-width:1450px;
+  padding:48px 50px 65px;
+  margin:auto;
+}
+.eyebrow{
+  color:var(--gold);
+  font-size:9px;
+  letter-spacing:.3em;
+  margin-bottom:13px;
+}
+.hero{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:30px;
+  margin-bottom:43px;
+}
+h1{
+  margin:0;
+  font-size:42px;
+  font-weight:400;
+  letter-spacing:.04em;
+}
+.hero p{
+  margin:13px 0 0;
+  max-width:570px;
+  color:#776e64;
+  font-size:13px;
+  line-height:1.65;
+}
+.identity{
+  text-align:right;
+  padding-bottom:3px;
+}
+.identity strong{
+  font-size:11px;
+  font-weight:400;
+  letter-spacing:.2em;
+}
+.identity span{
+  display:block;
+  margin-top:8px;
+  font-size:9px;
+  color:#958a7c;
+  letter-spacing:.16em;
+}
+.section{
+  font-size:9px;
+  letter-spacing:.25em;
+  color:#8b8175;
+  margin:31px 0 14px;
+}
+.cards{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+.card{
+  position:relative;
+  min-height:170px;
+  padding:23px;
+  background:var(--white);
+  border:1px solid var(--line);
+  transition:.18s ease;
+}
+.card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(180,154,98,.5);
+  box-shadow:0 18px 45px rgba(50,43,36,.08);
+}
+.number{
+  font-size:9px;
+  color:var(--gold);
+  letter-spacing:.16em;
+}
+.card h2{
+  margin:36px 0 8px;
+  font-size:17px;
+  font-weight:400;
+}
+.card p{
+  margin:0;
+  max-width:200px;
+  color:#8a8074;
+  font-size:11px;
+  line-height:1.5;
+}
+.arrow{
+  position:absolute;
+  right:20px;
+  bottom:18px;
+  color:var(--taupe);
+  font-size:16px;
+}
+.lower{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-top:12px;
+}
+.wide-card{
+  min-height:145px;
+  background:#f1ece4;
+  border:1px solid var(--line);
+  padding:23px;
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+}
+.wide-card h2{
+  margin:0 0 6px;
+  font-size:17px;
+  font-weight:400;
+}
+.wide-card p{
+  margin:0;
+  font-size:11px;
+  color:#857b70;
+}
+.lower-single{
+  grid-template-columns:1fr;
+}
+.card,.wide-card{
+  text-decoration:none;
+  color:inherit;
+}
+.card.soon,.wide-card.soon{
+  cursor:default;
+  background:var(--cream);
+  border-style:dashed;
+}
+.card.soon:hover,.wide-card.soon:hover{
+  transform:none;
+  box-shadow:none;
+  border-color:var(--line);
+}
+.card.soon h2,.wide-card.soon h2{
+  color:#948a7d;
+}
+.card.soon p,.wide-card.soon p{
+  color:#a49a8d;
+}
+.soon-tag{
+  position:absolute;
+  right:20px;
+  bottom:18px;
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--taupe-dark);
+  border:1px solid var(--line);
+  padding:4px 9px;
+  background:var(--white);
+}
+.wide-card .soon-tag{
+  position:static;
+}
+nav button.soon{
+  color:#a89e91;
+  cursor:default;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+nav button.soon:hover{
+  background:transparent;
+}
+.soon-tag-inline,
+nav button .soon-tag{
+  position:static;
+  font-size:8px;
+  padding:2px 6px;
+  border:1px solid var(--line);
+  letter-spacing:.14em;
+}
+@media(max-width:1000px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:720px){
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .topbar{padding:0 18px}
+  .content{padding:32px 20px}
+  .hero{display:block}
+  .identity{text-align:left;margin-top:24px}
+  .cards,.lower{grid-template-columns:1fr}
+}
+
+
+.bottom{
+  margin-top:auto;
+  width:100%;
+  padding:34px 8px 2px;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.studio-label{
+  font-size:9px;
+  line-height:1.2;
+  letter-spacing:.08em;
+  color:#766d62;
+  white-space:nowrap;
+}
+
+.storecraft-mark{
+  width:158px;
+  height:76px;
+  margin:12px auto 5px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.storecraft-mark img{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:76px;
+  object-fit:contain;
+  opacity:1;
+  mix-blend-mode:multiply;
+}
+
+.signature-caption{
+  display:block;
+  font-size:7px;
+  line-height:1.2;
+  letter-spacing:.20em;
+  color:#766d62;
+  white-space:nowrap;
+}
+
+</style>
 </head>
-<body class="sidebar-collapsed">
 
-<div class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+<body>
+<div class="app">
 
-<!-- Barra Superiore Mobile -->
-<div class="mobile-top-bar">
-  <button class="mobile-nav-toggle" type="button" onclick="toggleMobileSidebar()" aria-label="Apri menu">☰</button>
-  <button class="mobile-brand" type="button" onclick="returnToHomeTop()">STORE // CRAFT</button>
-  <div class="mode-switcher" aria-label="Modalità interfaccia">
-    <button class="mode-btn" data-mode="cassiere" type="button" onclick="setLayoutMode('cassiere')">CASSIERE</button>
-    <button class="mode-btn active" data-mode="creator" type="button" onclick="setLayoutMode('creator')">CREATOR</button>
-  </div>
-</div>
-
-<aside id="sidebar-menu">
-    <div>
-      <div class="sidebar-header">
-        <button class="brand" type="button" onclick="returnToHomeTop()">STORE // CRAFT</button>
-        <button class="mobile-close-btn" type="button" onclick="toggleMobileSidebar()" aria-label="Chiudi menu">✕</button>
-      </div>
-      
-      <div class="menu-group">
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-generators" onclick="toggleMenu('menu-generators', this)">
-          <span>Genera Cartelli</span><span class="menu-arrow" aria-hidden="true">⌄</span>
-        </button>
-        <div class="menu-items is-collapsed" id="menu-generators">
-          <a href="cartelli_semplici.html" class="nav-btn">🏷️ Cartello Semplice</a>
-          <a href="cartelli_outlet.html" class="nav-btn">🏷️ Cartello Outlet</a>
-          <a href="cartelli_outletmulti.html" class="nav-btn">🏷️ Cartello Outlet Multi</a>
-          <a href="cartelli_multireferenza.html" class="nav-btn">🏷️ Cartello Multi Brand Articolo</a>
-          <a href="cartellopercentuale.html" class="nav-btn">🏷️ Cartello Percentuale</a>
-          <a href="cartelli_lastchance.html" class="nav-btn">🏷️ Promo Last Chance</a>
-          <a href="cartello_banco.html" class="nav-btn">🏷️ Cartello da Banco</a>
-          <a href="magazzino.html" class="nav-btn">🏷️ Cartello Magazzino</a>
-          <a href="promo_multibrand.html" class="nav-btn" style="color: var(--gold); font-weight: 600;">🏷️ Promo Multibrand ✦</a>
-          <a href="blackfriday.html" class="nav-btn" style="color: var(--gold); font-weight: 600;">🏷️ Black Friday ✦</a>
-          <a href="blackfridaylips.html" class="nav-btn" style="color: var(--gold); font-weight: 600;">🏷️ Black Friday Lips ✦</a>
-          <a href="xmas_ball.html" class="nav-btn" style="color: var(--gold); font-weight: 600;">🏷️ Xmas Ball ✦</a>
-        </div>
-      </div>
-
-      <div class="menu-group">
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-tickets" onclick="toggleMenu('menu-tickets', this)">
-          <span>Genera Cartellini</span><span class="menu-arrow" aria-hidden="true">⌄</span>
-        </button>
-        <div class="menu-items is-collapsed" id="menu-tickets">
-          <a href="cartellinivetrina.html" class="nav-btn">🏷️ Cartellini Vetrina</a>
-          <a href="cartellinipromo.html" class="nav-btn">🏷️ Cartellini Promozionali</a>
-        </div>
-      </div>
-
-      <div class="menu-group">
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-dymo" onclick="toggleMenu('menu-dymo', this)">
-          <span>Etichette Dymo</span><span class="menu-arrow" aria-hidden="true">⌄</span>
-        </button>
-        <div class="menu-items is-collapsed" id="menu-dymo">
-          <a href="etichette.html?label=outlet" class="nav-btn">🏷️ Etichette LXRY</a>
-        </div>
-      </div>
-
-      <div class="menu-group">
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-logos" onclick="toggleMenu('menu-logos', this)">
-          <span>Loghi Personalizzati</span><span class="menu-arrow" aria-hidden="true">⌄</span>
-        </button>
-        <div class="menu-items is-collapsed" id="menu-logos">
-          <a href="genera_loghi.html" class="nav-btn">⚡ Genera Loghi Personalizzati</a>
-          <a href="gestisci_lista.html" class="nav-btn">⚙️ Gestisci Lista Personale</a>
-        </div>
-      </div>
-
-      <div class="menu-group">
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-prints" onclick="toggleMenu('menu-prints', this)">
-          <span>Stampe Pronte</span><span class="menu-arrow" aria-hidden="true">⌄</span>
-        </button>
-        <div class="menu-items is-collapsed" id="menu-prints">
-          <a href="#prints-section" class="nav-btn" onclick="scrollToSection('prints-section')">📄 Listini & Punto Vendita</a>
-          <a href="#prints-promo-section" class="nav-btn" onclick="scrollToSection('prints-promo-section')">📄 Operazioni Fast 'N' Beautiful</a>
-        </div>
-      </div>
-
-      <div class="menu-group">
-        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-tools" onclick="toggleMenu('menu-tools', this)">
-          <span>Utilità Cassa</span><span class="menu-arrow" aria-hidden="true">⌄</span>
-        </button>
-        <div class="menu-items is-collapsed" id="menu-tools">
-          <a class="nav-btn" onclick="focusWidget(event, 'widget-sconto')">🧮 Calcola Sconto</a>
-          <a class="nav-btn" onclick="focusWidget(event, 'widget-aliquota')">🧮 Calcola Aliquota</a>
-          <a class="nav-btn" onclick="focusWidget(event, 'widget-valuta')">💰 Cambio Valuta</a>
-          <a class="nav-btn" onclick="focusWidget(event, 'widget-iva')">🧮 Calcola IVA</a>
-          <a class="nav-btn" onclick="focusWidget(event, 'widget-qrcode')">📱 Generatore QR Code</a>
-        </div>
-      </div>
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-name" id="sideName">TEBE</div>
+      <div class="logo-sub" id="sideSub">VIA DEL CORSO 269</div>
     </div>
-    
-    <div class="sidebar-bottom">
-      <img src="assets/img/storecraftlogo.png" alt="STORE CRAFT Logo" class="sidebar-logo">
-      <div class="sidebar-footer">
-        <strong>V 1.0 2026 • Developed by Fabrizio Notte</strong><br>©Marchi e loghi appartengono ai rispettivi proprietari<br>
-        <a href="mailto:fabriceimpresa@gmail.com" style="color: var(--accent); text-decoration: none;">fabriceimpresa@gmail.com</a>
+
+    <div class="line"></div>
+
+    <div class="label">CREA</div>
+    <nav>
+      <button class="active" onclick="goTo('cartelli')">Cartelli</button>
+      <button onclick="goTo('cartellini')">Cartellini</button>
+      <button onclick="goTo('etichette')">Etichette</button>
+      <button onclick="goTo('loghi')">Loghi</button>
+    </nav>
+
+    <div class="label" style="margin-top:28px">STRUMENTI</div>
+    <nav>
+      <button class="soon" disabled>Sconti <span class="soon-tag">presto</span></button>
+      <button class="soon" disabled>Aliquote <span class="soon-tag">presto</span></button>
+      <button class="soon" disabled>Valuta <span class="soon-tag">presto</span></button>
+      <button class="soon" disabled>QR <span class="soon-tag">presto</span></button>
+    </nav>
+
+    <div class="bottom">
+      <div class="studio-label">VISUAL MERCHANDISING STUDIO</div>
+      <div class="storecraft-mark">
+        <img src="data:image/png;base64,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" alt="StoreCraft">
       </div>
+      <div class="signature-caption">CRAFTED WITH STORECRAFT</div>
     </div>
   </aside>
 
-  <main id="main-content">
-    <header>
-      <button class="home-mark" type="button" onclick="returnToHomeTop()" aria-label="Torna all'inizio della home"><span class="home-mark-icon" aria-hidden="true">⌂</span><span>HOME</span></button>
-      <h1>Visual Merchandising & Cassa</h1>
-      <p>Crea la grafica promozionale e calcola i prezzi in tempo reale.</p>
+  <main>
+    <header class="topbar">
+      <div class="switch">
+        <button id="tebe" class="selected" onclick="changeStore('tebe')">TEBE</button>
+        <button id="ophilia" onclick="changeStore('ophilia')">OPHILIA</button>
+      </div>
+      <div class="status">STUDIO · CARTELLI</div>
     </header>
 
-    <!-- SEZIONE GENERATORE CARTELLI - CAROSELLO -->
-    <div id="generators-section">
-      <div class="section-title">Genera Cartelli</div>
-      <div class="carousel-wrapper">
-        <button class="carousel-arrow prev" type="button" onclick="scrollCarousel('generators-carousel', -1)" aria-label="Scorri a sinistra">‹</button>
-        <div class="carousel-container two-rows" id="generators-carousel">
-          
-          <a href="cartelli_semplici.html" class="carousel-card">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/cartellosemplice.png" alt="Anteprima Cartello Semplice">
-            </div>
-            <div class="card-body">
-              <h3>Cartello Semplice</h3>
-              <p>Brand&nbsp;&nbsp; | &nbsp;&nbsp;Descrizione Articolo&nbsp;&nbsp; | Prezzo di Vendita&nbsp;&nbsp; <br>&nbsp;</p>
-            </div>
-          </a>
+    <section class="content">
 
-          <a href="cartelli_outlet.html" class="carousel-card">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/doppiacifra.png" alt="Anteprima Cartello Outlet">
-            </div>
-            <div class="card-body">
-              <h3>Cartello Outlet</h3>
-              <p>Brand&nbsp;&nbsp; | &nbsp;&nbsp;Descrizione (facoltativa)&nbsp;&nbsp; | Prezzo Originario&nbsp;&nbsp; | &nbsp;&nbsp;% Sconto&nbsp;&nbsp; | Prezzo Outlet&nbsp;&nbsp; </p>
-            </div>
-          </a>
-
-          <a href="cartelli_outletmulti.html" class="carousel-card">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/cartellomulti.png" alt="Anteprima Cartello Outlet Multi">
-            </div>
-            <div class="card-body">
-              <h3>Cartello Outlet Multi</h3>
-              <p>Brand&nbsp;&nbsp; | &nbsp;&nbsp;Doppio Brand&nbsp;&nbsp; | &nbsp;&nbsp;Fino a 3 Articoli&nbsp;&nbsp; | &nbsp;&nbsp;Scontistica&nbsp;&nbsp; <br> &nbsp;&nbsp;</p>
-            </div>
-          </a>
-
-          <a href="cartelli_multireferenza.html" class="carousel-card">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/duereferenze.png" alt="Anteprima Cartello Multi Articolo">
-            </div>
-            <div class="card-body">
-              <h3>Cartello Multi Brand-Articolo</h3>
-              <p>Brand o doppio Brand&nbsp;&nbsp; | &nbsp;&nbsp;Doppio o Triplo Articolo&nbsp;&nbsp; | &nbsp;&nbsp;Descrizione e Prezzi</p>
-            </div>
-          </a>
-
-          <a href="cartellopercentuale.html" class="carousel-card">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/percentuale.png" alt="Anteprima Promo Percentuale">
-            </div>
-            <div class="card-body">
-              <h3>Cartello Percentuale</h3>
-              <p>Brand&nbsp;&nbsp; | &nbsp;&nbsp;Doppio Brand&nbsp;&nbsp; | &nbsp;&nbsp;Sconto&nbsp;&nbsp; | Testo Libero&nbsp;&nbsp; <br> &nbsp;&nbsp; </p>
-            </div>
-          </a>
-
-          <a href="cartelli_lastchance.html" class="carousel-card">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/promolastchance.png" alt="Anteprima Promo Last Chance">
-            </div>
-            <div class="card-body">
-              <h3>Promo Last Chance</h3>
-              <p>Logo Last Chance&nbsp;&nbsp; | &nbsp;&nbsp;Prezzo Promo&nbsp;&nbsp; | Brand (facoltativo).&nbsp;&nbsp; <br> &nbsp;&nbsp; </p>
-            </div>
-          </a>
-
-          <a href="cartello_banco.html" class="carousel-card">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/cartellobanco.png" alt="Anteprima Cartello da Banco">
-            </div>
-            <div class="card-body">
-              <h3>Cartello da Banco</h3>
-              <p>Formato 15x10&nbsp;&nbsp; | &nbsp;&nbsp;Singolo o Doppio Brand&nbsp;&nbsp; | &nbsp;&nbsp;Doppi Prezzi o Testo Descrittivo</p>
-            </div>
-          </a>
-
-          <a href="magazzino.html" class="carousel-card">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/magazzinothumb.png" alt="Anteprima Cartelli Magazzino">
-            </div>
-            <div class="card-body">
-              <h3>Cartelli Magazzino</h3>
-              <p>Brand Ufficiale / Personalizzato&nbsp;&nbsp; | Elenco Categorie&nbsp;&nbsp; | &nbsp;&nbsp;Frecce Direzionali</p>
-            </div>
-          </a>
-
+      <div class="hero">
+        <div>
+          <div class="eyebrow">VISUAL MERCHANDISING</div>
+          <h1 id="title">TEBE</h1>
+          <p id="description">
+            Strumenti essenziali per creare cartelli, cartellini e materiali di vendita coerenti con l'identità del negozio.
+          </p>
         </div>
-        <button class="carousel-arrow next" type="button" onclick="scrollCarousel('generators-carousel', 1)" aria-label="Scorri a destra">›</button>
-      </div>
-    </div>
 
-    <!-- SEZIONE PROMO STAGIONALI - CAROSELLO -->
-    <div id="seasonal-promo-section">
-      <div class="section-title">Promo Stagionali</div>
-      <div class="carousel-wrapper">
-        <button class="carousel-arrow prev" type="button" onclick="scrollCarousel('seasonal-promo-carousel', -1)" aria-label="Scorri a sinistra">‹</button>
-        <div class="carousel-container" id="seasonal-promo-carousel">
-          
-          <!-- CARD DORATA PROMO MULTIBRAND -->
-          <a href="promo_multibrand.html" class="carousel-card gold-bf-card">
-            <span class="gold-badge">FASCE COLORE</span>
-            <div class="preview" style="background: radial-gradient(circle, #2a2218 0%, #0a0908 100%);">
-              <img class="preview-image" src="assets/img/promomultibrand.png" alt="Anteprima Promo Multibrand">
-            </div>
-            <div class="card-body">
-              <h3>Promo Multibrand ✦</h3>
-              <p>Promo 50% + 50%&nbsp;&nbsp; | &nbsp;&nbsp;Promo Fasce Colore&nbsp;&nbsp; | &nbsp;&nbsp;Promo Testo Libero <br> &nbsp;&nbsp; </p>
-            </div>
-          </a>
-
-          <!-- CARD DORATA BLACK FRIDAY -->
-          <a href="blackfriday.html" class="carousel-card gold-bf-card">
-            <span class="gold-badge">BLACK FRIDAY</span>
-            <div class="preview" style="background: radial-gradient(circle, #2a2218 0%, #0a0908 100%);">
-              <img class="preview-image" src="assets/img/blackfriday.png" alt="Anteprima Black Friday">
-            </div>
-            <div class="card-body">
-              <h3>Black Friday ✦</h3>
-              <p>Brand&nbsp;&nbsp; | &nbsp;&nbsp;Prezzo Promozionale&nbsp;&nbsp; | Doppio Prezzo&nbsp;&nbsp; | &nbsp;&nbsp;Descrizione&nbsp;&nbsp; | Grafica Black Friday</p>
-            </div>
-          </a>
-
-          <!-- CARD DORATA BLACK FRIDAY LIPS -->
-          <a href="blackfridaylips.html" class="carousel-card gold-bf-card">
-            <span class="gold-badge">BLACK FRIDAY</span>
-            <div class="preview" style="background: radial-gradient(circle, #2a2218 0%, #0a0908 100%);">
-              <img class="preview-image" src="assets/thumbnail/blackfridaylips.png" alt="Anteprima Black Friday Lips" onerror="this.onerror=null; this.src='assets/img/blackfridaylips.png';">
-            </div>
-            <div class="card-body">
-              <h3>Black Friday Lips ⭐</h3>
-              <p>Brand&nbsp;&nbsp; | &nbsp;&nbsp;Prezzo Promozionale&nbsp;&nbsp; | Grafica Black Friday Lips &nbsp;&nbsp; <br> &nbsp;&nbsp; </p>
-            </div>
-          </a>
-
-          <!-- CARD DORATA XMAS BALL -->
-          <a href="xmas_ball.html" class="carousel-card gold-bf-card">
-            <span class="gold-badge">CHRISTMAS</span>
-            <div class="preview" style="background: radial-gradient(circle, #2a2218 0%, #0a0908 100%);">
-              <img class="preview-image" src="assets/img/xmasball.png" alt="Anteprima Xmas Ball">
-            </div>
-            <div class="card-body">
-              <h3>Xmas Ball ⭐</h3>
-              <p>Brand&nbsp;&nbsp; | &nbsp;&nbsp;Prezzo Promozionale&nbsp;&nbsp; | Doppia Cifra <br> &nbsp;&nbsp; </p>
-            </div>
-          </a>
-
+        <div class="identity">
+          <strong id="identity">VIA DEL CORSO 269</strong>
+          <span id="detail">MODA DONNA · BRAND · PROPRIA LINEA</span>
         </div>
-        <button class="carousel-arrow next" type="button" onclick="scrollCarousel('seasonal-promo-carousel', 1)" aria-label="Scorri a destra">›</button>
       </div>
-    </div>
 
-    <div id="tickets-section">
-      <div class="section-title">Genera Cartellini</div>
-      <div class="grid">
-        <a href="cartellinivetrina.html" class="card">
-          <div class="preview">
-            <img class="preview-image" src="assets/img/cartellini.png" alt="Anteprima Cartellini Vetrina">
-          </div>
-          <div class="card-body">
-            <h3>Cartellini Vetrina</h3>
-            <p>Brand&nbsp;&nbsp; | &nbsp;&nbsp;Descrizione Articolo&nbsp;&nbsp; | Prezzo e Promozione</p>
-          </div>
+      <div class="section" id="cartelli">GENERA CARTELLI</div>
+
+      <div class="cards">
+        <a class="card" data-link="cartelli_semplici.html">
+          <div class="number">01</div>
+          <h2>Cartello semplice</h2>
+          <p>Prezzo, prodotto e marchio in una composizione pulita.</p>
+          <div class="arrow">↗</div>
         </a>
 
-        <a href="cartellinipromo.html" class="card">
-          <div class="preview">
-            <img class="preview-image" src="assets/img/cartellinipromo.png" alt="Anteprima Cartellini Promozionali">
+        <a class="card" data-link="cartelli_outlet.html">
+          <div class="number">02</div>
+          <h2>Cartello outlet</h2>
+          <p>Prezzo precedente, prezzo finale e comunicazione sale.</p>
+          <div class="arrow">↗</div>
+        </a>
+
+        <div class="card soon">
+          <div class="number">03</div>
+          <h2>Promozione</h2>
+          <p>Sconti e campagne con una gerarchia più evidente.</p>
+          <div class="soon-tag">presto</div>
+        </div>
+
+        <div class="card soon">
+          <div class="number">04</div>
+          <h2>Multi articolo</h2>
+          <p>Più prodotti nello stesso cartello, ordinati e leggibili.</p>
+          <div class="soon-tag">presto</div>
+        </div>
+      </div>
+
+      <div class="section" id="cartellini">CARTELLINI & ETICHETTE</div>
+
+      <div class="lower">
+        <a class="wide-card" data-link="cartellinivetrina.html">
+          <div>
+            <h2>Cartellini</h2>
+            <p>Materiali più piccoli per esposizione e prodotto in vetrina.</p>
           </div>
-          <div class="card-body">
-            <h3>Cartellini Promozionali</h3>
-            <p>Brand&nbsp;&nbsp; | &nbsp;&nbsp;Prezzo e Promozione&nbsp;&nbsp; | 50% + 50% Saldi</p>
+          <div class="arrow">↗</div>
+        </a>
+
+        <a class="wide-card" id="etichette" data-link="etichette.html">
+          <div>
+            <h2>Etichette</h2>
+            <p>Stampa etichette DYMO con marchio, prezzo e QR code.</p>
           </div>
+          <div class="arrow">↗</div>
         </a>
       </div>
-    </div>
 
-    <!-- SEZIONE: Etichette Dymo -->
-    <div id="dymo-section">
-      <div class="section-title">Etichette Dymo</div>
-      <div class="carousel-wrapper">
-        <button class="carousel-arrow prev" type="button" onclick="scrollCarousel('dymo-carousel', -1)" aria-label="Scorri a sinistra">‹</button>
-        <div class="carousel-container" id="dymo-carousel">
-          <div class="carousel-card" onclick="window.location.href='etichette.html?label=doppioprezzo'">
-            <div class="preview"><img class="preview-image" src="assets/thumbnail/doppioprezzo.png" alt="1. Outlet Doppio Prezzo"></div>
-            <div class="card-body"><h3>1. Outlet Doppio Prezzo</h3><p>Stampa Diretta 57x32mm (11354)</p></div>
-          </div>
-          <div class="carousel-card" onclick="window.location.href='etichette.html?label=finalprice'">
-            <div class="preview"><img class="preview-image" src="assets/thumbnail/finalprice.png" alt="2. Final | Outlet Price"></div>
-            <div class="card-body"><h3>2. Final | Outlet Price</h3><p>Stampa Diretta 57x32mm (11354)</p></div>
-          </div>
-          <div class="carousel-card" onclick="window.location.href='etichette.html?label=lastchance'">
-            <div class="preview"><img class="preview-image" src="assets/thumbnail/lastchance.png" alt="3. Last Chance"></div>
-            <div class="card-body"><h3>3. Last Chance</h3><p>Stampa Diretta 57x32mm (11354)</p></div>
-          </div>
-          <div class="carousel-card" onclick="window.location.href='etichette.html?label=outlet'">
-            <div class="preview"><img class="preview-image" src="assets/thumbnail/outlet.png" alt="4. Luxury Label"></div>
-            <div class="card-body"><h3>4. Luxury Label</h3><p>Stampa Diretta 57x32mm (11354)</p></div>
-          </div>
-          <div class="carousel-card" onclick="window.location.href='etichette.html?label=promo50'">
-            <div class="preview"><img class="preview-image" src="assets/thumbnail/promo50.png" alt="5. Promo 50+50"></div>
-            <div class="card-body"><h3>5. Promo 50+50</h3><p>Stampa Diretta 57x32mm (11354)</p></div>
-          </div>
-          <div class="carousel-card" onclick="window.location.href='etichette.html?label=tagliedoppiacifra'">
-            <div class="preview"><img class="preview-image" src="assets/thumbnail/tagliedoppiacifra.png" alt="6. Taglie | Doppia Cifra"></div>
-            <div class="card-body"><h3>6. Taglie | Doppia Cifra</h3><p>Stampa Diretta 57x32mm (11354)</p></div>
-          </div>
-        </div>
-        <button class="carousel-arrow next" type="button" onclick="scrollCarousel('dymo-carousel', 1)" aria-label="Scorri a destra">›</button>
-      </div>
-    </div>
+      <div class="section" id="loghi">LOGHI</div>
 
-    <!-- SEZIONE 1: Stampe Pronte - Listini & Punto Vendita -->
-    <div id="prints-section">
-      <div class="section-title">Stampe Pronte // Listini & Punto Vendita</div>
-      <div class="carousel-wrapper">
-        <button class="carousel-arrow prev" type="button" onclick="scrollCarousel('prints-carousel', -1)" aria-label="Scorri a sinistra">‹</button>
-        <div class="carousel-container" id="prints-carousel">
-          <div class="carousel-card" onclick="openPdf('assets/pdf/egoncatalogo.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/egoncatalogo.png" alt="Catalogo Egon Von Fürstenberg" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">📄</span>
-            </div>
-            <div class="card-body">
-              <h3>Catalogo Fürstenberg</h3>
-              <p>Listino Generale con foto, dettagli, mesures, ed apertura colori Borse EVF</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
+      <div class="lower">
+        <a class="wide-card" data-link="genera_loghi.html">
+          <div>
+            <h2>Crea logo brand</h2>
+            <p>Aggiungi un logo personalizzato con sfondo trasparente e gestisci la tua lista.</p>
           </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/egonlistino.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/egonlistino.png" alt="Listino Egon Von Fürstenberg" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">📄</span>
-            </div>
-            <div class="card-body">
-              <h3>Listino Fürstenberg</h3>
-              <p>Listino Generale EVF con scontistica outlet</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/taglie.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/taglie.png" alt="Taglie Internazionali" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">🏷️</span>
-            </div>
-            <div class="card-body">
-              <h3>Taglie Internazionali</h3>
-              <p>Collezione di cartellini per taglie, scala numerica ed internazionale.</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/orari.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/orari.png" alt="Orari Apertura" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">🕒</span>
-            </div>
-            <div class="card-body">
-              <h3>Orari Apertura</h3>
-              <p>Cartello con schema e orari di apertura del punto vendita. <br> &nbsp; </p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/nofood_indoor.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/nofoodindoor.png" alt="No Food Drinks Indoor" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">🚫</span>
-            </div>
-            <div class="card-body">
-              <h3>No Food & Drinks Indoor</h3>
-              <p>Divieto di consumo cibi e bevande negli spazi interni del punto vendita. <br></p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/nofood_outdoor.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/nofoodoutdoor.png" alt="No Food Drinks Outdoor" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">🥤</span>
-            </div>
-            <div class="card-body">
-              <h3>No Food & Drinks Outdoor</h3>
-              <p>Divieto di consumo cibi e bevande all'esterno del punto vendita.</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/staffonly.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/staffonly.png" alt="Staff Only" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">🔒</span>
-            </div>
-            <div class="card-body">
-              <h3>Staff Only</h3>
-              <p>Cartello di accesso riservato esclusivamente al personale autorizzato.</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/vietatofumare.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/vietatofumare.png" alt="Vietato Fumare" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">🚭</span>
-            </div>
-            <div class="card-body">
-              <h3>Vietato Fumare</h3>
-              <p>Cartello normativo di divieto di fumo ai sensi di legge. <br> &nbsp; </p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-        </div>
-        <button class="carousel-arrow next" type="button" onclick="scrollCarousel('prints-carousel', 1)" aria-label="Scorri a destra">›</button>
-      </div>
-    </div>
+          <div class="arrow">↗</div>
+        </a>
 
-    <!-- SEZIONE 2: Allestimenti Pronti // Operazioni Fast 'N' Beautiful -->
-    <div id="prints-promo-section">
-      <div class="section-title">Allestimenti Pronti // Operazioni Fast 'N' Beautiful <span class="promo-lightning" aria-hidden="true">✦</span></div>
-      <div class="carousel-wrapper">
-        <button class="carousel-arrow prev" type="button" onclick="scrollCarousel('prints-promo-carousel', -1)" aria-label="Scorri a sinistra">‹</button>
-        <div class="carousel-container" id="prints-promo-carousel">
-          <div class="carousel-card" onclick="openPdf('assets/pdf/lastchance.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/lastchancepronte.png" alt="Collezione Last Chance" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">🏷️</span>
-            </div>
-            <div class="card-body">
-              <h3>Set Last Chance ✦</h3>
-              <p>Stampe pronte generiche Last Chance da € 10,00 fino a € 90,00</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
+        <a class="wide-card" data-link="gestisci_lista.html">
+          <div>
+            <h2>Gestisci lista loghi</h2>
+            <p>Riordina, rinomina, esporta o rimuovi i loghi personalizzati salvati.</p>
           </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/lastchanceverticali.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/img/lastchanceprontevert.png" alt="Collezione Last Chance Verticale" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">🏷️</span>
-            </div>
-            <div class="card-body">
-              <h3 class="compact-title">Last Chance Verticale ✦</h3>
-              <p>Stampe pronte Verticali per Last Chance da € 10,00 a € 90,00</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/wintersale.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/thumbnail/wintersalethumb.jpg" alt="Set Winter Sale" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">❄️</span>
-            </div>
-            <div class="card-body">
-              <h3>SET WINTER SALE ✦</h3>
-              <p>Set completo stampe pronte Winter Sale 10/90 euro</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/wintersalevert.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/thumbnail/wintersalevertthumb.jpg" alt="Set Winter Sale Vert" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">❄️</span>
-            </div>
-            <div class="card-body">
-              <h3 class="compact-title">SET WINTER SALE VERT ✦</h3>
-              <p>Set completo stampe pronte Winter Sale Verticali 10/90 euro</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/summersale.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/thumbnail/summersalethumb.jpg" alt="Set Summer Sale" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">☀️</span>
-            </div>
-            <div class="card-body">
-              <h3>SET SUMMER SALE ✦</h3>
-              <p>Set completo stampe pronte Summer Sale 10/90 euro</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/summersalevert.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/thumbnail/summersalevertthumb.jpg" alt="Set Summer Vert" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">☀️</span>
-            </div>
-            <div class="card-body">
-              <h3 class="compact-title">SET SUMMER SALE VERT ✦</h3>
-              <p>Set completo stampe pronte Summer Sale Verticali 10/90 euro</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/springsale.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/thumbnail/springsalethumb.jpg" alt="Set Spring Sale" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">🌸</span>
-            </div>
-            <div class="card-body">
-              <h3>SET SPRING SALE ✦</h3>
-              <p>Set completo stampe pronte Spring Sale 10/90 euro</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-          <div class="carousel-card" onclick="openPdf('assets/pdf/springsalevert.pdf')">
-            <div class="preview">
-              <img class="preview-image" src="assets/thumbnail/springsalevertthumb.jpg" alt="Set Spring Sale Vert" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-              <span class="preview-icon" style="display:none;">🌸</span>
-            </div>
-            <div class="card-body">
-              <h3 class="compact-title">SET SPRING SALE VERT ✦</h3>
-              <p>Set completo stampe pronte Spring Sale Verticali 10/90 euro</p>
-              <button type="button" class="tool-btn print-pdf-btn">Apri / Stampa PDF</button>
-            </div>
-          </div>
-        </div>
-        <button class="carousel-arrow next" type="button" onclick="scrollCarousel('prints-promo-carousel', 1)" aria-label="Scorri a destra">›</button>
-      </div>
-    </div>
-
-    <!-- SEZIONE STRUMENTI DI CASSA -->
-    <div class="section-title" id="tools-title">Utilità Cassa</div>
-    <div class="tools-grid" id="tools">
-
-      <div class="widget" id="widget-sconto" onclick="focusWidget(event, 'widget-sconto')">
-        <div class="widget-header-controls">
-          <button class="back-btn" onclick="resetDefaultView(event)">← Torna alle Utilità</button>
-          <button class="close-btn" onclick="resetDefaultView(event)" title="Chiudi e torna alla home">✕</button>
-        </div>
-        <h3>🧮 Calcola Sconto</h3>
-        <div class="tool-row">
-          <div class="input-group">
-            <span class="input-prefix">€</span>
-            <input type="number" id="p-orig" class="tool-input" placeholder="Prezzo Pieno">
-          </div>
-          <div class="input-group">
-            <span class="input-prefix">%</span>
-            <input type="number" id="p-sconto" class="tool-input" placeholder="Sconto">
-          </div>
-        </div>
-        <button class="tool-btn" style="width:100%" onclick="calcSconto()">Calcola Prezzo Finale</button>
-        <div class="tool-result" id="res-sconto">€ 0,00</div>
+          <div class="arrow">↗</div>
+        </a>
       </div>
 
-      <div class="widget" id="widget-aliquota" onclick="focusWidget(event, 'widget-aliquota')">
-        <div class="widget-header-controls">
-          <button class="back-btn" onclick="resetDefaultView(event)">← Torna alle Utilità</button>
-          <button class="close-btn" onclick="resetDefaultView(event)" title="Chiudi e torna alla home">✕</button>
-        </div>
-        <h3>🧮 Calcola Aliquota Sconto</h3>
-        <div class="tool-row">
-          <div class="input-group">
-            <span class="input-prefix">€</span>
-            <input type="number" id="aliq-orig" class="tool-input" placeholder="Prezzo Originale">
+      <div class="section">MATERIALI PRONTI</div>
+
+      <div class="lower lower-single">
+        <a class="wide-card" data-link="galleria-pdf.html">
+          <div>
+            <h2>Galleria PDF</h2>
+            <p>Locandine e avvisi pronti da stampare: orari, taglie, stagionali e cartellonistica del punto vendita.</p>
           </div>
-          <div class="input-group">
-            <span class="input-prefix">€</span>
-            <input type="number" id="aliq-finale" class="tool-input" placeholder="Prezzo Scontato">
-          </div>
-        </div>
-        <button class="tool-btn" style="width:100%" onclick="calcAliquota()">Trova % Sconto</button>
-        <div class="tool-result" id="res-aliquota">0%</div>
+          <div class="arrow">↗</div>
+        </a>
       </div>
 
-      <div class="widget" id="widget-valuta" onclick="focusWidget(event, 'widget-valuta')">
-        <div class="widget-header-controls">
-          <button class="back-btn" onclick="resetDefaultView(event)">← Torna alle Utilità</button>
-          <button class="close-btn" onclick="resetDefaultView(event)" title="Chiudi e torna alla home">✕</button>
-        </div>
-        <h3>💰 Cambio Valuta</h3>
-        
-        <div class="tool-row">
-          <select id="val-direction" class="tool-input-select" onchange="calcValuta()">
-            <option value="TO_EUR">Da Valuta Estera ➔ ad EUR (€)</option>
-            <option value="FROM_EUR">Da EUR (€) ➔ a Valuta Estera</option>
-          </select>
-        </div>
+      <div class="section">STRUMENTI CASSA</div>
 
-        <div class="tool-row">
-          <div class="input-group">
-            <span class="input-prefix" id="val-curr-symbol">$</span>
-            <input type="number" id="val-amount" class="tool-input" placeholder="Importo" oninput="calcValuta()">
-            <select id="val-currency" class="tool-input-select" style="max-width: 140px; border-left: 1px solid var(--border);" onchange="calcValuta()">
-              <option value="USD">USD ($) USA</option>
-              <option value="GBP">GBP (£) GBR</option>
-              <option value="RUB">RUB (₽) RUS</option>
-              <option value="ILS">ILS (₪) ISR</option>
-              <option value="CNY">CNY (¥) CHN</option>
-              <option value="JPY">JPY (¥) JPN</option>
-            </select>
+      <div class="lower">
+        <div class="wide-card soon">
+          <div>
+            <h2>Sconti · Aliquote · Valuta</h2>
+            <p>Piccoli strumenti quotidiani sempre a portata di mano.</p>
           </div>
+          <div class="soon-tag">presto</div>
         </div>
 
-        <button class="tool-btn" style="width:100%" onclick="calcValuta()">Calcola Cambio</button>
-        <div class="tool-result" id="res-valuta">€ 0,00</div>
-      </div>
-
-      <div class="widget" id="widget-iva" onclick="focusWidget(event, 'widget-iva')">
-        <div class="widget-header-controls">
-          <button class="back-btn" onclick="resetDefaultView(event)">← Torna alle Utilità</button>
-          <button class="close-btn" onclick="resetDefaultView(event)" title="Chiudi e torna alla home">✕</button>
-        </div>
-        <h3>🧮 Calcola IVA</h3>
-        
-        <div class="rate-grid-widget">
-          <button class="rate-btn-widget" onclick="setIvaRate(4, this, event)">4%</button>
-          <button class="rate-btn-widget" onclick="setIvaRate(5, this, event)">5%</button>
-          <button class="rate-btn-widget" onclick="setIvaRate(10, this, event)">10%</button>
-          <button class="rate-btn-widget active" onclick="setIvaRate(22, this, event)">22%</button>
-        </div>
-
-        <div class="tool-row">
-          <div class="input-group">
-            <span class="input-prefix">€</span>
-            <input type="text" id="iva-net" class="tool-input" placeholder="Imponibile" oninput="calcIvaFromNet()">
-            <span class="input-suffix">SENZA IVA</span>
+        <div class="wide-card soon">
+          <div>
+            <h2>QR Code</h2>
+            <p>Generazione rapida di codici per prodotti e comunicazioni.</p>
           </div>
-        </div>
-        
-        <div class="tool-row">
-          <div class="input-group">
-            <span class="input-prefix">€</span>
-            <input type="text" id="iva-vat" class="tool-input" placeholder="Importo IVA" oninput="calcIvaFromVat()">
-            <span class="input-suffix">IVA</span>
-          </div>
-        </div>
-
-        <div class="tool-row">
-          <div class="input-group">
-            <span class="input-prefix">€</span>
-            <input type="text" id="iva-gross" class="tool-input" placeholder="Totale" oninput="calcIvaFromGross()">
-            <span class="input-suffix">CON IVA</span>
-          </div>
-        </div>
-
-        <button class="tool-btn-secondary tool-btn" style="width:100%; font-size: 0.75rem;" onclick="resetIvaFields(event)">Azzera IVA</button>
-      </div>
-
-      <div class="widget" id="widget-qrcode" onclick="focusWidget(event, 'widget-qrcode')">
-        <div class="widget-header-controls">
-          <button class="back-btn" onclick="resetDefaultView(event)">← Torna alle Utilità</button>
-          <button class="close-btn" onclick="resetDefaultView(event)" title="Chiudi e torna alla home">✕</button>
-        </div>
-        <h3>📱 Generatore QR Code</h3>
-        
-        <div class="tool-row">
-          <div class="input-group">
-            <input type="text" id="qr-input" class="tool-input" placeholder="Inserisci Link o Testo" value="https://instagram.com/luxuryoutletroma" oninput="generateQRCode()">
-          </div>
-        </div>
-
-        <div class="tool-row">
-          <select id="qr-size" class="tool-input-select" onchange="generateQRCode()">
-            <option value="100" selected>Dimensione: Piccolo (100px)</option>
-            <option value="160">Dimensione: Medio (160px)</option>
-            <option value="240">Dimensione: Grande (240px)</option>
-          </select>
-        </div>
-
-        <div class="qr-preview-container">
-          <div class="qr-preview-wrapper" id="qrcode"></div>
-        </div>
-
-        <div class="tool-row" style="gap: 0.5rem; margin-top: 0.8rem;">
-          <button class="tool-btn" style="flex: 1;" onclick="downloadQRCode(event)">Scarica QR</button>
-          <button class="tool-btn tool-btn-secondary" style="flex: 1;" onclick="printQRCode(event)">Stampa QR</button>
+          <div class="soon-tag">presto</div>
         </div>
       </div>
 
-    </div>
+    </section>
   </main>
+</div>
 
-  <script>
-    let currentIvaRate = 22;
-    let qrCodeInstance = null;
+<script>
+const stores = {
+  tebe:{
+    name:"TEBE",
+    sub:"VIA DEL CORSO 269",
+    detail:"MODA DONNA · BRAND · PROPRIA LINEA",
+    description:"Strumenti essenziali per creare cartelli, cartellini e materiali di vendita coerenti con l'identità del negozio."
+  },
+  ophilia:{
+    name:"OPHILIA",
+    sub:"LEATHER GOODS · MADE IN ITALY",
+    detail:"BORSE · PELLE · MADE IN ITALY · GENUINE LEATHER",
+    description:"Cartelli e materiali minimali per borse in pelle italiana, accessori e articoli in ecopelle selezionati."
+  }
+};
 
-    function updateCarouselArrows() {
-      document.querySelectorAll('.carousel-wrapper').forEach(wrapper => {
-        const container = wrapper.querySelector('.carousel-container');
-        const prevBtn = wrapper.querySelector('.carousel-arrow.prev');
-        const nextBtn = wrapper.querySelector('.carousel-arrow.next');
+let currentStore = "tebe";
 
-        if (!container || !prevBtn || !nextBtn) return;
+function updateLinks(){
+  document.querySelectorAll("[data-link]").forEach(el=>{
+    el.setAttribute("href", el.dataset.link + "?store=" + currentStore);
+  });
+}
 
-        const isScrollable = container.scrollWidth > (container.clientWidth + 2);
+function changeStore(store){
+  currentStore = store;
+  const s=stores[store];
 
-        if (!isScrollable) {
-          prevBtn.style.display = 'none';
-          nextBtn.style.display = 'none';
-        } else {
-          const isAtStart = container.scrollLeft <= 5;
-          const isAtEnd = (container.scrollLeft + container.clientWidth) >= (container.scrollWidth - 5);
+  document.getElementById("sideName").textContent=s.name;
+  document.getElementById("sideSub").textContent=s.sub;
+  document.getElementById("title").textContent=s.name;
+  document.getElementById("identity").textContent=s.sub;
+  document.getElementById("detail").textContent=s.detail;
+  document.getElementById("description").textContent=s.description;
 
-          prevBtn.style.display = isAtStart ? 'none' : 'flex';
-          nextBtn.style.display = isAtEnd ? 'none' : 'flex';
-        }
-      });
-    }
+  document.getElementById("tebe").classList.toggle("selected",store==="tebe");
+  document.getElementById("ophilia").classList.toggle("selected",store==="ophilia");
 
-    function toggleMobileSidebar() {
-      document.body.classList.toggle('sidebar-collapsed');
-      setTimeout(updateCarouselArrows, 300);
-    }
+  updateLinks();
+}
 
-    function toggleMenu(menuId, buttonElem) {
-      const menu = document.getElementById(menuId);
-      if (!menu) return;
+function goTo(sectionId){
+  document.getElementById(sectionId)?.scrollIntoView({behavior:"smooth", block:"start"});
+}
 
-      const isExpanded = buttonElem.getAttribute('aria-expanded') === 'true';
-      buttonElem.setAttribute('aria-expanded', !isExpanded);
-      menu.classList.toggle('is-collapsed', isExpanded);
-    }
-
-    function scrollCarousel(carouselId, direction) {
-      const container = document.getElementById(carouselId);
-      if (!container) return;
-      const card = container.querySelector('.carousel-card');
-      if (!card) return;
-      
-      const style = window.getComputedStyle(container);
-      const gap = parseInt(style.gap) || 24;
-      const scrollAmount = card.offsetWidth + gap;
-      
-      container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-    }
-
-    function openPdf(pdfUrl) {
-      window.location.href = 'pdf-viewer.html?file=' + encodeURIComponent(pdfUrl);
-    }
-
-    function scrollToSection(sectionId) {
-      const section = document.getElementById(sectionId);
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-      }
-      if (window.innerWidth <= 768) {
-        document.body.classList.add('sidebar-collapsed');
-        setTimeout(updateCarouselArrows, 300);
-      }
-    }
-
-    function returnToHomeTop() {
-      const mainElem = document.getElementById('main-content');
-      if (mainElem) mainElem.scrollTo({ top: 0, behavior: 'smooth' });
-      else window.scrollTo({ top: 0, behavior: 'smooth' });
-      resetDefaultView();
-    }
-
-    function focusWidget(event, widgetId) {
-      if (event) event.stopPropagation();
-
-      document.body.classList.add('widget-focused-mode');
-
-      document.querySelectorAll('.widget').forEach(w => {
-        w.classList.remove('expanded');
-        w.style.display = 'none';
-      });
-
-      const target = document.getElementById(widgetId);
-      if (target) {
-        target.classList.add('expanded');
-        target.style.display = 'flex';
-        
-        const main = document.getElementById('main-content');
-        if (main) {
-          main.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }
-
-      if (window.innerWidth <= 768) {
-        document.body.classList.add('sidebar-collapsed');
-      }
-    }
-
-    function resetDefaultView(event) {
-      if (event) event.stopPropagation();
-      document.body.classList.remove('widget-focused-mode');
-      document.querySelectorAll('.widget').forEach(w => {
-        w.classList.remove('expanded');
-        w.style.display = 'flex';
-      });
-      setTimeout(updateCarouselArrows, 50);
-    }
-
-    function setLayoutMode(mode) {
-      const mainElem = document.getElementById('main-content');
-      if (mainElem) mainElem.scrollTo({ top: 0, behavior: 'smooth' });
-      else window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      const creatorBtn = document.querySelector('.mode-btn[data-mode="creator"]');
-      const cassiereBtn = document.querySelector('.mode-btn[data-mode="cassiere"]');
-      
-      const generatorsSec = document.getElementById('generators-section');
-      const toolsSec = document.getElementById('tools');
-      const toolsTitle = document.getElementById('tools-title');
-
-      if (mode === 'cassiere') {
-        document.body.classList.add('cassiere-mode');
-        if (creatorBtn) creatorBtn.classList.remove('active');
-        if (cassiereBtn) cassiereBtn.classList.add('active');
-
-        if (toolsTitle && toolsSec) {
-          toolsTitle.parentNode.insertBefore(toolsTitle, generatorsSec);
-          toolsSec.parentNode.insertBefore(toolsSec, generatorsSec);
-        }
-      } else {
-        document.body.classList.remove('cassiere-mode');
-        if (cassiereBtn) cassiereBtn.classList.remove('active');
-        if (creatorBtn) creatorBtn.classList.add('active');
-
-        const mainElem = document.getElementById('main-content');
-        if (mainElem && toolsTitle && toolsSec) {
-          mainElem.appendChild(toolsTitle);
-          mainElem.appendChild(toolsSec);
-        }
-      }
-      setTimeout(updateCarouselArrows, 100);
-    }
-
-    function calcSconto() {
-      const orig = parseFloat(document.getElementById('p-orig').value);
-      const sconto = parseFloat(document.getElementById('p-sconto').value);
-      const resElem = document.getElementById('res-sconto');
-
-      if (!isNaN(orig) && !isNaN(sconto)) {
-        const finale = orig - (orig * (sconto / 100));
-        resElem.innerText = `€ ${finale.toFixed(2).replace('.', ',')}`;
-      } else {
-        resElem.innerText = "€ 0,00";
-      }
-    }
-
-    function calcAliquota() {
-      const orig = parseFloat(document.getElementById('aliq-orig').value);
-      const finale = parseFloat(document.getElementById('aliq-finale').value);
-      const resElem = document.getElementById('res-aliquota');
-
-      if (!isNaN(orig) && !isNaN(finale) && orig > 0) {
-        const perc = Math.round(((orig - finale) / orig) * 100);
-        resElem.innerText = `-${perc}%`;
-      } else {
-        resElem.innerText = "0%";
-      }
-    }
-
-    function setIvaRate(rate, btnElem, event) {
-      if (event) event.stopPropagation();
-      currentIvaRate = rate;
-      document.querySelectorAll('.rate-btn-widget').forEach(b => b.classList.remove('active'));
-      if (btnElem) btnElem.classList.add('active');
-      calcIvaFromNet();
-    }
-
-    function calcIvaFromNet() {
-      const netVal = parseFloat(document.getElementById('iva-net').value.replace(',', '.'));
-      if (!isNaN(netVal) && netVal >= 0) {
-        const vatVal = netVal * (currentIvaRate / 100);
-        const grossVal = netVal + vatVal;
-        document.getElementById('iva-vat').value = vatVal.toFixed(2).replace('.', ',');
-        document.getElementById('iva-gross').value = grossVal.toFixed(2).replace('.', ',');
-      } else {
-        document.getElementById('iva-vat').value = '';
-        document.getElementById('iva-gross').value = '';
-      }
-    }
-
-    function calcIvaFromVat() {
-      const vatVal = parseFloat(document.getElementById('iva-vat').value.replace(',', '.'));
-      if (!isNaN(vatVal) && vatVal >= 0) {
-        const netVal = vatVal / (currentIvaRate / 100);
-        const grossVal = netVal + vatVal;
-        document.getElementById('iva-net').value = netVal.toFixed(2).replace('.', ',');
-        document.getElementById('iva-gross').value = grossVal.toFixed(2).replace('.', ',');
-      } else {
-        document.getElementById('iva-net').value = '';
-        document.getElementById('iva-gross').value = '';
-      }
-    }
-
-    function calcIvaFromGross() {
-      const grossVal = parseFloat(document.getElementById('iva-gross').value.replace(',', '.'));
-      if (!isNaN(grossVal) && grossVal >= 0) {
-        const netVal = grossVal / (1 + (currentIvaRate / 100));
-        const vatVal = grossVal - netVal;
-        document.getElementById('iva-net').value = netVal.toFixed(2).replace('.', ',');
-        document.getElementById('iva-vat').value = vatVal.toFixed(2).replace('.', ',');
-      } else {
-        document.getElementById('iva-net').value = '';
-        document.getElementById('iva-vat').value = '';
-      }
-    }
-
-    function resetIvaFields(event) {
-      if (event) event.stopPropagation();
-      document.getElementById('iva-net').value = '';
-      document.getElementById('iva-vat').value = '';
-      document.getElementById('iva-gross').value = '';
-    }
-
-    let liveRates = {
-      'USD': 1.08,
-      'GBP': 0.85,
-      'RUB': 98.0,
-      'ILS': 4.00,
-      'CNY': 7.80,
-      'JPY': 160.5
-    };
-
-    const SYMBOLS = {
-      'USD': '$',
-      'GBP': '£',
-      'RUB': '₽',
-      'ILS': '₪',
-      'CNY': '¥',
-      'JPY': '¥',
-      'EUR': '€'
-    };
-
-    async function fetchExchangeRates() {
-      try {
-        const response = await fetch('https://open.er-api.com/v6/latest/EUR');
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data.rates) {
-            liveRates = data.rates;
-            calcValuta();
-          }
-        }
-      } catch (error) {
-        console.warn('Uso tassi di cambio di riserva:', error);
-      }
-    }
-
-    async function calcValuta() {
-      const direction = document.getElementById('val-direction').value;
-      const amount = parseFloat(document.getElementById('val-amount').value);
-      const curr = document.getElementById('val-currency').value;
-      const symbolSpan = document.getElementById('val-curr-symbol');
-      const resElem = document.getElementById('res-valuta');
-
-      const foreignSymbol = SYMBOLS[curr] || '$';
-      const rate = liveRates[curr] || 1;
-
-      if (direction === 'TO_EUR') {
-        symbolSpan.innerText = foreignSymbol;
-      } else {
-        symbolSpan.innerText = '€';
-      }
-
-      if (!isNaN(amount) && amount > 0) {
-        if (direction === 'TO_EUR') {
-          const inEur = amount / rate;
-          resElem.innerText = `€ ${inEur.toFixed(2).replace('.', ',')}`;
-        } else {
-          const inForeign = amount * rate;
-          resElem.innerText = `${foreignSymbol} ${inForeign.toFixed(2).replace('.', ',')} (${curr})`;
-        }
-      } else {
-        resElem.innerText = direction === 'TO_EUR' ? "€ 0,00" : `${foreignSymbol} 0,00`;
-      }
-    }
-
-    function generateQRCode() {
-      const text = document.getElementById('qr-input').value.trim() || 'https://instagram.com/luxuryoutletroma';
-      const size = parseInt(document.getElementById('qr-size').value) || 100;
-      const container = document.getElementById('qrcode');
-      container.innerHTML = '';
-      
-      qrCodeInstance = new QRCode(container, {
-        text: text,
-        width: size,
-        height: size,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.M
-      });
-    }
-
-    function downloadQRCode(e) {
-      if (e) e.stopPropagation();
-      const qrElem = document.querySelector('#qrcode img') || document.querySelector('#qrcode canvas');
-      if (!qrElem) return;
-
-      let imgUrl = '';
-      if (qrElem.tagName.toLowerCase() === 'img') {
-        imgUrl = qrElem.src;
-      } else if (qrElem.tagName.toLowerCase() === 'canvas') {
-        imgUrl = qrElem.toDataURL("image/png");
-      }
-
-      if (imgUrl) {
-        const link = document.createElement('a');
-        link.href = imgUrl;
-        link.download = 'qrcode.png';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-    }
-
-    function printQRCode(e) {
-      if (e) e.stopPropagation();
-      const qrElem = document.querySelector('#qrcode img') || document.querySelector('#qrcode canvas');
-      if (!qrElem) return;
-
-      let imgUrl = '';
-      if (qrElem.tagName.toLowerCase() === 'img') {
-        imgUrl = qrElem.src;
-      } else if (qrElem.tagName.toLowerCase() === 'canvas') {
-        imgUrl = qrElem.toDataURL("image/png");
-      }
-
-      if (imgUrl) {
-        const printWin = window.open('', '_blank', 'width=450,height=450');
-        printWin.document.write(`
-          <!DOCTYPE html>
-          <html>
-            <head><title>Stampa QR Code</title></head>
-            <body style="display:flex; justify-content:center; align-items:center; height:100vh; margin:0; background:#fff;">
-              <img src="${imgUrl}" style="max-width:80%; height:auto;" onload="window.print(); window.close();" />
-            </body>
-          </html>
-        `);
-        printWin.document.close();
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      generateQRCode();
-      fetchExchangeRates();
-      updateCarouselArrows();
-
-      document.querySelectorAll('.carousel-container').forEach(container => {
-        container.addEventListener('scroll', updateCarouselArrows);
-      });
-
-      window.addEventListener('resize', updateCarouselArrows);
-
-      const mainScroll = document.getElementById('main-content');
-      if (mainScroll) {
-        mainScroll.addEventListener('scroll', () => {
-          if (mainScroll.scrollTop > 120) {
-            document.body.classList.add('is-scrolled');
-          } else {
-            document.body.classList.remove('is-scrolled');
-          }
-        });
-      }
-    });
-  </script>
+(function init(){
+  const params = new URLSearchParams(window.location.search);
+  const store = params.get("store");
+  if(store === "ophilia"){ changeStore("ophilia"); }
+  else { updateLinks(); }
+})();
+</script>
 </body>
 </html>
