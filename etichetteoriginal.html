@@ -227,8 +227,17 @@
     }
 
     function setLogoImageSource(imgElement, source) {
-      imgElement.src = source;
-      return true;
+      try {
+        const resolvedUrl = new URL(source, window.location.href);
+        const expectedUrl = new URL(LOGO_PATH, window.location.href);
+        if (resolvedUrl.origin !== window.location.origin || !resolvedUrl.pathname.startsWith(expectedUrl.pathname)) {
+          return false;
+        }
+        imgElement.src = resolvedUrl.href;
+        return true;
+      } catch (error) {
+        return false;
+      }
     }
 
     function cleanBrandName(filename) {
@@ -326,7 +335,11 @@
           textElement.style.display = 'block';
           return;
         }
-        setLogoImageSource(imgElement, brandLogo);
+        if (!setLogoImageSource(imgElement, brandLogo)) {
+          imgElement.style.display = 'none';
+          textElement.style.display = 'block';
+          return;
+        }
         imgElement.style.display = 'block';
         textElement.style.display = 'none';
       } else {

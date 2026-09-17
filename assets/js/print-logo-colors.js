@@ -43,13 +43,34 @@
     return URL.createObjectURL(new Blob([bytes], { type: mimeType }));
   }
 
+  function getSafeAssetUrl(source, expectedPrefix) {
+    try {
+      const resolvedUrl = new URL(source, window.location.href);
+      const expectedUrl = new URL(expectedPrefix, window.location.href);
+      if (resolvedUrl.origin !== window.location.origin || !resolvedUrl.pathname.startsWith(expectedUrl.pathname)) {
+        return '';
+      }
+      return resolvedUrl.href;
+    } catch (error) {
+      return '';
+    }
+  }
+
   function setSafeImageSource(imgElement, source) {
     if (!source || !isSafeImageSource(source)) {
       imgElement.removeAttribute('src');
       return;
     }
     if (source.startsWith('assets/')) {
-      imgElement.src = source;
+      const safeAssetUrl = getSafeAssetUrl(
+        source,
+        source.startsWith(PRINT_LOGOS_PATH) ? PRINT_LOGOS_PATH : 'assets/logos/'
+      );
+      if (!safeAssetUrl) {
+        imgElement.removeAttribute('src');
+        return;
+      }
+      imgElement.src = safeAssetUrl;
       return;
     }
     const objectUrl = createObjectUrlFromDataImage(source);

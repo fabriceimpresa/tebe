@@ -615,9 +615,24 @@
       return URL.createObjectURL(new Blob([bytes], { type: mimeType }));
     }
 
+    function getSafeAssetUrl(source) {
+      try {
+        const resolvedUrl = new URL(source, window.location.href);
+        const expectedUrl = new URL(LOGO_PATH, window.location.href);
+        if (resolvedUrl.origin !== window.location.origin || !resolvedUrl.pathname.startsWith(expectedUrl.pathname)) {
+          return '';
+        }
+        return resolvedUrl.href;
+      } catch (error) {
+        return '';
+      }
+    }
+
     function setLogoImageSource(imgElement, source) {
       if (source.startsWith(LOGO_PATH)) {
-        imgElement.src = source;
+        const safeAssetUrl = getSafeAssetUrl(source);
+        if (!safeAssetUrl) return false;
+        imgElement.src = safeAssetUrl;
         return true;
       }
       const objectUrl = createObjectUrlFromDataImage(source);
