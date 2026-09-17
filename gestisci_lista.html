@@ -466,6 +466,15 @@
       })[character]);
     }
 
+    function createObjectUrlFromDataImage(value) {
+      const separator = value.indexOf(',');
+      if (separator === -1) return '';
+      const mimeType = value.slice(5, value.indexOf(';'));
+      const base64 = value.slice(separator + 1);
+      const bytes = Uint8Array.from(atob(base64), character => character.charCodeAt(0));
+      return URL.createObjectURL(new Blob([bytes], { type: mimeType }));
+    }
+
     function renderSavedLogos() {
       const container = document.getElementById('customLogosContainer');
       const logos = JSON.parse(localStorage.getItem('custom_brand_logos') || '[]');
@@ -499,7 +508,9 @@
         preview.className = 'saved-item-preview';
         if (isValidCustomLogo(item)) {
           const image = document.createElement('img');
-          image.src = item.data;
+          const objectUrl = createObjectUrlFromDataImage(item.data);
+          image.addEventListener('load', () => URL.revokeObjectURL(objectUrl), { once: true });
+          image.src = objectUrl;
           image.alt = item.name;
           preview.appendChild(image);
         }

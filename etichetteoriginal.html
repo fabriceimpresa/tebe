@@ -223,7 +223,12 @@
     const PLACEHOLDER_TEXT = "🔴 ━━━  SELEZIONA BRAND  ━━━ 🔴";
 
     function getSafeLogoPath(fileName) {
-      return /^[A-Za-z0-9._-]+\.png$/i.test(fileName || '') ? LOGO_PATH + fileName : '';
+      return Array.isArray(LOGO_FILES) && LOGO_FILES.includes(fileName) ? LOGO_PATH + fileName : '';
+    }
+
+    function setLogoImageSource(imgElement, source) {
+      imgElement.src = source;
+      return true;
     }
 
     function cleanBrandName(filename) {
@@ -321,7 +326,7 @@
           textElement.style.display = 'block';
           return;
         }
-        imgElement.src = brandLogo;
+        setLogoImageSource(imgElement, brandLogo);
         imgElement.style.display = 'block';
         textElement.style.display = 'none';
       } else {

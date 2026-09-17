@@ -422,7 +422,29 @@
       ) {
         return normalized;
       }
-      return /^[A-Za-z0-9._-]+\.png$/i.test(normalized) ? LOGO_PATH + normalized : '';
+      return logoList.includes(normalized) ? LOGO_PATH + normalized : '';
+    }
+
+    function createObjectUrlFromDataImage(value) {
+      const separator = value.indexOf(',');
+      if (separator === -1) return '';
+      const mimeType = value.slice(5, value.indexOf(';'));
+      const base64 = value.slice(separator + 1);
+      const bytes = Uint8Array.from(atob(base64), character => character.charCodeAt(0));
+      return URL.createObjectURL(new Blob([bytes], { type: mimeType }));
+    }
+
+    function setLogoImageSource(imgElement, source) {
+      if (source.startsWith(LOGO_PATH)) {
+        imgElement.src = source;
+        return;
+      }
+      const objectUrl = createObjectUrlFromDataImage(source);
+      if (!objectUrl) {
+        return;
+      }
+      imgElement.addEventListener('load', () => URL.revokeObjectURL(objectUrl), { once: true });
+      imgElement.src = objectUrl;
     }
     
     function createLogoControls() {
@@ -483,7 +505,7 @@
           const img = document.createElement('img'); 
           img.className = tintClass; 
           img.alt = 'Logo ' + index; 
-          img.src = safeSource; 
+          setLogoImageSource(img, safeSource); 
           slot.appendChild(img); 
         } else {
           slot.classList.add('empty');
@@ -503,7 +525,7 @@
           const img = document.createElement('img'); 
           img.className = tintClass; 
           img.alt = 'Logo ' + index; 
-          img.src = safeSource; 
+          setLogoImageSource(img, safeSource); 
           slot.appendChild(img); 
           slot.classList.remove('empty'); 
         } else {

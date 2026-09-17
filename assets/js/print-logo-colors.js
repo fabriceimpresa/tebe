@@ -30,6 +30,37 @@
       || /^assets\/img\/printlogos\/[A-Za-z0-9._-]+\.png$/i.test(normalized);
   }
 
+  function createObjectUrlFromDataImage(source) {
+    const normalized = (source || '').trim();
+    const separator = normalized.indexOf(',');
+    if (separator === -1) {
+      return '';
+    }
+    const metadata = normalized.slice(0, separator);
+    const base64 = normalized.slice(separator + 1);
+    const mimeType = metadata.slice(5, metadata.indexOf(';'));
+    const bytes = Uint8Array.from(atob(base64), character => character.charCodeAt(0));
+    return URL.createObjectURL(new Blob([bytes], { type: mimeType }));
+  }
+
+  function setSafeImageSource(imgElement, source) {
+    if (!source || !isSafeImageSource(source)) {
+      imgElement.removeAttribute('src');
+      return;
+    }
+    if (source.startsWith('assets/')) {
+      imgElement.src = source;
+      return;
+    }
+    const objectUrl = createObjectUrlFromDataImage(source);
+    if (!objectUrl) {
+      imgElement.removeAttribute('src');
+      return;
+    }
+    imgElement.addEventListener('load', () => URL.revokeObjectURL(objectUrl), { once: true });
+    imgElement.src = objectUrl;
+  }
+
   function getOfficialPrintLogoPath(logoFileName, color) {
     return PRINT_LOGOS_PATH + color + getGeneratedLogoFileName(logoFileName);
   }
@@ -175,11 +206,7 @@
       return;
     }
     getBrandLogoSrc(customValue, officialFileName, defaultFileName, color).then(resolvedSource => {
-      if (resolvedSource && isSafeImageSource(resolvedSource)) {
-        imgElement.src = resolvedSource;
-      } else {
-        imgElement.removeAttribute('src');
-      }
+      setSafeImageSource(imgElement, resolvedSource);
     });
   }
 

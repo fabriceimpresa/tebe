@@ -237,12 +237,33 @@
     const SAFE_DATA_IMAGE_PREFIXES = ['data:image/png;base64,', 'data:image/jpeg;base64,', 'data:image/jpg;base64,', 'data:image/gif;base64,', 'data:image/webp;base64,'];
 
     function getSafeLogoPath(fileName) {
-      return /^[A-Za-z0-9._-]+\.png$/i.test(fileName || '') ? LOGO_PATH + fileName : '';
+      return Array.isArray(LOGO_FILES) && LOGO_FILES.includes(fileName) ? LOGO_PATH + fileName : '';
     }
 
     function getSafeDataImage(value) {
       const normalized = (value || '').trim();
       return SAFE_DATA_IMAGE_PREFIXES.some(prefix => normalized.toLowerCase().startsWith(prefix)) ? normalized : '';
+    }
+
+    function createObjectUrlFromDataImage(value) {
+      const separator = value.indexOf(',');
+      if (separator === -1) return '';
+      const mimeType = value.slice(5, value.indexOf(';'));
+      const base64 = value.slice(separator + 1);
+      const bytes = Uint8Array.from(atob(base64), character => character.charCodeAt(0));
+      return URL.createObjectURL(new Blob([bytes], { type: mimeType }));
+    }
+
+    function setLogoImageSource(imgElement, source) {
+      if (source.startsWith(LOGO_PATH)) {
+        imgElement.src = source;
+        return true;
+      }
+      const objectUrl = createObjectUrlFromDataImage(source);
+      if (!objectUrl) return false;
+      imgElement.addEventListener('load', () => URL.revokeObjectURL(objectUrl), { once: true });
+      imgElement.src = objectUrl;
+      return true;
     }
 
     let selectedBrand = '';
@@ -378,7 +399,11 @@
           textElement.style.display = 'block';
           return;
         }
-        imgElement.src = customLogo;
+        if (!setLogoImageSource(imgElement, customLogo)) {
+          imgElement.style.display = 'none';
+          textElement.style.display = 'block';
+          return;
+        }
         imgElement.style.display = 'block';
         textElement.style.display = 'none';
       } else if (selectedBrand) {
@@ -388,7 +413,11 @@
           textElement.style.display = 'block';
           return;
         }
-        imgElement.src = brandLogo;
+        if (!setLogoImageSource(imgElement, brandLogo)) {
+          imgElement.style.display = 'none';
+          textElement.style.display = 'block';
+          return;
+        }
         imgElement.style.display = 'block';
         textElement.style.display = 'none';
       } else {
