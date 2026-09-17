@@ -146,41 +146,35 @@
       color: #8a6a35;
     }
 
-    /* PULSANTE AGGIUNGI DESCRIZIONE */
-    .btn-toggle-desc {
-      width: 100%;
-      background: #b49a62;
-      color: #fffdfa;
-      border: 1px solid #b49a62;
-      padding: 10px;
-      font-size: 0.82rem;
-      font-weight: 400;
-      letter-spacing: 1px;
+    /* SELETTORE MODALITA' (stile identico al toggle usato in cartelli_outlet.html / index.html) */
+    .mode-switch {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      background: #f3ede0;
+      border: 1px solid #e3dacb;
+      border-radius: 6px;
+      margin-bottom: 1.2rem;
+    }
+
+    .mode-switch button {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      padding: 9px 8px;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
+      color: #8a7f6e;
       border-radius: 4px;
       cursor: pointer;
-      margin: 0 0 1rem 0;
-      box-shadow: none;
-      transition: all 0.2s ease-in-out;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      transition: all 0.2s ease;
     }
 
-    .btn-toggle-desc:hover {
-      background: #8a6a35;
-      transform: translateY(-1px);
-    }
-
-    .btn-toggle-desc.active {
-      background: #4c7a5b;
-      border-color: #4c7a5b;
-    }
-
-    .btn-toggle-desc.active:hover {
-      background: #3d6249;
-      border-color: #3d6249;
+    .mode-switch button.active {
+      background: #fffdfa;
+      color: #282522;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
     /* PULSANTE STAMPA */
@@ -239,6 +233,17 @@
       transform: rotate(180deg);
     }
 
+    .card-fields {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Quando é attiva la modalità Standard (nessuna descrizione), tutti i campi si alzano leggermente */
+    .card.standard-mode .card-fields {
+      transform: translateY(-5%);
+    }
+
     .card-desc {
       max-height: 0;
       opacity: 0;
@@ -247,17 +252,18 @@
       transition: max-height 0.35s ease, opacity 0.3s ease, transform 0.3s ease, margin 0.35s ease;
       font-family: Arial, Helvetica, sans-serif;
       font-weight: 400;
-      font-size: 24pt;
+      font-size: 25.2pt;
       color: #1a1a1a;
       text-align: center;
       white-space: nowrap;
+      letter-spacing: -0.05em;
     }
 
     .card-desc.active {
       max-height: 40mm;
       opacity: 1;
       transform: translate(-13px, 0);
-      margin-bottom: 5mm;
+      margin-bottom: 3.5mm;
     }
 
     .discount-row {
@@ -277,7 +283,7 @@
     .fino-al-label {
       font-family: Arial, Helvetica, sans-serif;
       font-weight: 700;
-      font-size: 18.93pt;
+      font-size: 17.98pt;
       letter-spacing: -0.05em;
       color: #cc9e25;
       text-transform: uppercase;
@@ -285,15 +291,15 @@
     }
 
     .minus-bar {
-      width: 22.59mm;
-      height: 5.11mm;
+      width: 21.46mm;
+      height: 4.85mm;
       background-color: #cc9e25;
     }
 
     .percent-text {
       font-family: Arial, Helvetica, sans-serif;
       font-weight: 400;
-      font-size: 175.51pt;
+      font-size: 166.73pt;
       letter-spacing: -0.05em;
       color: #cc9e25;
       line-height: 1;
@@ -304,7 +310,7 @@
       width: 45mm;
       height: auto;
       display: block;
-      margin-top: 7mm;
+      margin-top: 5.5mm;
     }
 
     /* NAVIGAZIONE UI */
@@ -439,9 +445,10 @@
     <div class="controls">
       <h2>Cartello Percentuale</h2>
 
-      <button type="button" class="btn-toggle-desc" id="btnToggleDesc" onclick="toggleDescription()">
-        + AGGIUNGI DESCRIZIONE
-      </button>
+      <div class="mode-switch">
+        <button type="button" class="active" id="modeStandard" onclick="switchMode('standard')">Standard</button>
+        <button type="button" id="modeDescrizione" onclick="switchMode('descrizione')">Descrizione Articolo</button>
+      </div>
 
       <div class="form-group">
         <label>Percentuale Sconto:</label>
@@ -465,28 +472,32 @@
 
   <!-- AREA STAMPA A4 -->
   <div class="print-sheet" id="printSheet">
-    <div class="card" id="cardTop">
-      <div class="card-desc" id="descDisp">Sconto alla Cassa</div>
-      <div class="discount-row">
-        <div class="fino-al-group">
-          <div class="fino-al-label">FINO AL</div>
-          <div class="minus-bar"></div>
+    <div class="card standard-mode" id="cardTop">
+      <div class="card-fields">
+        <div class="card-desc" id="descDisp">Sconto alla Cassa</div>
+        <div class="discount-row">
+          <div class="fino-al-group">
+            <div class="fino-al-label">FINO AL</div>
+            <div class="minus-bar"></div>
+          </div>
+          <div class="percent-text" id="percentDispTop">50%</div>
         </div>
-        <div class="percent-text" id="percentDispTop">50%</div>
+        <img class="card-logo" src="assets/img/footer_tebe.png" alt="TEBE">
       </div>
-      <img class="card-logo" src="assets/img/footer_tebe.png" alt="TEBE">
     </div>
 
-    <div class="card" id="cardBottom">
-      <div class="card-desc" id="descDispBottom">Sconto alla Cassa</div>
-      <div class="discount-row">
-        <div class="fino-al-group">
-          <div class="fino-al-label">FINO AL</div>
-          <div class="minus-bar"></div>
+    <div class="card standard-mode" id="cardBottom">
+      <div class="card-fields">
+        <div class="card-desc" id="descDispBottom">Sconto alla Cassa</div>
+        <div class="discount-row">
+          <div class="fino-al-group">
+            <div class="fino-al-label">FINO AL</div>
+            <div class="minus-bar"></div>
+          </div>
+          <div class="percent-text" id="percentDispBottom">50%</div>
         </div>
-        <div class="percent-text" id="percentDispBottom">50%</div>
+        <img class="card-logo" src="assets/img/footer_tebe.png" alt="TEBE">
       </div>
-      <img class="card-logo" src="assets/img/footer_tebe.png" alt="TEBE">
     </div>
   </div>
 
@@ -524,23 +535,37 @@
 
     function toggleDescription() {
       isDescriptionActive = !isDescriptionActive;
-      const btn = document.getElementById('btnToggleDesc');
+      const modeStandard = document.getElementById('modeStandard');
+      const modeDescrizione = document.getElementById('modeDescrizione');
       const descGroup = document.getElementById('descGroup');
       const descDisp = document.getElementById('descDisp');
       const descDispBottom = document.getElementById('descDispBottom');
+      const cardTop = document.getElementById('cardTop');
+      const cardBottom = document.getElementById('cardBottom');
 
       if (isDescriptionActive) {
-        btn.classList.add('active');
-        btn.innerHTML = "✓ DESCRIZIONE ATTIVA";
+        modeStandard.classList.remove('active');
+        modeDescrizione.classList.add('active');
         descGroup.style.display = "block";
         descDisp.classList.add('active');
         descDispBottom.classList.add('active');
+        cardTop.classList.remove('standard-mode');
+        cardBottom.classList.remove('standard-mode');
       } else {
-        btn.classList.remove('active');
-        btn.innerHTML = "+ AGGIUNGI DESCRIZIONE";
+        modeDescrizione.classList.remove('active');
+        modeStandard.classList.add('active');
         descGroup.style.display = "none";
         descDisp.classList.remove('active');
         descDispBottom.classList.remove('active');
+        cardTop.classList.add('standard-mode');
+        cardBottom.classList.add('standard-mode');
+      }
+    }
+
+    function switchMode(mode) {
+      const wantsDescription = mode === 'descrizione';
+      if (wantsDescription !== isDescriptionActive) {
+        toggleDescription();
       }
     }
 
