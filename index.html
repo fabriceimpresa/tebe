@@ -85,11 +85,8 @@ nav button{
   font-family:'Fraunces',serif;
   color:var(--taupe-dark);
 }
-nav button:hover,
-nav button.active{
+nav button:hover{
   background:rgba(255,253,250,.7);
-}
-nav button.active{
   box-shadow:inset 2px 0 var(--gold);
   color:var(--ink);
 }
@@ -416,17 +413,17 @@ nav button .soon-tag{
         <button class="section-toggle" type="button" aria-label="Comprimi CREA CARTELLI" aria-expanded="true" onclick="toggleSidebarSection('cartelli')">⌄</button>
       </div>
       <nav>
-      <button class="active" onclick="openPage('cartelli_semplici.html')">Semplice</button>
+      <button onclick="openPage('cartelli_semplici.html')">Semplice</button>
       <button onclick="goTo('cartellini')">Sale</button>
       <button onclick="goTo('etichette')">Percentuale</button>
       <button onclick="goTo('loghi')">Multi Articolo</button>
       </nav>
     </div>
 
-    <div class="sidebar-section" data-sidebar-section="custom-logos">
+    <div class="sidebar-section is-collapsed" data-sidebar-section="custom-logos">
       <div class="label" style="margin-top:28px">
         <span>LOGHI PERSONALIZZATI</span>
-        <button class="section-toggle" type="button" aria-label="Comprimi LOGHI PERSONALIZZATI" aria-expanded="true" onclick="toggleSidebarSection('custom-logos')">⌄</button>
+        <button class="section-toggle" type="button" aria-label="Espandi LOGHI PERSONALIZZATI" aria-expanded="false" onclick="toggleSidebarSection('custom-logos')">⌄</button>
       </div>
       <nav>
       <button onclick="openPage('genera_loghi.html')">Importa Loghi</button>
@@ -434,10 +431,10 @@ nav button .soon-tag{
       </nav>
     </div>
 
-    <div class="sidebar-section" data-sidebar-section="tools">
+    <div class="sidebar-section is-collapsed" data-sidebar-section="tools">
       <div class="label" style="margin-top:28px">
         <span>STRUMENTI</span>
-        <button class="section-toggle" type="button" aria-label="Comprimi STRUMENTI" aria-expanded="true" onclick="toggleSidebarSection('tools')">⌄</button>
+        <button class="section-toggle" type="button" aria-label="Espandi STRUMENTI" aria-expanded="false" onclick="toggleSidebarSection('tools')">⌄</button>
       </div>
       <nav>
       <button class="soon" disabled>Sconti <span class="soon-tag">presto</span></button>
@@ -480,7 +477,7 @@ nav button .soon-tag{
         </div>
       </div>
 
-      <div class="section" id="cartelli">GENERA CARTELLI</div>
+      <div class="section" id="cartelli">CREA CARTELLI</div>
 
       <div class="cards">
         <a class="card" data-link="cartelli_semplici.html">
@@ -520,7 +517,7 @@ nav button .soon-tag{
           <div>
             <div class="number">04</div>
             <div class="card-thumb">
-              <img src="assets/img/salethumb.png" alt="Brand">
+              <img src="assets/img/brandthumb.png" alt="Brand">
             </div>
           </div>
           <h2>Brand</h2>
@@ -677,9 +674,11 @@ function toggleSidebarSection(sectionId){
 }
 
 function restoreSidebarSections(){
+  const savedSections = localStorage.getItem("collapsed_sidebar_sections");
+  const defaultCollapsedSections = ["custom-logos", "tools"];
   let collapsedSections = [];
   try {
-    collapsedSections = JSON.parse(localStorage.getItem("collapsed_sidebar_sections") || "[]");
+    collapsedSections = JSON.parse(savedSections || JSON.stringify(defaultCollapsedSections));
   } catch(error) {
     console.error("Ripristino stato menu laterale fallito.", error);
   }
