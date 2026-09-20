@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Cartello Outlet</title>
+  <title>Cartello SALE</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -295,6 +295,10 @@
       letter-spacing: -0.05em;
     }
 
+    .desc-text.long-text {
+      font-size: 23pt;
+    }
+
     .price-final {
       font-family: Arial, Helvetica, sans-serif;
       font-weight: 400;
@@ -435,7 +439,7 @@
 
   <div class="sidebar">
     <div class="controls">
-      <h2>Cartello Outlet</h2>
+      <h2>Cartello SALE</h2>
 
       <div class="mode-switch">
         <button type="button" class="active" id="modeDoppia" onclick="switchMode('doppia')">Doppia Cifra</button>
@@ -464,8 +468,18 @@
         <label>Descrizione Articolo:</label>
         <select id="descPreset" onchange="applyDescPreset()">
           <option value="">-- Seleziona un testo --</option>
+          <option value="Special Deal">Special Deal</option>
+          <option value="Final Price">Final Price</option>
+          <option value="Summer Sale">Summer Sale</option>
+          <option value="Spring Sale">Spring Sale</option>
+          <option value="Winter Sale">Winter Sale</option>
+          <option value="Black Friday">Black Friday</option>
+          <option value="Made in Italy">Made in Italy</option>
+          <option value="Vera Pelle • Genuine Leather">Vera Pelle • Genuine Leather</option>
+          <option value="Made in Italy • Genuine Leather">Made in Italy • Genuine Leather</option>
+          <option value="Fino ad esaurimento scorte">Fino ad esaurimento scorte</option>
         </select>
-        <input type="text" id="descFree" value="Descrizione Articolo" placeholder="Testo libero" oninput="updateCard()">
+        <input type="text" id="descFree" value="" placeholder="-- Testo Libero --" oninput="updateCard()">
       </div>
 
       <div class="form-group">
@@ -515,9 +529,7 @@
 
     function applyDescPreset() {
       const preset = document.getElementById('descPreset').value;
-      if (preset) {
-        document.getElementById('descFree').value = preset;
-      }
+      document.getElementById('descFree').value = preset;
       updateCard();
     }
 
@@ -535,13 +547,18 @@
       const oldPrice = document.getElementById('oldPrice').value;
       const newPrice = document.getElementById('newPrice').value;
       const discount = formatDiscount(document.getElementById('discountValue').value);
-      const descText = document.getElementById('descFree').value;
+      const descText = document.getElementById('descFree').value || 'Descrizione Articolo';
+      const longDescription = [
+        'Vera Pelle • Genuine Leather',
+        'Made in Italy • Genuine Leather',
+        'Fino ad esaurimento scorte'
+      ].includes(descText);
 
       let middleHtml;
       if (isDoppia) {
         middleHtml = `<div class="price-row"><span class="price-old">€ ${oldPrice}</span><span class="price-percent">${discount}</span></div>`;
       } else {
-        middleHtml = `<div class="desc-text">${descText}</div>`;
+        middleHtml = `<div class="desc-text${longDescription ? ' long-text' : ''}">${descText}</div>`;
       }
 
       document.getElementById('middleRowTop').innerHTML = middleHtml;
