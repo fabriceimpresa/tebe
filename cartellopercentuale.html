@@ -82,20 +82,38 @@
     .preset-select {
       position: relative;
       margin-bottom: 0.6rem;
+      border: 1px solid #e3dacb;
+      border-radius: 4px;
+      background-color: #f8f6f1;
+      overflow: hidden;
+    }
+
+    .preset-select:focus-within {
+      border-color: #b49a62;
+      box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
     }
 
     .form-group .preset-select select {
       appearance: none;
       margin-bottom: 0;
       padding-right: 2rem;
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .form-group .preset-select select:focus {
+      border: none;
+      box-shadow: none;
     }
 
     .preset-select::after {
       content: '▼';
       position: absolute;
       top: 0;
-      right: 1px;
-      bottom: 1px;
+      right: 0;
+      bottom: 0;
       width: 1.6rem;
       display: flex;
       align-items: center;
