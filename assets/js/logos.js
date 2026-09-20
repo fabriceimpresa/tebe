@@ -1,5 +1,11 @@
 // assets/js/logos.js
-const LOGO_FILES = [];
+const LOGO_FILES = [
+  "269TEBE.PNG",
+  "DIXIE.png",
+  "HAVEONE.png",
+  "SOUVENIR.png",
+  "TENSIONEIN.png"
+];
 
 // BRAND PRIORITARI (STAGIONALI): mostrati per primi in ogni menu a cascata dei loghi,
 // subito dopo la voce di default, ed esclusi dal resto dell'elenco alfabetico.
