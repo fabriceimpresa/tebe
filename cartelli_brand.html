@@ -561,6 +561,11 @@
     <div class="controls">
       <h2>Cartello Brand</h2>
 
+      <div class="mode-switch">
+        <button type="button" class="active" id="modeDoppia" onclick="switchMode('doppia')">Doppia Cifra</button>
+        <button type="button" id="modeDescrizione" onclick="switchMode('descrizione')">Descrizione Articolo</button>
+      </div>
+
       <div class="form-group">
         <label for="brandSelect">Brand</label>
         <div class="preset-select">
@@ -570,9 +575,13 @@
         </div>
       </div>
 
-      <div class="mode-switch">
-        <button type="button" class="active" id="modeDoppia" onclick="switchMode('doppia')">Doppia Cifra</button>
-        <button type="button" id="modeDescrizione" onclick="switchMode('descrizione')">Descrizione Articolo</button>
+      <div class="form-group" id="customBrandGroup">
+        <label for="customBrandSelect">Loghi personalizzati</label>
+        <div class="preset-select">
+          <select id="customBrandSelect" onchange="updateCustomBrand()">
+            <option value="">-- Nessun logo personalizzato --</option>
+          </select>
+        </div>
       </div>
 
       <div id="priceRowGroup">
@@ -661,8 +670,53 @@
   </div>
 
   <script>
+    const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
+
     function cleanBrandName(fileName) {
       return fileName.replace(/\.[^.]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2');
+    }
+
+    function readCustomLogos() {
+      try {
+        const logos = JSON.parse(localStorage.getItem(CUSTOM_LOGOS_STORAGE_KEY) || '[]');
+        return Array.isArray(logos) ? logos.filter(logo => logo && logo.id && logo.name && logo.data) : [];
+      } catch (error) {
+        console.error('Lettura dei loghi personalizzati fallita.', error);
+        return [];
+      }
+    }
+
+    function loadCustomBrandSelect() {
+      const select = document.getElementById('customBrandSelect');
+      const customLogos = readCustomLogos();
+      customLogos
+        .slice()
+        .sort((first, second) => first.name.localeCompare(second.name, 'it', { sensitivity: 'base' }))
+        .forEach(logo => {
+          const option = document.createElement('option');
+          option.value = logo.id;
+          option.textContent = `★ ${logo.name}`;
+          select.appendChild(option);
+        });
+    }
+
+    function updateCustomBrand() {
+      const customLogoId = document.getElementById('customBrandSelect').value;
+      const customLogo = readCustomLogos().find(logo => logo.id === customLogoId);
+      const brandSelect = document.getElementById('brandSelect');
+
+      if (!customLogo) {
+        if (!brandSelect.value) {
+          const { priorityFiles, remainingFiles } = getSortedLogoFiles();
+          const orderedFiles = [...priorityFiles, ...remainingFiles];
+          if (orderedFiles.length > 0) brandSelect.value = orderedFiles[0];
+        }
+        updateBrand();
+        return;
+      }
+
+      brandSelect.value = '';
+      updateLogoElements(customLogo.data, customLogo.name);
     }
 
     function loadBrandSelect() {
@@ -680,25 +734,32 @@
       updateBrand();
     }
 
+    function updateLogoElements(source, brandName) {
+      const logoElements = [document.getElementById('brandLogoTop'), document.getElementById('brandLogoBottom')];
+      logoElements.forEach(logo => {
+        logo.src = source;
+        logo.classList.remove('tensionein-logo');
+        logo.alt = brandName;
+      });
+    }
+
     function updateBrand() {
       const fileName = document.getElementById('brandSelect').value;
-      const logoElements = [document.getElementById('brandLogoTop'), document.getElementById('brandLogoBottom')];
+      document.getElementById('customBrandSelect').value = '';
       const isTensioneIn = fileName.toLowerCase() === 'tensionein.png';
 
       if (!fileName) {
-        logoElements.forEach(logo => {
+        updateLogoElements('', 'Nessun brand selezionato');
+        [document.getElementById('brandLogoTop'), document.getElementById('brandLogoBottom')].forEach(logo => {
           logo.removeAttribute('src');
-          logo.classList.remove('tensionein-logo');
-          logo.alt = 'Nessun brand selezionato';
         });
         return;
       }
 
       PrintLogoColors.getBrandLogoSrc('', fileName, '', 'gold').then(source => {
-        logoElements.forEach(logo => {
-          logo.src = source;
+        updateLogoElements(source, cleanBrandName(fileName));
+        [document.getElementById('brandLogoTop'), document.getElementById('brandLogoBottom')].forEach(logo => {
           logo.classList.toggle('tensionein-logo', isTensioneIn);
-          logo.alt = cleanBrandName(fileName);
         });
       }).catch(error => {
         console.error('Caricamento del logo brand fallito.', error);
@@ -800,6 +861,7 @@
     }
 
     loadBrandSelect();
+    loadCustomBrandSelect();
     switchMode('doppia');
   </script>
 </body>

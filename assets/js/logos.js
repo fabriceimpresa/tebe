@@ -3,8 +3,11 @@ const LOGO_FILES = [
   "269TEBE.PNG",
   "DIXIE.png",
   "HAVEONE.png",
+  "OKKIA.png",
   "SOUVENIR.png",
-  "TENSIONEIN.png"
+  "TENSIONEIN.png",
+  "VICOLO.png",
+  "WUSIDE.png"
 ];
 
 // BRAND PRIORITARI (STAGIONALI): mostrati per primi in ogni menu a cascata dei loghi,

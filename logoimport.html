@@ -623,12 +623,35 @@
       // Aggiorna assets/js/logos.js
       await updateLogosJs(fileName);
 
+      const customLogos = JSON.parse(localStorage.getItem('custom_brand_logos') || '[]');
+      const customLogo = {
+        id: 'custom_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+        name: fileName,
+        data: await blobToDataUrl(originalBlob)
+      };
+      const existingIndex = customLogos.findIndex(logo => logo.name.toUpperCase() === fileName.toUpperCase());
+      if (existingIndex >= 0) {
+        customLogos[existingIndex] = { ...customLogos[existingIndex], ...customLogo };
+      } else {
+        customLogos.push(customLogo);
+      }
+      localStorage.setItem('custom_brand_logos', JSON.stringify(customLogos));
+
       setItemStatus(id, 'saved');
     } catch (err) {
       console.error(err);
       setItemStatus(id, 'error');
       alert('Errore durante il salvataggio: ' + (err.message || err));
     }
+  }
+
+  function blobToDataUrl(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error || new Error('Impossibile preparare il logo personalizzato.'));
+      reader.readAsDataURL(blob);
+    });
   }
 
   renderQueue();

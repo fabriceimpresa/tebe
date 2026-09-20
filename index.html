@@ -56,6 +56,24 @@ button{font:inherit;cursor:pointer}
   letter-spacing:.24em;
   color:#8b8175;
   padding:0 9px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.section-toggle{
+  border:0;
+  background:transparent;
+  color:var(--taupe-dark);
+  padding:2px 4px;
+  font-size:14px;
+  line-height:1;
+  transition:transform .18s ease;
+}
+.section-toggle[aria-expanded="false"]{
+  transform:rotate(-90deg);
+}
+.sidebar-section.is-collapsed nav{
+  display:none;
 }
 nav{display:grid;gap:3px}
 nav button{
@@ -392,21 +410,42 @@ nav button .soon-tag{
 
     <div class="line"></div>
 
-    <div class="label">CREA CARTELLI</div>
-    <nav>
-      <button class="active" onclick="goTo('cartelli')">Semplice</button>
+    <div class="sidebar-section" data-sidebar-section="cartelli">
+      <div class="label">
+        <span>CREA CARTELLI</span>
+        <button class="section-toggle" type="button" aria-label="Comprimi CREA CARTELLI" aria-expanded="true" onclick="toggleSidebarSection('cartelli')">⌄</button>
+      </div>
+      <nav>
+      <button class="active" onclick="openPage('cartelli_semplici.html')">Semplice</button>
       <button onclick="goTo('cartellini')">Sale</button>
       <button onclick="goTo('etichette')">Percentuale</button>
       <button onclick="goTo('loghi')">Multi Articolo</button>
-    </nav>
+      </nav>
+    </div>
 
-    <div class="label" style="margin-top:28px">STRUMENTI</div>
-    <nav>
+    <div class="sidebar-section" data-sidebar-section="custom-logos">
+      <div class="label" style="margin-top:28px">
+        <span>LOGHI PERSONALIZZATI</span>
+        <button class="section-toggle" type="button" aria-label="Comprimi LOGHI PERSONALIZZATI" aria-expanded="true" onclick="toggleSidebarSection('custom-logos')">⌄</button>
+      </div>
+      <nav>
+      <button onclick="openPage('genera_loghi.html')">Importa Loghi</button>
+      <button onclick="openPage('gestisci_lista.html')">Gestisci Loghi</button>
+      </nav>
+    </div>
+
+    <div class="sidebar-section" data-sidebar-section="tools">
+      <div class="label" style="margin-top:28px">
+        <span>STRUMENTI</span>
+        <button class="section-toggle" type="button" aria-label="Comprimi STRUMENTI" aria-expanded="true" onclick="toggleSidebarSection('tools')">⌄</button>
+      </div>
+      <nav>
       <button class="soon" disabled>Sconti <span class="soon-tag">presto</span></button>
       <button class="soon" disabled>Aliquote <span class="soon-tag">presto</span></button>
       <button class="soon" disabled>Valuta <span class="soon-tag">presto</span></button>
       <button class="soon" disabled>QR <span class="soon-tag">presto</span></button>
-    </nav>
+      </nav>
+    </div>
 
     <div class="bottom">
       <div class="studio-label">VISUAL MERCHANDISING STUDIO</div>
@@ -518,20 +557,20 @@ nav button .soon-tag{
         </a>
       </div>
 
-      <div class="section" id="loghi">LOGHI</div>
+      <div class="section" id="loghi-personalizzati">LOGHI PERSONALIZZATI</div>
 
       <div class="lower">
-        <a class="wide-card" data-link="genera_loghi.html">
+        <a class="wide-card" id="importa-loghi-personalizzati" data-link="genera_loghi.html">
           <div>
-            <h2>Crea Logo Brand</h2>
-            <p>Aggiungi un logo personalizzato con sfondo trasparente e gestisci la tua lista.</p>
+            <h2>Importa Loghi Personalizzati</h2>
+            <p>Importa un logo personalizzato con sfondo trasparente e rendilo disponibile nei cartelli.</p>
           </div>
           <div class="arrow">↗</div>
         </a>
 
         <a class="wide-card" data-link="gestisci_lista.html">
           <div>
-            <h2>Gestisci Lista Loghi</h2>
+            <h2>Gestisci Loghi Personalizzati</h2>
             <p>Riordina, rinomina, esporta o rimuovi i loghi personalizzati salvati.</p>
           </div>
           <div class="arrow">↗</div>
@@ -618,11 +657,50 @@ function goTo(sectionId){
   document.getElementById(sectionId)?.scrollIntoView({behavior:"smooth", block:"start"});
 }
 
+function openPage(page){
+  window.location.href = `${page}?store=${encodeURIComponent(currentStore)}`;
+}
+
+function toggleSidebarSection(sectionId){
+  const section = document.querySelector(`[data-sidebar-section="${sectionId}"]`);
+  if(!section) return;
+
+  const toggle = section.querySelector(".section-toggle");
+  const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+  toggle.setAttribute("aria-expanded", String(!isExpanded));
+  toggle.setAttribute("aria-label", `${isExpanded ? "Espandi" : "Comprimi"} ${section.querySelector(".label span").textContent}`);
+  section.classList.toggle("is-collapsed", isExpanded);
+
+  const collapsedSections = [...document.querySelectorAll(".sidebar-section.is-collapsed")]
+    .map(item => item.dataset.sidebarSection);
+  localStorage.setItem("collapsed_sidebar_sections", JSON.stringify(collapsedSections));
+}
+
+function restoreSidebarSections(){
+  let collapsedSections = [];
+  try {
+    collapsedSections = JSON.parse(localStorage.getItem("collapsed_sidebar_sections") || "[]");
+  } catch(error) {
+    console.error("Ripristino stato menu laterale fallito.", error);
+  }
+
+  if(!Array.isArray(collapsedSections)) return;
+  collapsedSections.forEach(sectionId => {
+    const section = document.querySelector(`[data-sidebar-section="${sectionId}"]`);
+    const toggle = section?.querySelector(".section-toggle");
+    if(!section || !toggle) return;
+    section.classList.add("is-collapsed");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", `Espandi ${section.querySelector(".label span").textContent}`);
+  });
+}
+
 (function init(){
   const params = new URLSearchParams(window.location.search);
   const store = params.get("store");
   if(store === "ophilya"){ changeStore("ophilya"); }
   else { updateLinks(); }
+  restoreSidebarSections();
 })();
 </script>
 </body>
