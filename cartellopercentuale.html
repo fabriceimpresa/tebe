@@ -61,7 +61,8 @@
       color: #665e54;
     }
 
-    .form-group input {
+    .form-group input,
+    .form-group select {
       width: 100%;
       padding: 0.45rem;
       border: 1px solid #e3dacb;
@@ -71,10 +72,40 @@
       color: #282522;
     }
 
-    .form-group input:focus {
+    .form-group input:focus,
+    .form-group select:focus {
       outline: none;
       border-color: #b49a62;
       box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
+    }
+
+    .preset-select {
+      position: relative;
+      margin-bottom: 0.6rem;
+    }
+
+    .form-group .preset-select select {
+      appearance: none;
+      margin-bottom: 0;
+      padding-right: 2rem;
+    }
+
+    .preset-select::after {
+      content: '▼';
+      position: absolute;
+      top: 0;
+      right: 1px;
+      bottom: 1px;
+      width: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #e3dacb;
+      background: #f3ede0;
+      color: #b49a62;
+      font-size: 0.6rem;
+      line-height: 1;
+      pointer-events: none;
     }
 
     /* CAMPO PERCENTUALE con frecce sempre visibili */
@@ -146,7 +177,7 @@
       color: #8a6a35;
     }
 
-    /* SELETTORE MODALITA' (stile identico al toggle usato in cartelli_outlet.html / index.html) */
+    /* SELETTORE MODALITA' (stile identico al toggle usato in cartelli_sale.html / index.html) */
     .mode-switch {
       display: flex;
       gap: 4px;
@@ -462,7 +493,24 @@
       </div>
 
       <div class="form-group" id="descGroup" style="display: none;">
-        <label>Descrizione (sopra lo sconto):</label>
+        <label>Articolo // Promo</label>
+        <div class="preset-select">
+          <select id="descPreset" onchange="applyDescPreset()">
+            <option value="">-- Seleziona un testo --</option>
+            <option value="Sconto alla Cassa">Sconto alla Cassa</option>
+            <option value="Special Deal">Special Deal</option>
+            <option value="Final Price">Final Price</option>
+            <option value="Summer Sale">Summer Sale</option>
+            <option value="Spring Sale">Spring Sale</option>
+            <option value="Winter Sale">Winter Sale</option>
+            <option value="Black Friday">Black Friday</option>
+            <option value="Made in Italy">Made in Italy</option>
+            <option value="Vera Pelle • Genuine Leather">Vera Pelle • Genuine Leather</option>
+            <option value="Made in Italy • Genuine Leather">Made in Italy • Genuine Leather</option>
+            <option value="Fino ad esaurimento scorte">Fino ad esaurimento scorte</option>
+          </select>
+        </div>
+        <label>Testo Libero</label>
         <input type="text" id="descValue" value="Sconto alla Cassa" oninput="updateCard()">
       </div>
 
@@ -531,6 +579,12 @@
       document.getElementById('percentDispBottom').textContent = displayDiscount;
       document.getElementById('descDisp').textContent = descValue;
       document.getElementById('descDispBottom').textContent = descValue;
+    }
+
+    function applyDescPreset() {
+      const preset = document.getElementById('descPreset').value;
+      document.getElementById('descValue').value = preset;
+      updateCard();
     }
 
     function toggleDescription() {

@@ -59,7 +59,7 @@
       background: #f3ede0;
       border: 1px solid #e3dacb;
       border-radius: 6px;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.6rem;
     }
 
     .mode-switch button {
@@ -108,6 +108,87 @@
       outline: none;
       border-color: #b49a62;
       box-shadow: 0 0 4px rgba(180, 154, 98, 0.35);
+    }
+
+    .price-range-select {
+      position: relative;
+    }
+
+    .price-range-select label {
+      color: #8a6a35;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    #descGroup > label {
+      color: #8a6a35;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    #descGroup {
+      margin-bottom: 1.8rem;
+    }
+
+    .price-range-control select {
+      appearance: none;
+      margin-bottom: 0;
+      padding-right: 2rem;
+    }
+
+    .price-range-control {
+      position: relative;
+    }
+
+    .price-range-control::after {
+      content: '▼';
+      position: absolute;
+      top: 0;
+      right: 1px;
+      bottom: 1px;
+      width: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #e3dacb;
+      background: #f3ede0;
+      color: #b49a62;
+      font-size: 0.6rem;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .preset-select {
+      position: relative;
+      margin-bottom: 0.6rem;
+    }
+
+    .form-group .preset-select select {
+      appearance: none;
+      margin-bottom: 0;
+      padding-right: 2rem;
+    }
+
+    .preset-select::after {
+      content: '▼';
+      position: absolute;
+      top: 0;
+      right: 1px;
+      bottom: 1px;
+      width: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #e3dacb;
+      background: #f3ede0;
+      color: #b49a62;
+      font-size: 0.6rem;
+      line-height: 1;
+      pointer-events: none;
     }
 
     .price-inputs-row {
@@ -182,8 +263,6 @@
       background: #e3dacb;
       color: #8a6a35;
     }
-
-    .form-group select#descPreset { margin-bottom: 0.6rem; }
 
     /* PULSANTE STAMPA */
     .btn-print {
@@ -448,12 +527,12 @@
 
       <div id="priceRowGroup">
         <div class="form-group">
-          <label>Prezzo Precedente:</label>
+          <label>Prezzo Originario</label>
           <input type="text" id="oldPrice" value="59,80" placeholder="es. 59,80" oninput="updateCard()">
         </div>
 
         <div class="form-group">
-          <label>Percentuale Sconto:</label>
+          <label>Percentuale Sconto</label>
           <div class="percent-input-wrapper">
             <input type="number" id="discountValue" value="50" min="1" max="99" oninput="updateCard()">
             <div class="percent-stepper">
@@ -465,25 +544,46 @@
       </div>
 
       <div class="form-group" id="descGroup" style="display: none;">
-        <label>Descrizione Articolo:</label>
-        <select id="descPreset" onchange="applyDescPreset()">
-          <option value="">-- Seleziona un testo --</option>
-          <option value="Special Deal">Special Deal</option>
-          <option value="Final Price">Final Price</option>
-          <option value="Summer Sale">Summer Sale</option>
-          <option value="Spring Sale">Spring Sale</option>
-          <option value="Winter Sale">Winter Sale</option>
-          <option value="Black Friday">Black Friday</option>
-          <option value="Made in Italy">Made in Italy</option>
-          <option value="Vera Pelle • Genuine Leather">Vera Pelle • Genuine Leather</option>
-          <option value="Made in Italy • Genuine Leather">Made in Italy • Genuine Leather</option>
-          <option value="Fino ad esaurimento scorte">Fino ad esaurimento scorte</option>
-        </select>
+        <label>Articolo // Promo</label>
+        <div class="preset-select">
+          <select id="descPreset" onchange="applyDescPreset()">
+            <option value="">-- Seleziona un testo --</option>
+            <option value="Special Deal">Special Deal</option>
+            <option value="Final Price">Final Price</option>
+            <option value="Summer Sale">Summer Sale</option>
+            <option value="Spring Sale">Spring Sale</option>
+            <option value="Winter Sale">Winter Sale</option>
+            <option value="Black Friday">Black Friday</option>
+            <option value="Made in Italy">Made in Italy</option>
+            <option value="Vera Pelle • Genuine Leather">Vera Pelle • Genuine Leather</option>
+            <option value="Made in Italy • Genuine Leather">Made in Italy • Genuine Leather</option>
+            <option value="Fino ad esaurimento scorte">Fino ad esaurimento scorte</option>
+          </select>
+        </div>
         <input type="text" id="descFree" value="" placeholder="-- Testo Libero --" oninput="updateCard()">
       </div>
 
+      <div class="form-group price-range-select" id="priceRangeGroup">
+        <label for="priceRange">Fasce Prezzo</label>
+        <div class="price-range-control">
+          <select id="priceRange" onchange="applyPriceRange()">
+            <option value="">-- Seleziona Fascia Prezzo --</option>
+            <option value="10,00">€ 10,00</option>
+            <option value="19,90">€ 19,90</option>
+            <option value="29,90">€ 29,90</option>
+            <option value="39,90">€ 39,90</option>
+            <option value="49,90">€ 49,90</option>
+            <option value="59,90">€ 59,90</option>
+            <option value="69,90">€ 69,90</option>
+            <option value="79,90">€ 79,90</option>
+            <option value="89,90">€ 89,90</option>
+            <option value="99,00">€ 99,00</option>
+          </select>
+        </div>
+      </div>
+
       <div class="form-group">
-        <label>Prezzo Outlet:</label>
+        <label>Prezzo Finale</label>
         <input type="text" id="newPrice" value="29,90" placeholder="es. 29,90" oninput="updateCard()">
       </div>
 
@@ -533,12 +633,50 @@
       updateCard();
     }
 
+    function parsePrice(value) {
+      const normalized = value.replace(',', '.').replace(/[^0-9.]/g, '');
+      const price = Number.parseFloat(normalized);
+      return Number.isFinite(price) ? price : 0;
+    }
+
+    function formatPrice(value) {
+      return value.toFixed(2).replace('.', ',');
+    }
+
+    function applyPriceRange() {
+      const selectedPrice = document.getElementById('priceRange').value;
+      if (!selectedPrice) {
+        updateCard();
+        return;
+      }
+
+      document.getElementById('newPrice').value = selectedPrice;
+
+      if (document.getElementById('modeDoppia').classList.contains('active')) {
+        const discount = Number.parseInt(document.getElementById('discountValue').value, 10) || 50;
+        const oldPrice = parsePrice(selectedPrice) / (1 - discount / 100);
+        document.getElementById('oldPrice').value = formatPrice(oldPrice);
+      }
+
+      updateCard();
+    }
+
     function switchMode(mode) {
       const isDoppia = mode === 'doppia';
+      const priceRangeGroup = document.getElementById('priceRangeGroup');
+      const priceRowGroup = document.getElementById('priceRowGroup');
+      const descGroup = document.getElementById('descGroup');
       document.getElementById('modeDoppia').classList.toggle('active', isDoppia);
       document.getElementById('modeDescrizione').classList.toggle('active', !isDoppia);
-      document.getElementById('priceRowGroup').style.display = isDoppia ? 'block' : 'none';
-      document.getElementById('descGroup').style.display = isDoppia ? 'none' : 'block';
+      priceRowGroup.style.display = isDoppia ? 'block' : 'none';
+      descGroup.style.display = isDoppia ? 'none' : 'block';
+
+      if (isDoppia) {
+        priceRowGroup.parentNode.insertBefore(priceRangeGroup, priceRowGroup);
+      } else {
+        descGroup.parentNode.insertBefore(priceRangeGroup, descGroup.nextElementSibling);
+      }
+
       updateCard();
     }
 
@@ -567,7 +705,7 @@
       document.getElementById('finalPriceBottom').textContent = `€ ${newPrice}`;
     }
 
-    updateCard();
+    switchMode('doppia');
   </script>
 </body>
 </html>
