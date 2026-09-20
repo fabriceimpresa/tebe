@@ -140,6 +140,26 @@
     return resolvePrintLogoSource(source, color);
   }
 
+  function waitForImagesToLoad(images) {
+    return Promise.all(Array.from(images).map(image => {
+      if (!image.getAttribute('src')) {
+        return undefined;
+      }
+      if (image.complete && image.naturalWidth > 0) {
+        return typeof image.decode === 'function' ? image.decode().catch(() => {}) : undefined;
+      }
+      return new Promise((resolve, reject) => {
+        image.addEventListener('load', resolve, { once: true });
+        image.addEventListener('error', () => reject(new Error(`Impossibile caricare il logo ${image.alt || ''}.`)), { once: true });
+      });
+    }));
+  }
+
+  function prepareForPrint(selector = '[class*="logo"]') {
+    const fontsReady = document.fonts?.ready || Promise.resolve();
+    return Promise.all([fontsReady, waitForImagesToLoad(document.querySelectorAll(selector))]).then(() => undefined);
+  }
+
   /**
    * Imposta il logo (ufficiale o personalizzato) di un <img id="imgId">
    * usando direttamente la versione già colorata, così sia a schermo sia in
@@ -168,6 +188,7 @@
     getOfficialPrintLogoPath,
     setBrandLogoSrc,
     getBrandLogoSrc,
+    prepareForPrint,
     invalidateCustomLogoCache
   };
 })();

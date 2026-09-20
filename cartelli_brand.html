@@ -306,12 +306,12 @@
     .btn-print {
       width: 100%;
       background-color: #96382b;
-      color: #ffffff;
+      color: #fffdfa;
       border: 1px solid #96382b;
       padding: 10px;
-      font-size: 0.95rem;
-      font-weight: 400;
-      letter-spacing: 1px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
@@ -646,7 +646,7 @@
         <input type="text" id="newPrice" value="29,90" placeholder="es. 29,90" oninput="updateCard()">
       </div>
 
-      <button class="btn-print" onclick="window.print()">🖨️ Stampa Cartello (A4)</button>
+      <button class="btn-print" onclick="printCards()">Stampa Cartello (A4)</button>
     </div>
   </div>
 
@@ -716,7 +716,11 @@
       }
 
       brandSelect.value = '';
-      updateLogoElements(customLogo.data, customLogo.name);
+      PrintLogoColors.getBrandLogoSrc(customLogo.data, '', '', 'gold').then(source => {
+        updateLogoElements(source, customLogo.name);
+      }).catch(error => {
+        console.error('Caricamento del logo personalizzato fallito.', error);
+      });
     }
 
     function loadBrandSelect() {
@@ -764,6 +768,12 @@
       }).catch(error => {
         console.error('Caricamento del logo brand fallito.', error);
       });
+    }
+
+    function printCards() {
+      PrintLogoColors.prepareForPrint('.brand-logo')
+        .then(() => window.print())
+        .catch(error => console.error('Preparazione della stampa fallita.', error));
     }
 
     function formatDiscount(value) {

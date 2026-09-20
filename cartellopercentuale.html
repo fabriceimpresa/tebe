@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Cartello Percentuale</title>
+  <script src="assets/js/logos.js"></script>
+  <script src="assets/js/print-logo-colors.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -226,16 +228,43 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
+    /* PULSANTE "+ AGGIUNGI UN BRAND" (dorato -> verde inglese quando attivo) */
+    .btn-add-brand {
+      width: 100%;
+      background-color: #cc9e25;
+      color: #fffdfa;
+      border: 1px solid #b8891a;
+      padding: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 0.8rem;
+      transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .btn-add-brand:hover { background-color: #b8891a; }
+
+    .btn-add-brand.active {
+      background-color: #4b685c;
+      color: #fffdfa;
+      border-color: #4b685c;
+    }
+
+    .btn-add-brand.active:hover { background-color: #425d52; }
+
     /* PULSANTE STAMPA */
     .btn-print {
       width: 100%;
       background-color: #96382b;
-      color: #ffffff;
+      color: #fffdfa;
       border: 1px solid #96382b;
       padding: 10px;
-      font-size: 0.95rem;
-      font-weight: 400;
-      letter-spacing: 1px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
       border-radius: 4px;
       cursor: pointer;
@@ -348,11 +377,42 @@
     .percent-text {
       font-family: Arial, Helvetica, sans-serif;
       font-weight: 400;
-      font-size: 166.73pt;
+      font-size: 158pt;
       letter-spacing: -0.05em;
       color: #cc9e25;
       line-height: 1;
       white-space: nowrap;
+    }
+
+    /* LOGO BRAND (ufficiale o personalizzato, sempre colore oro) mostrato sopra la percentuale.
+       Il contenitore ha una dimensione fissa uguale per tutti i brand: l'immagine si adatta
+       dentro mantenendo le proporzioni, così l'area occupata non cambia mai da un logo all'altro. */
+    .card-brand-logo-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 46mm;
+      height: 20mm;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transform: scale(0.85) translateY(6px);
+      transition: max-height 0.35s ease, opacity 0.3s ease, transform 0.3s ease, margin 0.35s ease;
+    }
+
+    .card-brand-logo-box.active {
+      max-height: 20mm;
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      margin-bottom: 1.5mm;
+    }
+
+    .card-brand-logo {
+      max-width: 100%;
+      max-height: 20mm;
+      width: auto;
+      height: auto;
+      object-fit: contain;
     }
 
     .card-logo {
@@ -499,6 +559,28 @@
         <button type="button" id="modeDescrizione" onclick="switchMode('descrizione')">Descrizione Articolo</button>
       </div>
 
+      <button type="button" class="btn-add-brand" id="brandToggleBtn" onclick="toggleBrandSection()">+ AGGIUNGI UN BRAND</button>
+
+      <div id="brandFieldsGroup" style="display: none;">
+        <div class="form-group">
+          <label for="brandSelect">Brand</label>
+          <div class="preset-select">
+            <select id="brandSelect" onchange="updateBrand()">
+              <option value="">-- Seleziona Brand --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" id="customBrandGroup">
+          <label for="customBrandSelect">Loghi personalizzati</label>
+          <div class="preset-select">
+            <select id="customBrandSelect" onchange="updateCustomBrand()">
+              <option value="">-- Nessun logo personalizzato --</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <div class="form-group">
         <label>Percentuale Sconto:</label>
         <div class="percent-input-wrapper">
@@ -532,7 +614,7 @@
         <input type="text" id="descValue" value="Sconto alla Cassa" oninput="updateCard()">
       </div>
 
-      <button class="btn-print" onclick="window.print()">🖨️ Stampa Cartello (A4)</button>
+      <button class="btn-print" onclick="printCards()">Stampa Cartello (A4)</button>
     </div>
   </div>
 
@@ -541,6 +623,9 @@
     <div class="card standard-mode" id="cardTop">
       <div class="card-fields">
         <div class="card-desc" id="descDisp">Sconto alla Cassa</div>
+        <div class="card-brand-logo-box" id="brandLogoBoxTop">
+          <img class="card-brand-logo" id="brandLogoTop" alt="">
+        </div>
         <div class="discount-row">
           <div class="fino-al-group">
             <div class="fino-al-label">FINO AL</div>
@@ -555,6 +640,9 @@
     <div class="card standard-mode" id="cardBottom">
       <div class="card-fields">
         <div class="card-desc" id="descDispBottom">Sconto alla Cassa</div>
+        <div class="card-brand-logo-box" id="brandLogoBoxBottom">
+          <img class="card-brand-logo" id="brandLogoBottom" alt="">
+        </div>
         <div class="discount-row">
           <div class="fino-al-group">
             <div class="fino-al-label">FINO AL</div>
@@ -569,6 +657,8 @@
 
   <script>
     let isDescriptionActive = false;
+    let brandSectionActive = false;
+    const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
 
     function formatDiscount(value) {
       // L'utente scrive solo il numero: il simbolo "%" viene generato automaticamente
@@ -605,33 +695,42 @@
       updateCard();
     }
 
+    function hasSelectedBrandLogo() {
+      return brandSectionActive && (
+        Boolean(document.getElementById('brandSelect').value) ||
+        Boolean(document.getElementById('customBrandSelect').value)
+      );
+    }
+
+    // La descrizione resta visibile se la modalità descrizione è attiva e non
+    // c'è un logo effettivamente selezionato, anche con la sezione brand aperta.
+    function updateFieldsMode() {
+      const cardTop = document.getElementById('cardTop');
+      const cardBottom = document.getElementById('cardBottom');
+      const descriptionVisible = isDescriptionActive && !hasSelectedBrandLogo();
+
+      document.getElementById('descDisp').classList.toggle('active', descriptionVisible);
+      document.getElementById('descDispBottom').classList.toggle('active', descriptionVisible);
+      cardTop.classList.toggle('standard-mode', !descriptionVisible);
+      cardBottom.classList.toggle('standard-mode', !descriptionVisible);
+    }
+
     function toggleDescription() {
       isDescriptionActive = !isDescriptionActive;
       const modeStandard = document.getElementById('modeStandard');
       const modeDescrizione = document.getElementById('modeDescrizione');
       const descGroup = document.getElementById('descGroup');
-      const descDisp = document.getElementById('descDisp');
-      const descDispBottom = document.getElementById('descDispBottom');
-      const cardTop = document.getElementById('cardTop');
-      const cardBottom = document.getElementById('cardBottom');
 
       if (isDescriptionActive) {
         modeStandard.classList.remove('active');
         modeDescrizione.classList.add('active');
         descGroup.style.display = "block";
-        descDisp.classList.add('active');
-        descDispBottom.classList.add('active');
-        cardTop.classList.remove('standard-mode');
-        cardBottom.classList.remove('standard-mode');
       } else {
         modeDescrizione.classList.remove('active');
         modeStandard.classList.add('active');
         descGroup.style.display = "none";
-        descDisp.classList.remove('active');
-        descDispBottom.classList.remove('active');
-        cardTop.classList.add('standard-mode');
-        cardBottom.classList.add('standard-mode');
       }
+      updateFieldsMode();
     }
 
     function switchMode(mode) {
@@ -641,7 +740,158 @@
       }
     }
 
+    // ----- BRAND (ufficiale o personalizzato), sempre in colore oro -----
+
+    function cleanBrandName(fileName) {
+      return fileName.replace(/\.[^.]+$/, '').replace(/([a-z])([A-Z])/g, '$1 $2');
+    }
+
+    function readCustomLogos() {
+      try {
+        const logos = JSON.parse(localStorage.getItem(CUSTOM_LOGOS_STORAGE_KEY) || '[]');
+        return Array.isArray(logos) ? logos.filter(logo => logo && logo.id && logo.name && logo.data) : [];
+      } catch (error) {
+        console.error('Lettura dei loghi personalizzati fallita.', error);
+        return [];
+      }
+    }
+
+    function loadBrandSelect() {
+      const select = document.getElementById('brandSelect');
+      const { priorityFiles, remainingFiles } = getSortedLogoFiles();
+      const orderedFiles = [...priorityFiles, ...remainingFiles];
+
+      orderedFiles.forEach(fileName => {
+        appendBrandOption(select, fileName, cleanBrandName(fileName), priorityFiles.includes(fileName));
+      });
+    }
+
+    function getDefaultBrandFile() {
+      const orderedFiles = getOrderedLogoFiles();
+      return orderedFiles.find(fileName => fileName.toLowerCase().startsWith('269')) || orderedFiles[0] || '';
+    }
+
+    function loadCustomBrandSelect() {
+      const select = document.getElementById('customBrandSelect');
+      const customLogos = readCustomLogos();
+      customLogos
+        .slice()
+        .sort((first, second) => first.name.localeCompare(second.name, 'it', { sensitivity: 'base' }))
+        .forEach(logo => {
+          const option = document.createElement('option');
+          option.value = logo.id;
+          option.textContent = `★ ${logo.name}`;
+          select.appendChild(option);
+        });
+    }
+
+    function updateLogoElements(source, brandName) {
+      const pairs = [
+        { img: document.getElementById('brandLogoTop'), box: document.getElementById('brandLogoBoxTop') },
+        { img: document.getElementById('brandLogoBottom'), box: document.getElementById('brandLogoBoxBottom') }
+      ];
+      pairs.forEach(({ img, box }) => {
+        if (source) {
+          img.src = source;
+          img.alt = brandName;
+          box.classList.add('active');
+        } else {
+          box.classList.remove('active');
+          img.removeAttribute('src');
+          img.alt = '';
+        }
+      });
+      updateFieldsMode();
+    }
+
+    function updateBrand() {
+      const fileName = document.getElementById('brandSelect').value;
+      document.getElementById('customBrandSelect').value = '';
+
+      if (!brandSectionActive || !fileName) {
+        updateLogoElements('', '');
+        return;
+      }
+
+      updateFieldsMode();
+
+      PrintLogoColors.getBrandLogoSrc('', fileName, '', 'gold').then(source => {
+        updateLogoElements(source, cleanBrandName(fileName));
+      }).catch(error => {
+        console.error('Caricamento del logo brand fallito.', error);
+      });
+    }
+
+    function updateCustomBrand() {
+      const customLogoId = document.getElementById('customBrandSelect').value;
+      const customLogo = readCustomLogos().find(logo => logo.id === customLogoId);
+      const brandSelect = document.getElementById('brandSelect');
+
+      if (!customLogo) {
+        updateBrand();
+        return;
+      }
+
+      brandSelect.value = '';
+
+      if (!brandSectionActive) {
+        updateLogoElements('', '');
+        return;
+      }
+
+      updateFieldsMode();
+
+      PrintLogoColors.getBrandLogoSrc(customLogo.data, '', '', 'gold').then(source => {
+        updateLogoElements(source, customLogo.name);
+      }).catch(error => {
+        console.error('Caricamento del logo personalizzato fallito.', error);
+      });
+    }
+
+    function toggleBrandSection() {
+      brandSectionActive = !brandSectionActive;
+      const btn = document.getElementById('brandToggleBtn');
+      const group = document.getElementById('brandFieldsGroup');
+      const brandSelect = document.getElementById('brandSelect');
+      const customBrandSelect = document.getElementById('customBrandSelect');
+
+      if (brandSectionActive) {
+        btn.classList.add('active');
+        btn.textContent = '✓ BRAND ATTIVATO';
+        group.style.display = 'block';
+        if (!brandSelect.value && !customBrandSelect.value) {
+          brandSelect.value = getDefaultBrandFile();
+        }
+      } else {
+        btn.classList.remove('active');
+        btn.textContent = '+ AGGIUNGI UN BRAND';
+        group.style.display = 'none';
+        brandSelect.value = '';
+        customBrandSelect.value = '';
+        updateLogoElements('', '');
+      }
+
+      updateFieldsMode();
+
+      if (brandSectionActive) {
+        const customLogoId = customBrandSelect.value;
+        if (customLogoId) {
+          updateCustomBrand();
+        } else {
+          updateBrand();
+        }
+      }
+    }
+
+    function printCards() {
+      PrintLogoColors.prepareForPrint('.card-brand-logo, .card-logo')
+        .then(() => window.print())
+        .catch(error => console.error('Preparazione della stampa fallita.', error));
+    }
+
     updateCard();
+    loadBrandSelect();
+    loadCustomBrandSelect();
   </script>
 </body>
 </html>
