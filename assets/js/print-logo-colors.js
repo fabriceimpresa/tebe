@@ -67,7 +67,7 @@
     white: [255, 255, 255],
     black: [0, 0, 0],
     red: [224, 0, 0],
-    gold: [180, 139, 55]
+    gold: [204, 158, 37]
   };
 
   function getGeneratedLogoFileName(logoFileName) {
