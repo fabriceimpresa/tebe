@@ -34,51 +34,8 @@
 
     if (isActive) {
       applyMadeInItalyDescription();
-      syncFlagAlignment();
     }
   });
-
-  // Nel Cartello Percentuale, in modalità Standard (nessuna descrizione), le bandiere
-  // devono allinearsi al rettangolo dorato "FINO AL -" invece che restare a metà cartello.
-  // Le altre pagine non hanno .minus-bar, quindi questa logica non le riguarda.
-  const observer = new MutationObserver(() => syncFlagAlignment());
-  cards.forEach(card => observer.observe(card, { attributes: true, attributeFilter: ['class'] }));
-
-  function syncFlagAlignment() {
-    cards.forEach(card => {
-      const minusBar = card.querySelector('.minus-bar');
-      const flags = card.querySelectorAll('.tema-italia-flag');
-      if (minusBar && card.classList.contains('standard-mode')) {
-        // Usiamo getBoundingClientRect invece di offsetTop perché in modalità Standard
-        // .card-fields ha una transform (per sollevare i campi), il che lo rende
-        // l'offsetParent del rettangolo dorato invece di .card, falsando il calcolo.
-        const cardRect = card.getBoundingClientRect();
-        const minusRect = minusBar.getBoundingClientRect();
-        const center = (minusRect.top + minusRect.height / 2) - cardRect.top;
-        let percent = (center / cardRect.height * 100);
-        // #cardBottom è ruotato di 180° per la stampa fronte/retro: getBoundingClientRect
-        // restituisce già la posizione "a schermo" (post-rotazione), mentre `top` viene
-        // applicato prima della rotazione, quindi va invertito per finire nel punto giusto.
-        if (isRotated180(card)) {
-          percent = 100 - percent;
-        }
-        const top = percent + '%';
-        flags.forEach(flag => { flag.style.top = top; });
-      } else {
-        flags.forEach(flag => { flag.style.removeProperty('top'); });
-      }
-    });
-  }
-
-  function isRotated180(card) {
-    const transform = getComputedStyle(card).transform;
-    if (!transform || transform === 'none') return false;
-    // matrix(a, b, c, d, tx, ty): una rotazione di 180° dà a ≈ -1 e d ≈ -1
-    const match = transform.match(/matrix\(([^)]+)\)/);
-    if (!match) return false;
-    const [a, , , d] = match[1].split(',').map(Number);
-    return a < -0.5 && d < -0.5;
-  }
 
   function createFlag(side) {
     const flag = document.createElement('img');
@@ -89,14 +46,9 @@
   }
 
   function applyMadeInItalyDescription() {
-    // Alcune pagine (Sale, Brand, Percentuale) hanno una modalità "Doppia Cifra" / "Standard"
-    // in alternativa a "Descrizione Articolo": il campo descrittivo esiste nel markup ma è
-    // nascosto (#descGroup con display:none) finché quella modalità non è selezionata.
-    // In quel caso il pulsante deve limitarsi a mostrare le bandiere, senza toccare la
-    // descrizione né forzare il cambio di modalità.
-    const descGroup = document.getElementById('descGroup');
-    if (descGroup && descGroup.style.display === 'none') {
-      return;
+    const descriptionModeButton = document.getElementById('modeDescrizione');
+    if (descriptionModeButton && !descriptionModeButton.classList.contains('active')) {
+      descriptionModeButton.click();
     }
 
     const descriptionSelect = [...document.querySelectorAll('select')].find(select =>
