@@ -321,6 +321,12 @@
       color: #fff;
     }
     .modal-btn-confirm:hover { background: #7a2d22; }
+
+    .modal-btn-import-custom {
+      background: #31583e;
+      color: #fff;
+    }
+    .modal-btn-import-custom:hover { background: #264631; }
   </style>
 </head>
 <body>
@@ -331,10 +337,8 @@
     <div class="modal-box">
       <div class="modal-warning-icon">⚠</div>
       <p class="modal-message" id="confirmModalMessage"></p>
-      <div class="modal-actions">
-        <button type="button" class="modal-btn modal-btn-cancel" onclick="closeConfirmModal(false)">Annulla</button>
-        <button type="button" class="modal-btn modal-btn-backup" onclick="exportCustomLogos()">⬇ Backup</button>
-        <button type="button" class="modal-btn modal-btn-confirm" onclick="closeConfirmModal(true)">Cancella Loghi</button>
+      <div class="modal-actions" id="modalActionsContainer">
+        <!-- I pulsanti vengono popolati dinamicamente in base al tipo di azione -->
       </div>
     </div>
   </div>
@@ -386,9 +390,29 @@
       URL.revokeObjectURL(downloadUrl);
     }
 
-    function showConfirmModal(message) {
+    function showConfirmModal(message, mode = 'clear-all') {
       return new Promise(resolve => {
         document.getElementById('confirmModalMessage').textContent = message;
+        
+        const actionsContainer = document.getElementById('modalActionsContainer');
+        if (mode === 'import') {
+          actionsContainer.innerHTML = `
+            <button type="button" class="modal-btn modal-btn-backup" onclick="closeConfirmModal(false)">Annulla</button>
+            <button type="button" class="modal-btn modal-btn-import-custom" onclick="closeConfirmModal(true)">Importa Lista</button>
+          `;
+        } else if (mode === 'delete-single') {
+          actionsContainer.innerHTML = `
+            <button type="button" class="modal-btn modal-btn-cancel" onclick="closeConfirmModal(false)">Annulla</button>
+            <button type="button" class="modal-btn modal-btn-confirm" onclick="closeConfirmModal(true)">Cancella logo</button>
+          `;
+        } else {
+          actionsContainer.innerHTML = `
+            <button type="button" class="modal-btn modal-btn-cancel" onclick="closeConfirmModal(false)">Annulla</button>
+            <button type="button" class="modal-btn modal-btn-backup" onclick="exportCustomLogos()">⬇ Backup</button>
+            <button type="button" class="modal-btn modal-btn-confirm" onclick="closeConfirmModal(true)">Cancella Loghi</button>
+          `;
+        }
+
         document.getElementById('confirmModal').classList.add('active');
         pendingConfirmResolve = resolve;
       });
@@ -409,7 +433,7 @@
         return;
       }
 
-      const confirmed = await showConfirmModal('Vuoi rimuovere tutti i loghi personalizzati salvati? Esporta prima un backup per poterli ripristinare.');
+      const confirmed = await showConfirmModal('Vuoi rimuovere tutti i loghi personalizzati salvati? Esporta prima un backup per poterli ripristinare.', 'clear-all');
       if (confirmed) {
         localStorage.removeItem('custom_brand_logos');
         renderSavedLogos();
@@ -435,7 +459,7 @@
           return;
         }
 
-        const confirmed = await showConfirmModal('L importazione sostituira tutti i Loghi personalizzati attualmente salvati. Continuare?');
+        const confirmed = await showConfirmModal('L importazione sostituira tutti i Loghi personalizzati attualmente salvati. Continuare?', 'import');
         if (!confirmed) {
           return;
         }
@@ -549,8 +573,6 @@
         });
       });
 
-      // Copre lo spazio vuoto sotto l'ultimo elemento: se il rilascio avviene lì,
-      // il logo trascinato viene spostato in fondo alla lista.
       container.addEventListener('dragover', (event) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = 'move';
@@ -589,9 +611,6 @@
 
       logos.splice(insertIndex, 0, movedLogo);
       localStorage.setItem('custom_brand_logos', JSON.stringify(logos));
-      // Il drag-and-drop riordina l'ordine reale (data creazione): se l'utente
-      // trascina mentre è in vista alfabetica, passiamo automaticamente a
-      // "Data creazione" così l'ordine manuale appena impostato resta visibile.
       logoSortOrder = 'chronological';
       renderSavedLogos();
     }
@@ -626,7 +645,7 @@
     }
 
     async function deleteLogo(index) {
-      const confirmed = await showConfirmModal("Sei sicuro di voler eliminare questo logo personalizzato?");
+      const confirmed = await showConfirmModal("Sei sicuro di voler eliminare questo logo personalizzato?", 'delete-single');
       if (confirmed) {
         const logos = JSON.parse(localStorage.getItem('custom_brand_logos') || '[]');
         logos.splice(index, 1);
