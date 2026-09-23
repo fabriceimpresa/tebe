@@ -226,6 +226,41 @@ h1{
   object-fit:cover;
   display:block;
 }
+.card-thumb.slideshow{
+  position:relative;
+}
+.card-thumb.slideshow img{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  animation:none;
+}
+.card-thumb.slideshow img:first-child{
+  opacity:1;
+}
+.card-thumb.slideshow img:nth-child(2){
+  opacity:0;
+}
+.card:hover .card-thumb.slideshow img{
+  animation-duration:4.2s;
+  animation-iteration-count:infinite;
+}
+.card:hover .card-thumb.slideshow img:first-child{
+  animation-name:thumbnail-fade-first;
+}
+.card:hover .card-thumb.slideshow img:nth-child(2){
+  animation-name:thumbnail-fade-second;
+}
+@keyframes thumbnail-fade-first{
+  0%, 42.86%{opacity:1}
+  50%, 92.86%{opacity:0}
+  100%{opacity:1}
+}
+@keyframes thumbnail-fade-second{
+  0%, 42.86%{opacity:0}
+  50%, 92.86%{opacity:1}
+  100%{opacity:0}
+}
 .card h2{
   margin:auto 0 0 0;
   padding-right:30px;
@@ -484,8 +519,9 @@ nav button .soon-tag{
         <a class="card" data-link="cartelli_semplici.html">
           <div>
             <div class="number">01</div>
-            <div class="card-thumb">
-              <img src="assets/img/semplicethumb.png" alt="Semplice">
+            <div class="card-thumb slideshow">
+              <img src="assets/thumbnail/semplicethumb.png" alt="Semplice">
+              <img src="assets/thumbnail/semplicethumb-2.png" alt="" aria-hidden="true">
             </div>
           </div>
           <h2>Semplice</h2>
@@ -495,8 +531,9 @@ nav button .soon-tag{
         <a class="card" data-link="cartelli_sale.html">
           <div>
             <div class="number">02</div>
-            <div class="card-thumb">
-              <img src="assets/img/salethumb.png" alt="Sale">
+            <div class="card-thumb slideshow">
+              <img src="assets/thumbnail/salethumb.png" alt="Sale">
+              <img src="assets/thumbnail/salethumb-2.png" alt="" aria-hidden="true">
             </div>
           </div>
           <h2>Sale</h2>
@@ -506,8 +543,9 @@ nav button .soon-tag{
         <a class="card" data-link="cartellopercentuale.html">
           <div>
             <div class="number">03</div>
-            <div class="card-thumb">
-              <img src="assets/img/percentualethumb.png" alt="Percentuale">
+            <div class="card-thumb slideshow">
+              <img src="assets/thumbnail/percentualethumb.png" alt="Percentuale">
+              <img src="assets/thumbnail/percentualethumb-2.png" alt="" aria-hidden="true">
             </div>
           </div>
           <h2>Percentuale</h2>
@@ -517,8 +555,9 @@ nav button .soon-tag{
         <a class="card" data-link="cartelli_brand.html">
           <div>
             <div class="number">04</div>
-            <div class="card-thumb">
-              <img src="assets/img/brandthumb.png" alt="Brand">
+            <div class="card-thumb slideshow">
+              <img src="assets/thumbnail/brandthumb.png" alt="Brand">
+              <img src="assets/thumbnail/brandthumb-2.png" alt="" aria-hidden="true">
             </div>
           </div>
           <h2>Brand</h2>
@@ -528,8 +567,9 @@ nav button .soon-tag{
         <a class="card" data-link="cartelli_multiarticolo.html">
           <div>
             <div class="number">05</div>
-            <div class="card-thumb">
-              <img src="assets/img/multithumb.png" alt="Multi Articolo">
+            <div class="card-thumb slideshow">
+              <img src="assets/thumbnail/multithumb.png" alt="Multi Articolo">
+              <img src="assets/thumbnail/multithumb-2.png" alt="" aria-hidden="true">
             </div>
           </div>
           <h2>Multi Articolo</h2>
