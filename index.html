@@ -414,10 +414,10 @@ nav button .soon-tag{
       </div>
       <nav>
       <button onclick="openPage('cartelli_semplici.html')">Semplice</button>
-      <button onclick="goTo('cartellini')">Sale</button>
-      <button onclick="goTo('etichette')">Percentuale</button>
+      <button onclick="openPage('cartelli_sale.html')">Sale</button>
+      <button onclick="openPage('cartellopercentuale.html')">Percentuale</button>
       <button onclick="openPage('cartelli_brand.html')">Brand</button>
-      <button onclick="goTo('loghi')">Multi Articolo</button>
+      <button onclick="openPage('cartelli_multiarticolo.html')">Multi Articolo</button>
       </nav>
     </div>
 
@@ -525,14 +525,16 @@ nav button .soon-tag{
           <div class="arrow">↗</div>
         </a>
 
-        <div class="card soon">
+        <a class="card" data-link="cartelli_multiarticolo.html">
           <div>
             <div class="number">05</div>
-            <h2>Multi Articolo</h2>
-            <p>Più prodotti nello stesso cartello, ordinati e leggibili.</p>
+            <div class="card-thumb">
+              <img src="assets/img/multithumb.png" alt="Multi Articolo">
+            </div>
           </div>
-          <div class="soon-tag">presto</div>
-        </div>
+          <h2>Multi Articolo</h2>
+          <div class="arrow">↗</div>
+        </a>
       </div>
 
       <div class="section" id="cartellini">CARTELLINI & ETICHETTE</div>
