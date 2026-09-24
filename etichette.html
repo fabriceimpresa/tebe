@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <!-- COLLEGAMENTO AL FILE CENTRALIZZATO LOGHI -->
-  <script src="assets/js/logos.js"></script>
+  <script src="assets/js/logos.js?v=20260924"></script>
   <!-- STAMPA DIRETTA DYMO: RASTERIZZAZIONE ETICHETTA + WEB SERVICE DYMO CONNECT -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="assets/js/dymo-direct.js"></script>
@@ -170,7 +170,7 @@
     /* LAYOUT 1: OUTLET DOPPIO PREZZO */
     .tpl-outlet { height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: space-between; }
     .tpl-outlet .label-top { display: flex; justify-content: space-between; align-items: center; height: 112px; width: 100%; }
-    .tpl-outlet .brand-logo-container { width: 256px; height: 112px; }
+    .tpl-outlet .brand-logo-container { width: 256px; height: 112px; margin-left: 10px; }
     .tpl-outlet .brand-text-fallback { font-size: 26px; }
     .tpl-outlet .qr-container { width: 96px; height: 96px; display: flex; align-items: center; justify-content: center; }
     .tpl-outlet .qr-container img, .tpl-outlet .qr-container canvas { width: 96px !important; height: 96px !important; }
@@ -185,7 +185,7 @@
     /* LAYOUT 2: FINAL PRICE */
     .tpl-final { height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: space-between; }
     .tpl-final .label-top { display: flex; justify-content: space-between; align-items: center; height: 112px; width: 100%; }
-    .tpl-final .brand-logo-container { width: 256px; height: 112px; }
+    .tpl-final .brand-logo-container { width: 256px; height: 112px; margin-left: 10px; }
     .tpl-final .brand-text-fallback { font-size: 26px; }
     .tpl-final .qr-container { width: 96px; height: 96px; display: flex; align-items: center; justify-content: center; }
     .tpl-final .qr-container img, .tpl-final .qr-container canvas { width: 96px !important; height: 96px !important; }
@@ -455,14 +455,14 @@
         <div class="template-card" id="card-tpl-outlet" onclick="setTemplate('outlet')">
           <span class="tpl-name">1. Outlet Doppio Prezzo</span>
           <div class="tpl-preview-box">
-            <img src="assets/thumbnail/doppioprezzo.png" alt="Miniatura Doppio Prezzo">
+            <img src="assets/thumbnail/doppioprezzo.png?v=20260924c" alt="Miniatura Doppio Prezzo">
           </div>
         </div>
 
         <div class="template-card" id="card-tpl-final" onclick="setTemplate('final')">
           <span class="tpl-name">2. Final | Outlet Price</span>
           <div class="tpl-preview-box">
-            <img src="assets/thumbnail/finalprice.png" alt="Miniatura Final Price">
+            <img src="assets/thumbnail/finalprice.png?v=20260924c" alt="Miniatura Final Price">
           </div>
         </div>
 
@@ -476,7 +476,7 @@
         <div class="template-card" id="card-tpl-luxury" onclick="setTemplate('luxury')">
           <span class="tpl-name">4. Luxury Label</span>
           <div class="tpl-preview-box">
-            <img src="assets/thumbnail/outlet.png" alt="Miniatura Luxury Label">
+            <img src="assets/thumbnail/outlet.png?v=20260924b" alt="Miniatura Luxury Label">
           </div>
         </div>
 
@@ -594,7 +594,8 @@
 
   <script>
     const LOGO_PATH = "assets/logos/";
-    const PLACEHOLDER_TEXT = "🔴 ━━━  SELEZIONA BRAND  ━━━ 🔴";
+    const DEFAULT_LOGO_SRC = "assets/img/tebe269black.png";
+    const PLACEHOLDER_TEXT = "-- Seleziona Brand --";
     const SIZE_OPTIONS = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '54', '56', '58', '60'];
     const DEFAULT_SIZES = ['S', 'M', 'L', 'XL', '2XL', '3XL'];
 
@@ -667,11 +668,12 @@
       },
       'luxury': {
         name: '4. Luxury Label',
-        fields: ['groupOutlet'],
+        fields: ['groupBrand', 'groupCustomBrand', 'groupOutlet'],
         render: () => `
           <div class="tpl-luxury">
             <div class="left-logo-box">
-              <img src="assets/img/LUXURYOUTLET_BACK.png" alt="Luxury Outlet Logo">
+              <img id="labelLogo" src="" alt="Logo Brand" onerror="onLogoError()">
+              <span id="labelFallbackText" class="brand-text-fallback" style="display:none;">TEBE<br>269</span>
             </div>
             <div class="price-box">
               <span class="price-label">Euro</span>
@@ -869,14 +871,12 @@
       select.innerHTML = `<option value="">${PLACEHOLDER_TEXT}</option>`;
 
       if (typeof LOGO_FILES !== 'undefined' && Array.isArray(LOGO_FILES)) {
-        // Brand prioritari (stagionali) mostrati per primi ed evidenziati, poi il resto in ordine alfabetico
         const { priorityFiles, remainingFiles } = getSortedLogoFiles();
         [...priorityFiles, ...remainingFiles].forEach(fileName => {
           appendBrandOption(select, fileName, cleanBrandName(fileName), priorityFiles.includes(fileName));
         });
       }
 
-      // Posizionato di default sulla voce placeholder
       select.value = "";
       selectedBrand = "";
     }
@@ -969,9 +969,7 @@
           imgElement.style.display = 'block';
           if (textElement) textElement.style.display = 'none';
         } else {
-          // SE L'UTENTE NON HA SELEZIONATO ALCUN BRAND:
-          // Mostra di default a schermo il file assets/logos/LXRY_BRAND.png
-          imgElement.src = LOGO_PATH + 'LXRY_BRAND.png';
+          imgElement.src = DEFAULT_LOGO_SRC;
           imgElement.style.display = 'block';
           if (textElement) textElement.style.display = 'none';
         }
@@ -1031,7 +1029,7 @@
       
       const textElement = document.getElementById('labelFallbackText');
       if (textElement) {
-        textElement.innerHTML = "LXRY<br>BRAND";
+        textElement.innerHTML = "TEBE<br>269";
         textElement.style.display = 'block';
       }
     }
@@ -1041,7 +1039,7 @@
       if (!qrBox) return;
       qrBox.innerHTML = '';
       new QRCode(qrBox, {
-        text: "https://instagram.com/luxuryoutletroma",
+        text: "https://www.instagram.com/tebe_269/",
         width: 96,
         height: 96,
         colorDark: "#000000",
@@ -1218,7 +1216,7 @@
             /* TEMPLATE 1 PRINT */
             .tpl-outlet { display: flex; flex-direction: column; justify-content: space-between; height: 29mm; }
             .tpl-outlet .label-top { display: flex; justify-content: space-between; align-items: center; height: 14mm; width: 100%; }
-            .tpl-outlet .brand-logo-container { width: 32mm; height: 14mm; }
+            .tpl-outlet .brand-logo-container { width: 32mm; height: 14mm; margin-left: 1.25mm; }
             .tpl-outlet .brand-text-fallback { font-size: 10pt; }
             .tpl-outlet .qr-container { width: 12mm; height: 12mm; display: flex; align-items: center; justify-content: center; }
             .tpl-outlet .qr-container img, .tpl-outlet .qr-container canvas { width: 12mm !important; height: 12mm !important; }
@@ -1232,7 +1230,7 @@
             /* TEMPLATE 2 PRINT */
             .tpl-final { display: flex; flex-direction: column; justify-content: space-between; height: 29mm; }
             .tpl-final .label-top { display: flex; justify-content: space-between; align-items: center; height: 14mm; width: 100%; }
-            .tpl-final .brand-logo-container { width: 32mm; height: 14mm; }
+            .tpl-final .brand-logo-container { width: 32mm; height: 14mm; margin-left: 1.25mm; }
             .tpl-final .brand-text-fallback { font-size: 10pt; }
             .tpl-final .qr-container { width: 12mm; height: 12mm; display: flex; align-items: center; justify-content: center; }
             .tpl-final .qr-container img, .tpl-final .qr-container canvas { width: 12mm !important; height: 12mm !important; }

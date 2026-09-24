@@ -5,14 +5,16 @@ const LOGO_FILES = [
   "HAVEONE.png",
   "OKKIA.png",
   "SOUVENIR.png",
+  "Tebe269.png",
+  "Tebe.png",
   "TENSIONEIN.png",
   "VICOLO.png",
   "WUSIDE.png"
 ];
 
-// BRAND PRIORITARI (STAGIONALI): mostrati per primi in ogni menu a cascata dei loghi,
+// BRAND TEBE prioritari: mostrati per primi in ogni menu a cascata dei loghi,
 // subito dopo la voce di default, ed esclusi dal resto dell'elenco alfabetico.
-const PRIORITY_BRANDS = [];
+const PRIORITY_BRANDS = ["269TEBE.PNG", "Tebe269.png", "Tebe.png"];
 
 /**
  * Restituisce l'elenco LOGO_FILES riordinato secondo la regola generale:
@@ -43,7 +45,8 @@ function getOrderedLogoFiles() {
 function appendBrandOption(selectEl, fileName, displayName, isPriority) {
   const option = document.createElement('option');
   option.value = fileName;
-  option.textContent = isPriority ? `⭐ ${displayName}` : displayName;
+  const label = isPriority ? displayName.toUpperCase() : displayName;
+  option.textContent = isPriority ? `⭐ ${label}` : label;
   if (isPriority) option.className = 'priority-brand-option';
   selectEl.appendChild(option);
   return option;

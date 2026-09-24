@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{
   --ivory:#f8f6f1;
@@ -291,6 +292,7 @@ h1{
   margin-top:12px;
 }
 .wide-card{
+  position:relative;
   min-height:145px;
   background:#f1ece4;
   border:1px solid var(--line);
@@ -312,6 +314,82 @@ h1{
 }
 .lower-single{
   grid-template-columns:1fr;
+}
+.dymo-carousel-shell{
+  position:relative;
+}
+.dymo-carousel{
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:calc((100% - 36px) / 4);
+  gap:12px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+}
+.dymo-carousel::-webkit-scrollbar{
+  display:none;
+}
+.dymo-card{
+  min-height:238px;
+  padding:18px;
+  scroll-snap-align:start;
+}
+.dymo-card .card-thumb{
+  aspect-ratio:57 / 32;
+  margin:12px 0 16px;
+  background:var(--cream);
+}
+.dymo-card .card-thumb img{
+  object-fit:contain;
+}
+.dymo-card h2{
+  font-size:16px;
+}
+.dymo-card .arrow{
+  display:none;
+}
+.dymo-card p{
+  margin:7px 0 0;
+  padding-right:20px;
+  color:#8a8074;
+  font-size:11px;
+  line-height:1.45;
+}
+.carousel-control{
+  position:absolute;
+  z-index:1;
+  top:50%;
+  width:38px;
+  height:38px;
+  padding:0 0 3px;
+  border:1px solid var(--line);
+  border-radius:50%;
+  background:var(--white);
+  color:var(--gold);
+  display:grid;
+  place-items:center;
+  font-family:'Fraunces',serif;
+  font-size:27px;
+  line-height:1;
+  box-shadow:0 8px 20px rgba(50,43,36,.1);
+  transform:translateY(-50%);
+  transition:.18s ease;
+}
+.carousel-control:hover:not(:disabled){
+  border-color:var(--gold);
+  color:var(--gold);
+  box-shadow:0 10px 24px rgba(50,43,36,.15);
+}
+.carousel-control:disabled{
+  display:none;
+}
+.carousel-control.previous{
+  left:-19px;
+}
+.carousel-control.next{
+  right:-19px;
 }
 .card,.wide-card{
   text-decoration:none;
@@ -367,8 +445,243 @@ nav button .soon-tag{
   border:1px solid var(--line);
   letter-spacing:.14em;
 }
+.cash-tools-grid{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:12px;
+}
+.cash-tools-area{
+  position:relative;
+}
+.cash-tool{
+  position:relative;
+  min-height:224px;
+  padding:22px;
+  background:var(--white);
+  border:1px solid var(--line);
+}
+.cash-tool h2{
+  margin:0 0 22px;
+  color:var(--ink);
+  font-family:'Fraunces',serif;
+  font-size:18px;
+  font-weight:400;
+}
+.cash-tool p{
+  margin:0 0 14px;
+  color:#857b70;
+  font-size:12px;
+  line-height:1.5;
+}
+.cash-tool-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:14px;
+}
+.cash-input-group{
+  display:flex;
+  min-width:0;
+  flex:1;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:var(--ivory);
+}
+.cash-prefix,
+.cash-suffix{
+  display:flex;
+  align-items:center;
+  padding:0 10px;
+  color:var(--gold);
+  border-right:1px solid var(--line);
+  font-size:12px;
+  font-weight:700;
+}
+.cash-suffix{
+  color:var(--taupe-dark);
+  border-right:0;
+  border-left:1px solid var(--line);
+  font-size:10px;
+  letter-spacing:.06em;
+}
+.cash-input,
+.cash-select{
+  width:100%;
+  min-width:0;
+  padding:10px;
+  border:0;
+  outline:0;
+  color:var(--ink);
+  background:transparent;
+  font:12px Arial,Helvetica,sans-serif;
+}
+.cash-select{
+  border:1px solid var(--line);
+  background:var(--ivory);
+}
+.cash-input:focus,
+.cash-select:focus{
+  box-shadow:inset 0 0 0 1px var(--gold);
+}
+.cash-input[type="number"]{
+  appearance:textfield;
+  -moz-appearance:textfield;
+}
+.cash-input[type="number"]::-webkit-inner-spin-button,
+.cash-input[type="number"]::-webkit-outer-spin-button{
+  margin:0;
+  -webkit-appearance:none;
+}
+.cash-button{
+  width:100%;
+  padding:10px;
+  border:1px solid var(--gold);
+  background:var(--gold);
+  color:var(--white);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  transition:.18s ease;
+}
+.cash-tool .cash-button + .cash-result{
+  margin-top:18px;
+}
+.cash-button:hover{
+  background:#927331;
+  border-color:#927331;
+}
+.cash-button.secondary{
+  background:transparent;
+  color:var(--gold);
+}
+.cash-result{
+  display:block;
+  width:100%;
+  min-height:29px;
+  margin-top:18px;
+  color:var(--gold);
+  font-family:'Fraunces',serif;
+  font-size:22px;
+  text-align:center;
+}
+.cash-rate-buttons{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:6px;
+  margin-bottom:14px;
+}
+.cash-rate{
+  padding:8px 0;
+  border:1px solid var(--line);
+  background:var(--ivory);
+  color:var(--taupe-dark);
+  font-size:11px;
+  font-weight:700;
+}
+.cash-rate.active,
+.cash-rate:hover{
+  border-color:var(--gold);
+  background:#f3ecd9;
+  color:var(--gold);
+}
+.cash-qr-preview{
+  display:flex;
+  justify-content:center;
+  min-height:116px;
+  margin:18px 0;
+}
+.cash-qr-preview > div{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px;
+  background:#fff;
+  border:1px solid var(--line);
+}
+.cash-tools-status{
+  min-height:18px;
+  margin-top:6px;
+  color:#857b70;
+  font-size:10px;
+  text-align:center;
+}
+.cash-tools-coming-soon{
+  position:absolute;
+  inset:0;
+  display:none;
+  place-items:center;
+  border:1px solid rgba(173,138,62,.45);
+  background:rgba(238,232,221,.78);
+  backdrop-filter:blur(2px);
+  color:var(--gold);
+  font-family:'Fraunces',serif;
+  font-size:32px;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+body.ophilya .cash-tool > *{
+  opacity:.18;
+  filter:grayscale(1);
+}
+body.ophilya .cash-tool,
+body.ophilya .cards .card,
+body.ophilya .dymo-carousel .dymo-card,
+body.ophilya .lower .wide-card{
+  pointer-events:none;
+  border-color:rgba(102,94,84,.25);
+  box-shadow:inset 0 0 0 1px rgba(102,94,84,.04);
+  background:var(--cream);
+}
+body.ophilya .cards .card > *,
+body.ophilya .dymo-carousel .dymo-card > *,
+body.ophilya .lower .wide-card > *,
+body.ophilya .cash-tool > *{
+  visibility:hidden;
+}
+body.ophilya .cards .card::before,
+body.ophilya .dymo-carousel .dymo-card::before,
+body.ophilya .lower .wide-card::before,
+body.ophilya .cash-tool::before{
+  content:"";
+  position:absolute;
+  z-index:1;
+  inset:0;
+  background:var(--cream);
+}
+body.ophilya .cards .card::after,
+body.ophilya .dymo-carousel .dymo-card::after,
+body.ophilya .lower .wide-card::after,
+body.ophilya .cash-tool::after{
+  content:"Coming Soon";
+  position:absolute;
+  z-index:2;
+  display:grid;
+  place-items:center;
+  top:50%;
+  left:50%;
+  width:max-content;
+  padding:4px 9px;
+  border:1px solid var(--line);
+  background:var(--white);
+  color:var(--taupe-dark);
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10px;
+  font-weight:400;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  transform:translate(-50%, -50%);
+}
+body.ophilya .dymo-carousel-shell,
+body.ophilya .lower{
+  pointer-events:none;
+}
+body.ophilya .cash-tools-coming-soon{
+  display:none;
+}
 @media(max-width:1000px){
   .cards{grid-template-columns:repeat(2,1fr)}
+  .dymo-carousel{grid-auto-columns:calc((100% - 12px) / 2)}
+  .cash-tools-grid{grid-template-columns:repeat(2, minmax(0, 1fr))}
 }
 @media(max-width:720px){
   .app{grid-template-columns:1fr}
@@ -378,6 +691,10 @@ nav button .soon-tag{
   .hero{display:block}
   .identity{text-align:left;margin-top:24px}
   .cards,.lower{grid-template-columns:1fr}
+  .dymo-carousel{grid-auto-columns:85%}
+  .carousel-control.previous{left:-10px}
+  .carousel-control.next{right:-10px}
+  .cash-tools-grid{grid-template-columns:1fr}
 }
 
 
@@ -467,16 +784,27 @@ nav button .soon-tag{
       </nav>
     </div>
 
+    <div class="sidebar-section is-collapsed" data-sidebar-section="labels">
+      <div class="label" style="margin-top:28px">
+        <span>ETICHETTE</span>
+        <button class="section-toggle" type="button" aria-label="Espandi ETICHETTE" aria-expanded="false" onclick="toggleSidebarSection('labels')">⌄</button>
+      </div>
+      <nav>
+        <button onclick="openPage('etichette.html')">Etichette DYMO</button>
+      </nav>
+    </div>
+
     <div class="sidebar-section is-collapsed" data-sidebar-section="tools">
       <div class="label" style="margin-top:28px">
         <span>STRUMENTI</span>
         <button class="section-toggle" type="button" aria-label="Espandi STRUMENTI" aria-expanded="false" onclick="toggleSidebarSection('tools')">⌄</button>
       </div>
       <nav>
-      <button class="soon" disabled>Sconti <span class="soon-tag">presto</span></button>
-      <button class="soon" disabled>Aliquote <span class="soon-tag">presto</span></button>
-      <button class="soon" disabled>Valuta <span class="soon-tag">presto</span></button>
-      <button class="soon" disabled>QR <span class="soon-tag">presto</span></button>
+      <button onclick="openCashTool('cash-discount')">Calcola Sconto</button>
+      <button onclick="openCashTool('cash-rate')">Calcola Aliquota</button>
+      <button onclick="openCashTool('cash-currency')">Cambio Valuta</button>
+      <button onclick="openCashTool('cash-vat')">Calcola IVA</button>
+      <button onclick="openCashTool('cash-qr')">Generatore QR</button>
       </nav>
     </div>
 
@@ -577,44 +905,78 @@ nav button .soon-tag{
         </a>
       </div>
 
-      <div class="section" id="cartellini">CARTELLINI & ETICHETTE</div>
+      <div class="section" id="etichette">ETICHETTE</div>
 
-      <div class="lower">
-        <a class="wide-card" data-link="cartellinivetrina.html">
-          <div>
-            <h2>Cartellini</h2>
-            <p>Materiali più piccoli per esposizione e prodotto in vetrina.</p>
-          </div>
-          <div class="arrow">↗</div>
-        </a>
+      <div class="dymo-carousel-shell">
+        <button class="carousel-control previous" type="button" aria-label="Scorri le etichette a sinistra" aria-controls="dymo-carousel" onclick="scrollDymoCarousel(-1)">‹</button>
+        <div class="dymo-carousel" id="dymo-carousel">
+          <a class="card dymo-card" data-link="etichette.html?label=doppioprezzo">
+            <div>
+              <div class="number">01</div>
+              <div class="card-thumb"><img src="assets/thumbnail/doppioprezzo.png?v=20260924c" alt="Etichetta Outlet Doppio Prezzo"></div>
+            </div>
+            <div>
+              <h2>Outlet Doppio Prezzo</h2>
+              <p>Stampa diretta 57 × 32 mm · 11354</p>
+            </div>
+          </a>
 
-        <a class="wide-card" id="etichette" data-link="etichette.html">
-          <div>
-            <h2>Etichette</h2>
-            <p>Stampa etichette DYMO con marchio, prezzo e QR code.</p>
-          </div>
-          <div class="arrow">↗</div>
-        </a>
-      </div>
+          <a class="card dymo-card" data-link="etichette.html?label=finalprice">
+            <div>
+              <div class="number">02</div>
+              <div class="card-thumb"><img src="assets/thumbnail/finalprice.png?v=20260924c" alt="Etichetta Final Outlet Price"></div>
+            </div>
+            <div>
+              <h2>Final Outlet Price</h2>
+              <p>Stampa diretta 57 × 32 mm · 11354</p>
+            </div>
+          </a>
 
-      <div class="section" id="loghi-personalizzati">LOGHI PERSONALIZZATI</div>
+          <a class="card dymo-card" data-link="etichette.html?label=lastchance">
+            <div>
+              <div class="number">03</div>
+              <div class="card-thumb"><img src="assets/thumbnail/lastchance.png" alt="Etichetta Last Chance"></div>
+            </div>
+            <div>
+              <h2>Last Chance</h2>
+              <p>Stampa diretta 57 × 32 mm · 11354</p>
+            </div>
+          </a>
 
-      <div class="lower">
-        <a class="wide-card" id="importa-loghi-personalizzati" data-link="genera_loghi.html">
-          <div>
-            <h2>Importa Loghi Personalizzati</h2>
-            <p>Importa un logo personalizzato con sfondo trasparente e rendilo disponibile nei cartelli.</p>
-          </div>
-          <div class="arrow">↗</div>
-        </a>
+          <a class="card dymo-card" data-link="etichette.html?label=outlet">
+            <div>
+              <div class="number">04</div>
+              <div class="card-thumb"><img src="assets/thumbnail/outlet.png?v=20260924b" alt="Etichetta Luxury Label"></div>
+            </div>
+            <div>
+              <h2>Luxury Label</h2>
+              <p>Stampa diretta 57 × 32 mm · 11354</p>
+            </div>
+          </a>
 
-        <a class="wide-card" data-link="gestisci_lista.html">
-          <div>
-            <h2>Gestisci Loghi Personalizzati</h2>
-            <p>Riordina, rinomina, esporta o rimuovi i loghi personalizzati salvati.</p>
-          </div>
-          <div class="arrow">↗</div>
-        </a>
+          <a class="card dymo-card" data-link="etichette.html?label=promo50">
+            <div>
+              <div class="number">05</div>
+              <div class="card-thumb"><img src="assets/thumbnail/promo50.png" alt="Etichetta Promo 50 più 50"></div>
+            </div>
+            <div>
+              <h2>Promo 50+50</h2>
+              <p>Stampa diretta 57 × 32 mm · 11354</p>
+            </div>
+          </a>
+
+          <a class="card dymo-card" data-link="etichette.html?label=tagliedoppiacifra">
+            <div>
+              <div class="number">06</div>
+              <div class="card-thumb"><img src="assets/thumbnail/tagliedoppiacifra.png" alt="Etichetta Taglie Doppia Cifra"></div>
+            </div>
+            <div>
+              <h2>Taglie Doppia Cifra</h2>
+              <p>Stampa diretta 57 × 32 mm · 11354</p>
+            </div>
+          </a>
+        </div>
+        <button class="carousel-control next" type="button" aria-label="Scorri le etichette a destra" aria-controls="dymo-carousel" onclick="scrollDymoCarousel(1)">›</button>
       </div>
 
       <div class="section">MATERIALI PRONTI</div>
@@ -625,28 +987,63 @@ nav button .soon-tag{
             <h2>Galleria PDF</h2>
             <p>Locandine e avvisi pronti da stampare: orari, taglie, stagionali e cartellonistica del punto vendita.</p>
           </div>
-          <div class="arrow">↗</div>
         </a>
       </div>
 
-      <div class="section">STRUMENTI CASSA</div>
+      <div class="section" id="strumenti-cassa">STRUMENTI CASSA</div>
 
-      <div class="lower">
-        <div class="wide-card soon">
-          <div>
-            <h2>Sconti · Aliquote · Valuta</h2>
-            <p>Piccoli strumenti quotidiani sempre a portata di mano.</p>
+      <div class="cash-tools-area">
+      <div class="cash-tools-grid">
+        <section class="cash-tool" id="cash-discount">
+          <h2>Calcola Sconto</h2>
+          <div class="cash-tool-row">
+            <div class="cash-input-group"><span class="cash-prefix">€</span><input id="discount-original" class="cash-input" type="number" min="0" step="0.01" placeholder="Prezzo pieno"></div>
+            <div class="cash-input-group"><span class="cash-prefix">%</span><input id="discount-percent" class="cash-input" type="number" min="0" max="100" step="0.01" placeholder="Sconto"></div>
           </div>
-          <div class="soon-tag">presto</div>
-        </div>
+          <button class="cash-button" type="button" onclick="calculateDiscount()">Calcola prezzo finale</button>
+          <output class="cash-result" id="discount-result">€ 0,00</output>
+        </section>
 
-        <div class="wide-card soon">
-          <div>
-            <h2>QR Code</h2>
-            <p>Generazione rapida di codici per prodotti e comunicazioni.</p>
+        <section class="cash-tool" id="cash-rate">
+          <h2>Calcola Aliquota</h2>
+          <div class="cash-tool-row">
+            <div class="cash-input-group"><span class="cash-prefix">€</span><input id="rate-original" class="cash-input" type="number" min="0" step="0.01" placeholder="Prezzo pieno"></div>
+            <div class="cash-input-group"><span class="cash-prefix">€</span><input id="rate-final" class="cash-input" type="number" min="0" step="0.01" placeholder="Prezzo scontato"></div>
           </div>
-          <div class="soon-tag">presto</div>
-        </div>
+          <button class="cash-button" type="button" onclick="calculateDiscountRate()">Trova % sconto</button>
+          <output class="cash-result" id="rate-result">0%</output>
+        </section>
+
+        <section class="cash-tool" id="cash-currency">
+          <h2>Cambio Valuta</h2>
+          <div class="cash-tool-row"><select class="cash-select" id="currency-direction" onchange="calculateCurrency()"><option value="to-eur">Da valuta estera a EUR</option><option value="from-eur">Da EUR a valuta estera</option></select></div>
+          <div class="cash-tool-row">
+            <div class="cash-input-group"><span class="cash-prefix" id="currency-symbol">$</span><input id="currency-amount" class="cash-input" type="number" min="0" step="0.01" placeholder="Importo" oninput="calculateCurrency()"></div>
+            <select class="cash-select" id="currency-code" onchange="calculateCurrency()"><option value="USD">USD</option><option value="GBP">GBP</option><option value="RUB">RUB</option><option value="ILS">ILS</option><option value="CNY">CNY</option><option value="JPY">JPY</option></select>
+          </div>
+          <button class="cash-button" type="button" onclick="calculateCurrency()">Calcola cambio</button>
+          <output class="cash-result" id="currency-result">€ 0,00</output>
+          <div class="cash-tools-status" id="currency-status">Caricamento tassi di cambio…</div>
+        </section>
+
+        <section class="cash-tool" id="cash-vat">
+          <h2>Calcola IVA</h2>
+          <div class="cash-rate-buttons"><button class="cash-rate" type="button" onclick="setVatRate(4, this)">4%</button><button class="cash-rate" type="button" onclick="setVatRate(5, this)">5%</button><button class="cash-rate" type="button" onclick="setVatRate(10, this)">10%</button><button class="cash-rate active" type="button" onclick="setVatRate(22, this)">22%</button></div>
+          <div class="cash-tool-row"><div class="cash-input-group"><span class="cash-prefix">€</span><input id="vat-net" class="cash-input" inputmode="decimal" placeholder="Imponibile" oninput="calculateVatFromNet()"><span class="cash-suffix">SENZA IVA</span></div></div>
+          <div class="cash-tool-row"><div class="cash-input-group"><span class="cash-prefix">€</span><input id="vat-value" class="cash-input" inputmode="decimal" placeholder="Importo IVA" oninput="calculateVatFromValue()"><span class="cash-suffix">IVA</span></div></div>
+          <div class="cash-tool-row"><div class="cash-input-group"><span class="cash-prefix">€</span><input id="vat-gross" class="cash-input" inputmode="decimal" placeholder="Totale" oninput="calculateVatFromGross()"><span class="cash-suffix">CON IVA</span></div></div>
+          <button class="cash-button secondary" type="button" onclick="resetVat()">Azzera IVA</button>
+        </section>
+
+        <section class="cash-tool" id="cash-qr">
+          <h2>Generatore QR Code</h2>
+          <div class="cash-tool-row"><div class="cash-input-group"><input id="qr-content" class="cash-input" type="text" value="https://www.instagram.com/tebe_269/" placeholder="Inserisci link o testo" oninput="generateQrCode()"></div></div>
+          <div class="cash-tool-row"><select class="cash-select" id="qr-size" onchange="generateQrCode()"><option value="100">Dimensione: piccola</option><option value="160">Dimensione: media</option><option value="240">Dimensione: grande</option></select></div>
+          <div class="cash-qr-preview"><div id="qr-preview"></div></div>
+          <div class="cash-tool-row"><button class="cash-button" type="button" onclick="downloadQrCode()">Scarica QR</button><button class="cash-button secondary" type="button" onclick="printQrCode()">Stampa QR</button></div>
+        </section>
+      </div>
+      <div class="cash-tools-coming-soon" aria-live="polite">Coming Soon</div>
       </div>
 
     </section>
@@ -673,7 +1070,9 @@ let currentStore = "tebe";
 
 function updateLinks(){
   document.querySelectorAll("[data-link]").forEach(el=>{
-    el.setAttribute("href", el.dataset.link + "?store=" + currentStore);
+    const url = new URL(el.dataset.link, window.location.href);
+    url.searchParams.set("store", currentStore);
+    el.setAttribute("href", url.href);
   });
 }
 
@@ -689,6 +1088,7 @@ function changeStore(store){
 
   document.getElementById("tebe").classList.toggle("selected",store==="tebe");
   document.getElementById("ophilya").classList.toggle("selected",store==="ophilya");
+  document.body.classList.toggle("ophilya", store === "ophilya");
 
   updateLinks();
 }
@@ -699,6 +1099,169 @@ function goTo(sectionId){
 
 function openPage(page){
   window.location.href = `${page}?store=${encodeURIComponent(currentStore)}`;
+}
+
+function openCashTool(toolId){
+  document.getElementById("strumenti-cassa")?.scrollIntoView({behavior:"smooth", block:"start"});
+  if(currentStore !== "tebe") return;
+  window.setTimeout(() => document.getElementById(toolId)?.querySelector("input, select, button")?.focus({preventScroll:true}), 450);
+}
+
+function formatCurrency(value){
+  return `€ ${value.toFixed(2).replace(".", ",")}`;
+}
+
+function parseDecimal(value){
+  return Number.parseFloat(value.replace(",", "."));
+}
+
+function calculateDiscount(){
+  const original = Number.parseFloat(document.getElementById("discount-original").value);
+  const discount = Number.parseFloat(document.getElementById("discount-percent").value);
+  document.getElementById("discount-result").textContent =
+    Number.isFinite(original) && Number.isFinite(discount) ? formatCurrency(original * (1 - discount / 100)) : "€ 0,00";
+}
+
+function calculateDiscountRate(){
+  const original = Number.parseFloat(document.getElementById("rate-original").value);
+  const finalPrice = Number.parseFloat(document.getElementById("rate-final").value);
+  document.getElementById("rate-result").textContent =
+    Number.isFinite(original) && Number.isFinite(finalPrice) && original > 0
+      ? `-${Math.round((1 - finalPrice / original) * 100)}%`
+      : "0%";
+}
+
+let vatRate = 22;
+function setVatRate(rate, button){
+  vatRate = rate;
+  document.querySelectorAll(".cash-rate").forEach(item => item.classList.toggle("active", item === button));
+  calculateVatFromNet();
+}
+
+function setVatValues(net, value, gross){
+  document.getElementById("vat-net").value = net.toFixed(2).replace(".", ",");
+  document.getElementById("vat-value").value = value.toFixed(2).replace(".", ",");
+  document.getElementById("vat-gross").value = gross.toFixed(2).replace(".", ",");
+}
+
+function clearVatValues(exceptId){
+  ["vat-net", "vat-value", "vat-gross"].filter(id => id !== exceptId).forEach(id => { document.getElementById(id).value = ""; });
+}
+
+function calculateVatFromNet(){
+  const net = parseDecimal(document.getElementById("vat-net").value);
+  if(!Number.isFinite(net) || net < 0){ clearVatValues("vat-net"); return; }
+  const value = net * vatRate / 100;
+  setVatValues(net, value, net + value);
+}
+
+function calculateVatFromValue(){
+  const value = parseDecimal(document.getElementById("vat-value").value);
+  if(!Number.isFinite(value) || value < 0){ clearVatValues("vat-value"); return; }
+  const net = value / (vatRate / 100);
+  setVatValues(net, value, net + value);
+}
+
+function calculateVatFromGross(){
+  const gross = parseDecimal(document.getElementById("vat-gross").value);
+  if(!Number.isFinite(gross) || gross < 0){ clearVatValues("vat-gross"); return; }
+  const net = gross / (1 + vatRate / 100);
+  setVatValues(net, gross - net, gross);
+}
+
+function resetVat(){
+  ["vat-net", "vat-value", "vat-gross"].forEach(id => { document.getElementById(id).value = ""; });
+}
+
+const currencySymbols = { USD:"$", GBP:"£", RUB:"₽", ILS:"₪", CNY:"¥", JPY:"¥" };
+let exchangeRates = { USD:1.08, GBP:0.85, RUB:98, ILS:4, CNY:7.8, JPY:160.5 };
+
+async function loadExchangeRates(){
+  const status = document.getElementById("currency-status");
+  try {
+    const response = await fetch("https://open.er-api.com/v6/latest/EUR");
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if(!data?.rates) throw new Error("Risposta tassi non valida");
+    exchangeRates = data.rates;
+    status.textContent = "Tassi di cambio aggiornati.";
+    calculateCurrency();
+  } catch(error) {
+    console.error("Aggiornamento tassi di cambio fallito.", error);
+    status.textContent = "Tassi di riserva in uso: aggiornamento non disponibile.";
+    calculateCurrency();
+  }
+}
+
+function calculateCurrency(){
+  const direction = document.getElementById("currency-direction").value;
+  const amount = Number.parseFloat(document.getElementById("currency-amount").value);
+  const currency = document.getElementById("currency-code").value;
+  const symbol = currencySymbols[currency];
+  const rate = exchangeRates[currency];
+  document.getElementById("currency-symbol").textContent = direction === "to-eur" ? symbol : "€";
+  const result = document.getElementById("currency-result");
+  if(!Number.isFinite(amount) || amount < 0 || !Number.isFinite(rate)){
+    result.textContent = direction === "to-eur" ? "€ 0,00" : `${symbol} 0,00`;
+    return;
+  }
+  result.textContent = direction === "to-eur"
+    ? formatCurrency(amount / rate)
+    : `${symbol} ${(amount * rate).toFixed(2).replace(".", ",")} (${currency})`;
+}
+
+function generateQrCode(){
+  const container = document.getElementById("qr-preview");
+  const content = document.getElementById("qr-content").value.trim();
+  const size = Number.parseInt(document.getElementById("qr-size").value, 10);
+  container.innerHTML = "";
+  if(!content) return;
+  new QRCode(container, { text:content, width:size, height:size, colorDark:"#282522", colorLight:"#ffffff", correctLevel:QRCode.CorrectLevel.M });
+}
+
+function getQrImageUrl(){
+  const qrElement = document.querySelector("#qr-preview img, #qr-preview canvas");
+  if(!qrElement) return "";
+  return qrElement instanceof HTMLCanvasElement ? qrElement.toDataURL("image/png") : qrElement.src;
+}
+
+function downloadQrCode(){
+  const imageUrl = getQrImageUrl();
+  if(!imageUrl) return;
+  const link = document.createElement("a");
+  link.href = imageUrl;
+  link.download = "qrcode.png";
+  link.click();
+}
+
+function printQrCode(){
+  const imageUrl = getQrImageUrl();
+  if(!imageUrl) return;
+  const printWindow = window.open("", "_blank", "width=450,height=450");
+  if(!printWindow){
+    console.error("Apertura della finestra di stampa bloccata dal browser.");
+    return;
+  }
+  printWindow.document.write(`<img src="${imageUrl}" alt="QR Code" style="display:block;max-width:80%;margin:10vh auto" onload="window.print();window.close()">`);
+  printWindow.document.close();
+}
+
+function updateDymoCarouselControls(){
+  const carousel = document.getElementById("dymo-carousel");
+  if(!carousel) return;
+
+  const previous = document.querySelector(".carousel-control.previous");
+  const next = document.querySelector(".carousel-control.next");
+  const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+
+  previous.disabled = carousel.scrollLeft <= 1;
+  next.disabled = carousel.scrollLeft >= maxScrollLeft - 1;
+}
+
+function scrollDymoCarousel(direction){
+  const carousel = document.getElementById("dymo-carousel");
+  if(!carousel) return;
+  carousel.scrollBy({ left: direction * carousel.clientWidth * 0.85, behavior:"smooth" });
 }
 
 function toggleSidebarSection(sectionId){
@@ -743,6 +1306,13 @@ function restoreSidebarSections(){
   if(store === "ophilya"){ changeStore("ophilya"); }
   else { updateLinks(); }
   restoreSidebarSections();
+
+  const dymoCarousel = document.getElementById("dymo-carousel");
+  dymoCarousel?.addEventListener("scroll", updateDymoCarouselControls, { passive:true });
+  window.addEventListener("resize", updateDymoCarouselControls);
+  updateDymoCarouselControls();
+  generateQrCode();
+  loadExchangeRates();
 })();
 </script>
 </body>

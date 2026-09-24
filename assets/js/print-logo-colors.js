@@ -13,6 +13,7 @@
 (() => {
   const PRINT_LOGOS_PATH = 'assets/img/printlogos/';
   const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
+  const SOURCE_ONLY_LOGOS = new Set(['Tebe269.png', 'Tebe.png']);
   let customLogoCache = new Map(); // chiave: `${sourceData}|${colorKey}`
 
   function getOfficialPrintLogoPath(logoFileName, color) {
@@ -109,7 +110,7 @@
     }
 
     const officialMatch = source.match(/assets\/logos\/([^/?#]+)$/);
-    if (officialMatch && COLOR_RGB[color]) {
+    if (officialMatch && COLOR_RGB[color] && !SOURCE_ONLY_LOGOS.has(officialMatch[1])) {
       return Promise.resolve(getOfficialPrintLogoPath(officialMatch[1], color));
     }
 
