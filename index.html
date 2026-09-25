@@ -331,7 +331,7 @@ h1{
 .dymo-carousel{
   display:grid;
   grid-auto-flow:column;
-  grid-auto-columns:calc((100% - 36px) / 4);
+  grid-auto-columns:calc((100% - 12px) / 2);
   gap:12px;
   padding:3px 0 6px;
   margin:-3px 0 -6px;
@@ -838,12 +838,9 @@ body.ophilya .cash-tools-coming-soon{
 
 .sidebar-disclaimer{
   width:100%;
-  margin-top:24px;
-  padding-top:14px;
-  border-top:1px solid var(--line);
   color:#766d62;
-  display:none;
-  font-size:10px;
+  display:block;
+  font-size:11px;
   line-height:1.55;
   letter-spacing:.01em;
   text-align:center;
@@ -853,8 +850,12 @@ body.ophilya .cash-tools-coming-soon{
   font-weight:400;
   display:block;
   white-space:nowrap;
-  font-size:9px;
+  font-size:10px;
   letter-spacing:.01em;
+}
+
+.sidebar-disclaimer .release-number{
+  color:var(--gold);
 }
 
 .sidebar-disclaimer a{
@@ -862,10 +863,30 @@ body.ophilya .cash-tools-coming-soon{
   text-decoration:none;
 }
 
-@media (min-width:1000px) and (min-height:800px){
-  .sidebar-disclaimer{
-    display:block;
-  }
+.bottom .sidebar-section{
+  width:100%;
+  margin-top:24px;
+  padding-top:14px;
+  border-top:1px solid var(--line);
+}
+
+.bottom .sidebar-section .label{
+  margin-top:0 !important;
+}
+
+.bottom .sidebar-section .label span{
+  white-space:nowrap;
+  letter-spacing:.18em;
+  color:var(--gold);
+}
+
+.bottom .sidebar-section .section-toggle{
+  align-self:center;
+  margin:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--gold);
 }
 
 </style>
@@ -935,10 +956,18 @@ body.ophilya .cash-tools-coming-soon{
         <img src="assets/img/storecraftlogo.png" alt="StoreCraft">
       </div>
       <div class="signature-caption">CRAFTED WITH STORECRAFT</div>
-      <div class="sidebar-disclaimer">
-        <span>V 1.0 2027 · Developed by Fabrizio Notte</span>
-        © Marchi e loghi appartengono ai rispettivi proprietari<br>
-        <a href="mailto:fabriceimpresa@gmail.com">fabriceimpresa@gmail.com</a>
+      <div class="sidebar-section is-collapsed" data-sidebar-section="credits">
+        <div class="label">
+          <span>CREDITS // CONTACTS</span>
+          <button class="section-toggle" type="button" aria-label="Espandi CREDITS // CONTACTS" aria-expanded="false" onclick="toggleSidebarSection('credits')">⌄</button>
+        </div>
+        <nav>
+          <div class="sidebar-disclaimer">
+            <span><span class="release-number">V 1.0 2027</span> · Developed by Fabrizio Notte</span>
+            © Marchi e loghi appartengono ai rispettivi proprietari<br>
+            <a href="mailto:fabriceimpresa@gmail.com">fabriceimpresa@gmail.com</a>
+          </div>
+        </nav>
       </div>
     </div>
   </aside>
@@ -1034,7 +1063,6 @@ body.ophilya .cash-tools-coming-soon{
       <div class="section" id="etichette">ETICHETTE</div>
 
       <div class="dymo-carousel-shell">
-        <button class="carousel-control previous" type="button" aria-label="Scorri le etichette a sinistra" aria-controls="dymo-carousel" onclick="scrollDymoCarousel(-1)">‹</button>
         <div class="dymo-carousel" id="dymo-carousel">
           <a class="card dymo-card" data-link="etichette.html?label=doppioprezzo">
             <div>
@@ -1058,51 +1086,7 @@ body.ophilya .cash-tools-coming-soon{
             </div>
           </a>
 
-          <a class="card dymo-card" data-link="etichette.html?label=lastchance">
-            <div>
-              <div class="number">03</div>
-              <div class="card-thumb"><img src="assets/thumbnail/lastchance.png" alt="Etichetta Last Chance"></div>
-            </div>
-            <div>
-              <h2>Last Chance</h2>
-              <p>Stampa diretta 57 × 32 mm · 11354</p>
-            </div>
-          </a>
-
-          <a class="card dymo-card" data-link="etichette.html?label=outlet">
-            <div>
-              <div class="number">04</div>
-              <div class="card-thumb"><img src="assets/thumbnail/outlet.png?v=20260924b" alt="Etichetta Luxury Label"></div>
-            </div>
-            <div>
-              <h2>Luxury Label</h2>
-              <p>Stampa diretta 57 × 32 mm · 11354</p>
-            </div>
-          </a>
-
-          <a class="card dymo-card" data-link="etichette.html?label=promo50">
-            <div>
-              <div class="number">05</div>
-              <div class="card-thumb"><img src="assets/thumbnail/promo50.png" alt="Etichetta Promo 50 più 50"></div>
-            </div>
-            <div>
-              <h2>Promo 50+50</h2>
-              <p>Stampa diretta 57 × 32 mm · 11354</p>
-            </div>
-          </a>
-
-          <a class="card dymo-card" data-link="etichette.html?label=tagliedoppiacifra">
-            <div>
-              <div class="number">06</div>
-              <div class="card-thumb"><img src="assets/thumbnail/tagliedoppiacifra.png" alt="Etichetta Taglie Doppia Cifra"></div>
-            </div>
-            <div>
-              <h2>Taglie Doppia Cifra</h2>
-              <p>Stampa diretta 57 × 32 mm · 11354</p>
-            </div>
-          </a>
         </div>
-        <button class="carousel-control next" type="button" aria-label="Scorri le etichette a destra" aria-controls="dymo-carousel" onclick="scrollDymoCarousel(1)">›</button>
       </div>
 
       <div class="section">MATERIALI PRONTI</div>
@@ -1433,6 +1417,7 @@ function updateDymoCarouselControls(){
 
   const previous = document.querySelector(".carousel-control.previous");
   const next = document.querySelector(".carousel-control.next");
+  if(!previous || !next) return;
   const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
 
   previous.disabled = carousel.scrollLeft <= 1;
@@ -1462,7 +1447,7 @@ function toggleSidebarSection(sectionId){
 
 function restoreSidebarSections(){
   const savedSections = localStorage.getItem("collapsed_sidebar_sections");
-  const defaultCollapsedSections = ["custom-logos", "tools"];
+  const defaultCollapsedSections = ["custom-logos", "tools", "credits"];
   let collapsedSections = [];
   try {
     collapsedSections = JSON.parse(savedSections || JSON.stringify(defaultCollapsedSections));
