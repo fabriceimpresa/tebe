@@ -257,8 +257,26 @@ h1{
 }
 .cards{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(2, minmax(220px, auto));
+  grid-auto-flow:column;
+  grid-auto-columns:calc((100% - 36px) / 4);
   gap:12px;
+  padding:3px 0 6px;
+  margin:-3px 0 -6px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+}
+.cards::-webkit-scrollbar{
+  display:none;
+}
+.cartelli-carousel-shell{
+  position:relative;
+}
+.cartelli-carousel .card,
+.cartelli-carousel .coming-soon-card{
+  scroll-snap-align:start;
 }
 .card{
   position:relative;
@@ -275,6 +293,58 @@ h1{
   transform:translateY(-2px);
   border-color:var(--gold);
   box-shadow:0 10px 30px rgba(40,37,34,.12);
+}
+.coming-soon-card{
+  position:relative;
+  min-height:220px;
+  padding:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--cream);
+  border:1px solid rgba(102,94,84,.25);
+  color:var(--taupe-dark);
+  pointer-events:none;
+  overflow:hidden;
+}
+.coming-soon-card h2{
+  position:absolute;
+  left:20px;
+  right:20px;
+  bottom:20px;
+  z-index:3;
+  margin:0;
+  color:var(--taupe-dark);
+  font-family:'Fraunces',serif;
+  font-size:17px;
+  font-weight:400;
+  line-height:1.2;
+  text-align:left;
+}
+.coming-soon-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(238,232,221,.72);
+  backdrop-filter:blur(2px);
+}
+.coming-soon-card::after{
+  content:"Coming Soon";
+  position:absolute;
+  z-index:2;
+  top:50%;
+  left:50%;
+  width:max-content;
+  padding:4px 9px;
+  border:1px solid var(--line);
+  background:rgba(255,253,250,.88);
+  color:var(--taupe-dark);
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10px;
+  font-weight:400;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  transform:translate(-50%, -50%);
 }
 .number{
   font-size:10px;
@@ -433,9 +503,48 @@ h1{
   font-size:11px;
   line-height:1.45;
 }
-.carousel-control{
+.labels-coming-soon-card{
+  position:relative;
+  background:var(--cream);
+  border-color:rgba(102,94,84,.25);
+  pointer-events:none;
+  overflow:hidden;
+}
+.labels-coming-soon-card::before{
+  content:"";
   position:absolute;
   z-index:1;
+  inset:0;
+  background:rgba(238,232,221,.72);
+  backdrop-filter:blur(2px);
+}
+.labels-coming-soon-card::after{
+  content:"Coming Soon";
+  position:absolute;
+  z-index:2;
+  top:50%;
+  left:50%;
+  width:max-content;
+  padding:4px 9px;
+  border:1px solid var(--line);
+  background:rgba(255,253,250,.88);
+  color:var(--taupe-dark);
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:10px;
+  font-weight:400;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  transform:translate(-50%, -50%);
+}
+.labels-coming-soon-card h2{
+  position:relative;
+  z-index:3;
+  margin:auto 0 0;
+  color:var(--taupe-dark);
+}
+.carousel-control{
+  position:absolute;
+  z-index:4;
   top:50%;
   width:38px;
   height:38px;
@@ -784,7 +893,8 @@ body.ophilya .lower .wide-card{
 body.ophilya .cards .card > *,
 body.ophilya .dymo-carousel .dymo-card > *,
 body.ophilya .lower .wide-card > *,
-body.ophilya .cash-tool > *{
+body.ophilya .cash-tool > *,
+body.ophilya .coming-soon-card h2{
   visibility:hidden;
 }
 body.ophilya .cards .card::before,
@@ -828,7 +938,7 @@ body.ophilya .cash-tools-coming-soon{
   display:none;
 }
 @media(max-width:1000px){
-  .cards{grid-template-columns:repeat(2,1fr)}
+  .cards{grid-auto-columns:calc((100% - 12px) / 2)}
   .dymo-carousel{grid-auto-columns:calc((100% - 12px) / 2)}
   .cash-tools-grid{grid-template-columns:repeat(2, minmax(0, 1fr))}
 }
@@ -842,7 +952,8 @@ body.ophilya .cash-tools-coming-soon{
   .content{padding:32px 20px}
   .hero{display:block}
   .identity{text-align:left;margin-top:24px}
-  .cards,.lower{grid-template-columns:1fr}
+  .cards{grid-auto-columns:85%}
+  .lower{grid-template-columns:1fr}
   .dymo-carousel{grid-auto-columns:85%}
   .carousel-control.previous{left:-10px}
   .carousel-control.next{right:-10px}
@@ -1080,7 +1191,9 @@ body.ophilya .cash-tools-coming-soon{
 
       <div class="section" id="cartelli">CREA CARTELLI</div>
 
-      <div class="cards">
+      <div class="cartelli-carousel-shell">
+        <button class="carousel-control previous" id="cartelli-previous" type="button" aria-label="Cartelli precedenti" onclick="scrollCartelliCarousel(-1)">‹</button>
+        <div class="cards cartelli-carousel" id="cartelli-carousel">
         <a class="card" data-link="cartelli_semplici.html">
           <div>
             <div class="number">01</div>
@@ -1140,35 +1253,61 @@ body.ophilya .cash-tools-coming-soon{
           <h2>Multi Articolo</h2>
           <div class="arrow">↗</div>
         </a>
+
+        <article class="coming-soon-card" aria-label="Albero Accessori, Coming Soon">
+          <h2>Albero Accessori</h2>
+        </article>
+        <article class="coming-soon-card" aria-label="Cornice 10x15, Coming Soon">
+          <h2>Cornice 10x15</h2>
+        </article>
+        <article class="coming-soon-card" aria-label="Cornice 21 x 27, Coming Soon">
+          <h2>Cornice 21 x 27</h2>
+        </article>
+        <article class="coming-soon-card" aria-label="Paletto Ferro 1, Coming Soon">
+          <h2>Paletto Ferro 1</h2>
+        </article>
+        <article class="coming-soon-card" aria-label="Paletto Ferro 2, Coming Soon">
+          <h2>Paletto Ferro 2</h2>
+        </article>
+        </div>
+        <button class="carousel-control next" id="cartelli-next" type="button" aria-label="Cartelli successivi" onclick="scrollCartelliCarousel(1)">›</button>
       </div>
 
       <div class="section" id="etichette">ETICHETTE</div>
 
       <div class="dymo-carousel-shell">
+        <button class="carousel-control previous" id="dymo-previous" type="button" aria-label="Etichette precedenti" onclick="scrollDymoCarousel(-1)">‹</button>
         <div class="dymo-carousel" id="dymo-carousel">
-          <a class="card dymo-card" data-link="etichette.html?label=doppioprezzo">
+          <article class="card dymo-card labels-coming-soon-card" aria-label="Semplice, Coming Soon">
             <div>
               <div class="number">01</div>
-              <div class="card-thumb"><img src="assets/thumbnail/doppioprezzo.png?v=20260924c" alt="Etichetta Outlet Doppio Prezzo"></div>
-            </div>
-            <div>
-              <h2>Outlet Doppio Prezzo</h2>
-              <p>Stampa diretta 57 × 32 mm · 11354</p>
-            </div>
-          </a>
-
-          <a class="card dymo-card" data-link="etichette.html?label=finalprice">
-            <div>
-              <div class="number">02</div>
               <div class="card-thumb"><img src="assets/thumbnail/finalprice.png?v=20260924c" alt="Etichetta Final Outlet Price"></div>
             </div>
             <div>
-              <h2>Final Outlet Price</h2>
+              <h2>Semplice</h2>
               <p>Stampa diretta 57 × 32 mm · 11354</p>
             </div>
-          </a>
+          </article>
+
+          <article class="card dymo-card labels-coming-soon-card" aria-label="Sale, Coming Soon">
+            <div>
+              <div class="number">02</div>
+              <div class="card-thumb"><img src="assets/thumbnail/doppioprezzo.png?v=20260924c" alt="Etichetta Outlet Doppio Prezzo"></div>
+            </div>
+            <div>
+              <h2>Sale</h2>
+              <p>Stampa diretta 57 × 32 mm · 11354</p>
+            </div>
+          </article>
+          <article class="card dymo-card labels-coming-soon-card" aria-label="Promo, Coming Soon">
+            <div>
+              <div class="number">03</div>
+            </div>
+            <h2>Promo</h2>
+          </article>
 
         </div>
+        <button class="carousel-control next" id="dymo-next" type="button" aria-label="Etichette successive" onclick="scrollDymoCarousel(1)">›</button>
       </div>
 
       <div class="section">MATERIALI PRONTI</div>
@@ -1512,8 +1651,8 @@ function updateDymoCarouselControls(){
   const carousel = document.getElementById("dymo-carousel");
   if(!carousel) return;
 
-  const previous = document.querySelector(".carousel-control.previous");
-  const next = document.querySelector(".carousel-control.next");
+  const previous = document.getElementById("dymo-previous");
+  const next = document.getElementById("dymo-next");
   if(!previous || !next) return;
   const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
 
@@ -1525,6 +1664,25 @@ function scrollDymoCarousel(direction){
   const carousel = document.getElementById("dymo-carousel");
   if(!carousel) return;
   carousel.scrollBy({ left: direction * carousel.clientWidth * 0.85, behavior:"smooth" });
+}
+
+function updateCartelliCarouselControls(){
+  const carousel = document.getElementById("cartelli-carousel");
+  if(!carousel) return;
+
+  const previous = document.getElementById("cartelli-previous");
+  const next = document.getElementById("cartelli-next");
+  if(!previous || !next) return;
+  const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+
+  previous.disabled = carousel.scrollLeft <= 1;
+  next.disabled = carousel.scrollLeft >= maxScrollLeft - 1;
+}
+
+function scrollCartelliCarousel(direction){
+  const carousel = document.getElementById("cartelli-carousel");
+  if(!carousel) return;
+  carousel.scrollBy({left: direction * carousel.clientWidth * 0.85, behavior:"smooth"});
 }
 
 function toggleSidebarSection(sectionId){
@@ -1584,8 +1742,12 @@ function restoreSidebarSections(){
 
   const dymoCarousel = document.getElementById("dymo-carousel");
   dymoCarousel?.addEventListener("scroll", updateDymoCarouselControls, { passive:true });
+  const cartelliCarousel = document.getElementById("cartelli-carousel");
+  cartelliCarousel?.addEventListener("scroll", updateCartelliCarouselControls, { passive:true });
   window.addEventListener("resize", updateDymoCarouselControls);
+  window.addEventListener("resize", updateCartelliCarouselControls);
   updateDymoCarouselControls();
+  updateCartelliCarouselControls();
   generateQrCode();
   loadExchangeRates();
 })();
