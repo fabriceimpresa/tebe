@@ -15,7 +15,6 @@
   const PRINT_LOGOS_PATH = 'assets/img/printlogos/';
   const OFFICIAL_LOGOS_PATH = 'assets/logos/';
   const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
-  const SOURCE_ONLY_LOGOS = new Set(['Tebe269.png', 'Tebe.png']);
   let customLogoCache = new Map(); // chiave: `${sourceData}|${colorKey}`
 
   function getOfficialPrintLogoPath(logoFileName, color) {
@@ -41,25 +40,29 @@
     return new Promise((resolve, reject) => {
       const sourceImage = new Image();
       sourceImage.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = sourceImage.naturalWidth;
-        canvas.height = sourceImage.naturalHeight;
-        const context = canvas.getContext('2d');
-        if (!context) {
-          reject(new Error('Canvas non disponibile.'));
-          return;
-        }
-        context.drawImage(sourceImage, 0, 0);
-        const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
-        for (let pixel = 0; pixel < pixels.data.length; pixel += 4) {
-          if (pixels.data[pixel + 3] > 0) {
-            pixels.data[pixel] = red;
-            pixels.data[pixel + 1] = green;
-            pixels.data[pixel + 2] = blue;
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = sourceImage.naturalWidth;
+          canvas.height = sourceImage.naturalHeight;
+          const context = canvas.getContext('2d');
+          if (!context) {
+            reject(new Error('Canvas non disponibile.'));
+            return;
           }
+          context.drawImage(sourceImage, 0, 0);
+          const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
+          for (let pixel = 0; pixel < pixels.data.length; pixel += 4) {
+            if (pixels.data[pixel + 3] > 0) {
+              pixels.data[pixel] = red;
+              pixels.data[pixel + 1] = green;
+              pixels.data[pixel + 2] = blue;
+            }
+          }
+          context.putImageData(pixels, 0, 0);
+          resolve(canvas.toDataURL('image/png'));
+        } catch (error) {
+          reject(error);
         }
-        context.putImageData(pixels, 0, 0);
-        resolve(canvas.toDataURL('image/png'));
       };
       sourceImage.onerror = () => reject(new Error('Logo personalizzato non disponibile.'));
       sourceImage.src = sourceDataUrl;
@@ -112,7 +115,7 @@
     }
 
     const officialMatch = source.match(/assets\/logos\/([^/?#]+)$/);
-    if (officialMatch && COLOR_RGB[color] && !SOURCE_ONLY_LOGOS.has(officialMatch[1])) {
+    if (officialMatch && COLOR_RGB[color]) {
       return Promise.resolve(getOfficialPrintLogoPath(officialMatch[1], color));
     }
 
