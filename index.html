@@ -104,6 +104,7 @@ main{min-width:0}
   border-bottom:1px solid var(--line);
 }
 .topbar-inner{
+  position:relative;
   max-width:1450px;
   height:100%;
   margin:auto;
@@ -132,15 +133,78 @@ main{min-width:0}
   color:var(--ink);
 }
 .status{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
   font-size:11px;
   letter-spacing:.2em;
   color:#94897c;
 }
+.mode-switcher{
+  display:flex;
+  gap:4px;
+  padding:4px;
+  background:var(--cream);
+  border:1px solid var(--line);
+}
+.mode-btn{
+  border:0;
+  background:transparent;
+  padding:9px 13px;
+  font-size:10px;
+  letter-spacing:.14em;
+  color:#887d70;
+}
+.mode-btn:hover,
+.mode-btn.active{
+  background:var(--white);
+  color:var(--ink);
+}
+.home-mark{
+  position:fixed;
+  top:20px;
+  left:273px;
+  z-index:20;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 11px;
+  border:1px solid var(--gold);
+  background:var(--white);
+  color:var(--ink);
+  font-size:10px;
+  letter-spacing:.14em;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-5px);
+  transition:opacity .2s ease, transform .2s ease, background .2s ease, color .2s ease;
+}
+body.is-scrolled .home-mark,
+.home-mark:hover,
+.home-mark:focus-visible{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
+}
+.home-mark:hover,
+.home-mark:focus-visible{
+  background:var(--gold);
+  color:var(--white);
+  outline:none;
+}
 .content{
+  display:flex;
+  flex-direction:column;
   max-width:1450px;
   padding:48px 50px 65px;
   margin:auto;
 }
+.content > *{order:10}
+.content > .hero{order:0}
+body.cassiere-mode #strumenti-cassa{order:1}
+body.cassiere-mode #cash-tools-area{order:2}
+body.creator-mode #strumenti-cassa,
+body.creator-mode #cash-tools-area{order:20}
 .hero{
   display:flex;
   justify-content:space-between;
@@ -772,6 +836,9 @@ body.ophilya .cash-tools-coming-soon{
   .app{grid-template-columns:1fr}
   .sidebar{display:none}
   .topbar-inner{padding:0 18px}
+  .status{display:none}
+  .mode-btn{padding:8px 9px;font-size:9px}
+  .home-mark{left:auto;right:18px}
   .content{padding:32px 20px}
   .hero{display:block}
   .identity{text-align:left;margin-top:24px}
@@ -876,17 +943,26 @@ body.ophilya .cash-tools-coming-soon{
 
 .bottom .sidebar-section .label span{
   white-space:nowrap;
+  font-size:11px;
   letter-spacing:.18em;
   color:var(--gold);
 }
 
-.bottom .sidebar-section .section-toggle{
-  align-self:center;
+.bottom .sidebar-section[data-sidebar-section="credits"] .label{
   margin:0;
-  display:flex;
-  align-items:center;
+  padding:7px 9px;
+  border:1px solid transparent;
+  cursor:pointer;
   justify-content:center;
-  color:var(--gold);
+  text-align:center;
+  transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease;
+}
+
+.bottom .sidebar-section[data-sidebar-section="credits"] .label:hover{
+  border-color:var(--gold);
+  background:var(--white);
+  box-shadow:0 8px 20px rgba(50,43,36,.1);
+  transform:translateY(-2px);
 }
 
 </style>
@@ -957,9 +1033,8 @@ body.ophilya .cash-tools-coming-soon{
       </div>
       <div class="signature-caption">CRAFTED WITH STORECRAFT</div>
       <div class="sidebar-section is-collapsed" data-sidebar-section="credits">
-        <div class="label">
+        <div class="label" role="button" tabindex="0" aria-expanded="false" onclick="toggleSidebarSection('credits')" onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleSidebarSection('credits'); }">
           <span>CREDITS // CONTACTS</span>
-          <button class="section-toggle" type="button" aria-label="Espandi CREDITS // CONTACTS" aria-expanded="false" onclick="toggleSidebarSection('credits')">⌄</button>
         </div>
         <nav>
           <div class="sidebar-disclaimer">
@@ -980,8 +1055,15 @@ body.ophilya .cash-tools-coming-soon{
           <button id="ophilya" onclick="changeStore('ophilya')">OPHILYA</button>
         </div>
         <div class="status" id="statusLabel">VISUAL MERCHANDISING STUDIO</div>
+        <div class="mode-switcher" aria-label="Modalità interfaccia">
+          <button class="mode-btn" data-mode="cassiere" type="button" onclick="setLayoutMode('cassiere')">CASSIERE</button>
+          <button class="mode-btn active" data-mode="creator" type="button" onclick="setLayoutMode('creator')">CREATOR</button>
+        </div>
       </div>
     </header>
+    <button class="home-mark" type="button" onclick="returnToHomeTop()" aria-label="Torna all'inizio della home">
+      <span aria-hidden="true">⌂</span> HOME
+    </button>
 
     <section class="content">
 
@@ -1102,7 +1184,7 @@ body.ophilya .cash-tools-coming-soon{
 
       <div class="section" id="strumenti-cassa">STRUMENTI CASSA</div>
 
-      <div class="cash-tools-area">
+      <div class="cash-tools-area" id="cash-tools-area">
       <div class="cash-tools-grid">
         <section class="cash-tool" id="cash-discount" onclick="focusCashTool(event, this)">
           <h2>Calcola Sconto</h2>
@@ -1250,6 +1332,21 @@ function closeCashTool(event){
     tool.classList.remove("cash-tool-expanded");
     if(tool.id === "cash-currency") updateCurrencyLabels(false);
   });
+}
+
+function returnToHomeTop(){
+  closeCashTool();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function setLayoutMode(mode){
+  const isCassiere = mode === "cassiere";
+  document.body.classList.toggle("cassiere-mode", isCassiere);
+  document.body.classList.toggle("creator-mode", !isCassiere);
+  document.querySelectorAll(".mode-btn").forEach(button => {
+    button.classList.toggle("active", button.dataset.mode === mode);
+  });
+  closeCashTool();
 }
 
 function updateCurrencyLabels(expanded){
@@ -1435,9 +1532,13 @@ function toggleSidebarSection(sectionId){
   if(!section) return;
 
   const toggle = section.querySelector(".section-toggle");
-  const isExpanded = toggle.getAttribute("aria-expanded") === "true";
-  toggle.setAttribute("aria-expanded", String(!isExpanded));
-  toggle.setAttribute("aria-label", `${isExpanded ? "Espandi" : "Comprimi"} ${section.querySelector(".label span").textContent}`);
+  const label = section.querySelector(".label");
+  const stateElement = toggle || label;
+  const isExpanded = stateElement.getAttribute("aria-expanded") === "true";
+  stateElement.setAttribute("aria-expanded", String(!isExpanded));
+  if(toggle){
+    toggle.setAttribute("aria-label", `${isExpanded ? "Espandi" : "Comprimi"} ${section.querySelector(".label span").textContent}`);
+  }
   section.classList.toggle("is-collapsed", isExpanded);
 
   const collapsedSections = [...document.querySelectorAll(".sidebar-section.is-collapsed")]
@@ -1459,10 +1560,14 @@ function restoreSidebarSections(){
   collapsedSections.forEach(sectionId => {
     const section = document.querySelector(`[data-sidebar-section="${sectionId}"]`);
     const toggle = section?.querySelector(".section-toggle");
-    if(!section || !toggle) return;
+    const label = section?.querySelector(".label");
+    const stateElement = toggle || label;
+    if(!section || !stateElement) return;
     section.classList.add("is-collapsed");
-    toggle.setAttribute("aria-expanded", "false");
-    toggle.setAttribute("aria-label", `Espandi ${section.querySelector(".label span").textContent}`);
+    stateElement.setAttribute("aria-expanded", "false");
+    if(toggle){
+      toggle.setAttribute("aria-label", `Espandi ${section.querySelector(".label span").textContent}`);
+    }
   });
 }
 
@@ -1472,6 +1577,10 @@ function restoreSidebarSections(){
   if(store === "ophilya"){ changeStore("ophilya"); }
   else { updateLinks(); }
   restoreSidebarSections();
+  setLayoutMode("creator");
+  window.addEventListener("scroll", () => {
+    document.body.classList.toggle("is-scrolled", window.scrollY > 80);
+  }, {passive:true});
 
   const dymoCarousel = document.getElementById("dymo-carousel");
   dymoCarousel?.addEventListener("scroll", updateDymoCarouselControls, { passive:true });
