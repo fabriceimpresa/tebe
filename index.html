@@ -491,11 +491,17 @@ nav button .soon-tag{
   z-index:21;
   top:50%;
   left:50%;
-  width:min(720px, calc(100vw - 40px));
-  max-height:calc(100vh - 80px);
+  width:min(620px, calc(100vw - 40px));
+  min-height:min(390px, calc(100vh - 80px));
+  max-height:calc(100vh - 56px);
   overflow:auto;
   transform:translate(-50%, -50%);
   box-shadow:0 18px 55px rgba(40,37,34,.2);
+}
+.cash-tool.cash-tool-expanded#cash-discount,
+.cash-tool.cash-tool-expanded#cash-rate,
+.cash-tool.cash-tool-expanded#cash-currency{
+  width:min(520px, calc(100vw - 40px));
 }
 .cash-tool.cash-tool-expanded:hover{
   transform:translate(-50%, -50%);
@@ -776,6 +782,7 @@ body.ophilya .cash-tools-coming-soon{
   .cash-tools-grid{grid-template-columns:1fr}
   .cash-tool.cash-tool-expanded{
     width:calc(100vw - 28px);
+    min-height:0;
     max-height:calc(100vh - 28px);
   }
 }
