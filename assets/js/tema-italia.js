@@ -23,7 +23,9 @@
   });
 
   let isActive = false;
+  let previousState = null;
   button.addEventListener('click', () => {
+    if (!isActive) previousState = captureState();
     isActive = !isActive;
     button.classList.toggle('is-active', isActive);
     button.title = isActive ? 'Disattiva tema Italia' : 'Attiva tema Italia';
@@ -34,8 +36,63 @@
 
     if (isActive) {
       applyMadeInItalyDescription();
+    } else {
+      restoreState(previousState);
+      previousState = null;
     }
   });
+
+  function captureState() {
+    return {
+      controls: [...document.querySelectorAll('input, select, textarea')].map(control => ({
+        element: control,
+        value: control.value,
+        checked: control.checked,
+        selectedIndex: control.selectedIndex
+      })),
+      modeButtons: [...document.querySelectorAll('[id^="mode"]')].map(control => ({
+        element: control,
+        className: control.className
+      })),
+      activeMode: [...document.querySelectorAll('[id^="mode"]')]
+        .find(control => control.classList.contains('active'))?.id || null,
+      descriptionGroups: [...document.querySelectorAll('[id*="descGroup" i]')].map(group => ({
+        element: group,
+        style: group.getAttribute('style')
+      }))
+    };
+  }
+
+  function restoreState(state) {
+    if (!state) return;
+
+    state.controls.forEach(item => {
+      item.element.value = item.value;
+      item.element.checked = item.checked;
+      if (item.element.tagName === 'SELECT') item.element.selectedIndex = item.selectedIndex;
+    });
+
+    state.controls.forEach(item => {
+      if (item.element.matches('input, textarea')) {
+        item.element.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    });
+
+    if (state.activeMode && typeof window.switchMode === 'function') {
+      const mode = state.activeMode === 'modeDoppia' || state.activeMode === 'modeStandard'
+        ? state.activeMode === 'modeDoppia' ? 'doppia' : 'standard'
+        : 'descrizione';
+      window.switchMode(mode);
+    } else {
+      state.modeButtons.forEach(item => {
+        item.element.className = item.className;
+      });
+    }
+    state.descriptionGroups.forEach(item => {
+      if (item.style === null) item.element.removeAttribute('style');
+      else item.element.setAttribute('style', item.style);
+    });
+  }
 
   function createFlag(side) {
     const flag = document.createElement('img');

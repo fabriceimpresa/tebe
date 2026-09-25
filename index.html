@@ -205,6 +205,18 @@ body.cassiere-mode #strumenti-cassa{order:1}
 body.cassiere-mode #cash-tools-area{order:2}
 body.creator-mode #strumenti-cassa,
 body.creator-mode #cash-tools-area{order:20}
+body.cassiere-mode .content > #cartelli,
+body.cassiere-mode .content > .cartelli-carousel-shell,
+body.cassiere-mode .content > #etichette,
+body.cassiere-mode .content > .dymo-carousel-shell,
+body.cassiere-mode .content > .section:not(#strumenti-cassa),
+body.cassiere-mode .content > .lower{
+  display:none;
+}
+body.creator-mode .content > #strumenti-cassa,
+body.creator-mode .content > #cash-tools-area{
+  display:none;
+}
 .hero{
   display:flex;
   justify-content:space-between;
@@ -1176,7 +1188,6 @@ body.ophilya .cash-tools-coming-soon{
           <button id="tebe" class="selected" onclick="changeStore('tebe')">TEBE</button>
           <button id="ophilya" onclick="changeStore('ophilya')">OPHILYA</button>
         </div>
-        <div class="status" id="statusLabel">VISUAL MERCHANDISING STUDIO</div>
         <div class="mode-switcher" aria-label="Modalità interfaccia">
           <button class="mode-btn" data-mode="cassiere" type="button" onclick="setLayoutMode('cassiere')">CASSIERE</button>
           <button class="mode-btn active" data-mode="creator" type="button" onclick="setLayoutMode('creator')">CREATOR</button>
