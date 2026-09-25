@@ -12,6 +12,8 @@ const LOGO_FILES = [
   "WUSIDE.png"
 ];
 
+const LOGO_PATH = "assets/logos/";
+
 // BRAND TEBE prioritari: mostrati per primi in ogni menu a cascata dei loghi,
 // subito dopo la voce di default, ed esclusi dal resto dell'elenco alfabetico.
 const PRIORITY_BRANDS = ["269TEBE.PNG", "Tebe269.png", "Tebe.png"];
@@ -35,6 +37,14 @@ function getSortedLogoFiles() {
 function getOrderedLogoFiles() {
   const { priorityFiles, remainingFiles } = getSortedLogoFiles();
   return priorityFiles.concat(remainingFiles);
+}
+
+/**
+ * Restituisce il percorso del file originale del logo. Il nome del file resta
+ * l'unica chiave condivisa tra menu, anteprime e stampa.
+ */
+function getLogoSource(fileName) {
+  return fileName ? LOGO_PATH + fileName : '';
 }
 
 /**

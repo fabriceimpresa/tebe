@@ -363,16 +363,23 @@
       transform: rotate(180deg);
     }
 
-    .brand-logo {
-      display: block;
-      width: 130mm;
-      height: 27mm;
-      object-fit: contain;
-      object-position: center;
+    .brand-logo-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 46mm;
+      height: 20mm;
+      flex-shrink: 0;
     }
 
-    .brand-logo.tensionein-logo {
-      width: 85mm;
+    .brand-logo {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
     }
 
     .price-row {
@@ -651,7 +658,9 @@
   <div class="print-sheet" id="printSheet">
     <div class="card" id="cardTop">
       <div class="card-content">
-        <img class="brand-logo" id="brandLogoTop" alt="Brand selezionato">
+        <div class="brand-logo-box">
+          <img class="brand-logo" id="brandLogoTop" alt="Brand selezionato">
+        </div>
         <div id="middleRowTop"></div>
         <div class="price-final" id="finalPriceTop">€ 29,90</div>
       </div>
@@ -659,7 +668,9 @@
 
     <div class="card" id="cardBottom">
       <div class="card-content">
-        <img class="brand-logo" id="brandLogoBottom" alt="Brand selezionato">
+        <div class="brand-logo-box">
+          <img class="brand-logo" id="brandLogoBottom" alt="Brand selezionato">
+        </div>
         <div id="middleRowBottom"></div>
         <div class="price-final" id="finalPriceBottom">€ 29,90</div>
       </div>
@@ -740,7 +751,6 @@
       const logoElements = [document.getElementById('brandLogoTop'), document.getElementById('brandLogoBottom')];
       logoElements.forEach(logo => {
         logo.src = source;
-        logo.classList.remove('tensionein-logo');
         logo.alt = brandName;
       });
     }
@@ -748,7 +758,6 @@
     function updateBrand() {
       const fileName = document.getElementById('brandSelect').value;
       document.getElementById('customBrandSelect').value = '';
-      const isTensioneIn = fileName.toLowerCase() === 'tensionein.png';
 
       if (!fileName) {
         updateLogoElements('', 'Nessun brand selezionato');
@@ -760,9 +769,6 @@
 
       PrintLogoColors.getBrandLogoSrc('', fileName, '', 'gold').then(source => {
         updateLogoElements(source, cleanBrandName(fileName));
-        [document.getElementById('brandLogoTop'), document.getElementById('brandLogoBottom')].forEach(logo => {
-          logo.classList.toggle('tensionein-logo', isTensioneIn);
-        });
       }).catch(error => {
         console.error('Caricamento del logo brand fallito.', error);
       });

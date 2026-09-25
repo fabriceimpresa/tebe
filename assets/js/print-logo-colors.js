@@ -3,15 +3,17 @@
  * colorata "in memoria", eliminando la dipendenza dai filtri CSS che Safari
  * (e talvolta Chrome) non applicano correttamente in fase di stampa.
  *
- * - Loghi ufficiali (assets/logos/NOME.png): esiste un file gemello
- *   pre-colorato in assets/img/printlogos/<colore><NOME>.png (es. "white",
- *   "black", "red", "gold"), generato una tantum per ogni brand.
+ * - Per i loghi ufficiali che hanno una variante pre-generata viene usato il
+ *   file gemello in assets/img/printlogos/<colore><NOME>.png.
+ * - I loghi ufficiali senza variante pre-generata vengono letti direttamente
+ *   da assets/logos e ricolorati via canvas.
  * - Loghi personalizzati (salvati come base64 in localStorage): non esistono
  *   su disco, quindi vengono ricolorati al volo via canvas la prima volta che
  *   servono e la versione risultante viene tenuta in cache in memoria.
  */
 (() => {
   const PRINT_LOGOS_PATH = 'assets/img/printlogos/';
+  const OFFICIAL_LOGOS_PATH = 'assets/logos/';
   const CUSTOM_LOGOS_STORAGE_KEY = 'custom_brand_logos';
   const SOURCE_ONLY_LOGOS = new Set(['Tebe269.png', 'Tebe.png']);
   let customLogoCache = new Map(); // chiave: `${sourceData}|${colorKey}`
@@ -120,7 +122,8 @@
         return Promise.resolve(customLogoCache.get(cacheKey));
       }
       const rgb = parseColorToRgb(color);
-      return colorizeDataUrl(source, rgb[0], rgb[1], rgb[2]).then(result => {
+      const sourceUrl = officialMatch ? OFFICIAL_LOGOS_PATH + officialMatch[1] : source;
+      return colorizeDataUrl(sourceUrl, rgb[0], rgb[1], rgb[2]).then(result => {
         customLogoCache.set(cacheKey, result);
         return result;
       });
@@ -137,7 +140,9 @@
    */
   function getBrandLogoSrc(customValue, officialFileName, defaultFileName, color) {
     const fileName = officialFileName || defaultFileName;
-    const source = customValue || (fileName ? 'assets/logos/' + fileName : '');
+    const source = customValue || (fileName
+      ? (typeof getLogoSource === 'function' ? getLogoSource(fileName) : OFFICIAL_LOGOS_PATH + fileName)
+      : '');
     return resolvePrintLogoSource(source, color);
   }
 

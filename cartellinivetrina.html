@@ -368,8 +368,6 @@
   </main>
 
   <script>
-    const LOGO_PATH = "assets/logos/";
-
     function cleanBrandName(filename) {
       if (!filename) return '';
       return filename.replace(/\.(png|jpg|jpeg|webp|svg)$/i, '').replace(/[-_]/g, ' ');
@@ -445,7 +443,7 @@
           logoContent = `<img src="${card.customLogoUrl}" alt="${brandDisplayName}">`;
         } else if (card.brand) {
           const logoFile = getLogoFilename(card.brand);
-          const logoSrc = LOGO_PATH + logoFile;
+          const logoSrc = getLogoSource(logoFile);
           logoContent = `<img src="${logoSrc}" onerror="this.outerHTML='<div class=\\'brand-text-fallback\\'>${brandDisplayName}</div>'" alt="${brandDisplayName}">`;
         }
 
