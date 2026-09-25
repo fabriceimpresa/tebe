@@ -465,7 +465,7 @@ h1{
 .dymo-carousel{
   display:grid;
   grid-auto-flow:column;
-  grid-auto-columns:calc((100% - 12px) / 2);
+  grid-auto-columns:340px;
   gap:12px;
   padding:3px 0 6px;
   margin:-3px 0 -6px;
@@ -478,12 +478,13 @@ h1{
   display:none;
 }
 .dymo-card{
-  min-height:238px;
+  height:250px;
   padding:18px;
   scroll-snap-align:start;
 }
 .dymo-card .card-thumb{
-  aspect-ratio:57 / 32;
+  height:112px;
+  aspect-ratio:auto;
   margin:12px 0 16px;
   background:var(--cream);
 }
@@ -492,6 +493,16 @@ h1{
 }
 .dymo-card h2{
   font-size:16px;
+}
+.dymo-card > div:last-child{
+  align-self:stretch;
+  margin-top:auto;
+  text-align:left;
+}
+.dymo-card > div:last-child h2{
+  margin:0;
+  padding-right:20px;
+  text-align:left;
 }
 .dymo-card .arrow{
   display:none;
@@ -939,7 +950,7 @@ body.ophilya .cash-tools-coming-soon{
 }
 @media(max-width:1000px){
   .cards{grid-auto-columns:calc((100% - 12px) / 2)}
-  .dymo-carousel{grid-auto-columns:calc((100% - 12px) / 2)}
+  .dymo-carousel{grid-auto-columns:320px}
   .cash-tools-grid{grid-template-columns:repeat(2, minmax(0, 1fr))}
 }
 @media(max-width:720px){
@@ -1281,27 +1292,26 @@ body.ophilya .cash-tools-coming-soon{
           <article class="card dymo-card labels-coming-soon-card" aria-label="Semplice, Coming Soon">
             <div>
               <div class="number">01</div>
-              <div class="card-thumb"><img src="assets/thumbnail/finalprice.png?v=20260924c" alt="Etichetta Final Outlet Price"></div>
+              <div class="card-thumb"><img src="assets/img/thumbnail/label1thumb.png" alt="Anteprima etichetta Semplice"></div>
             </div>
             <div>
               <h2>Semplice</h2>
-              <p>Stampa diretta 57 × 32 mm · 11354</p>
             </div>
           </article>
 
           <article class="card dymo-card labels-coming-soon-card" aria-label="Sale, Coming Soon">
             <div>
               <div class="number">02</div>
-              <div class="card-thumb"><img src="assets/thumbnail/doppioprezzo.png?v=20260924c" alt="Etichetta Outlet Doppio Prezzo"></div>
+              <div class="card-thumb"><img src="assets/img/thumbnail/label2thumb.png" alt="Anteprima etichetta Sale"></div>
             </div>
             <div>
               <h2>Sale</h2>
-              <p>Stampa diretta 57 × 32 mm · 11354</p>
             </div>
           </article>
           <article class="card dymo-card labels-coming-soon-card" aria-label="Promo, Coming Soon">
             <div>
               <div class="number">03</div>
+              <div class="card-thumb"><img src="assets/img/thumbnail/label3thumb.png" alt="Anteprima etichetta Promo"></div>
             </div>
             <h2>Promo</h2>
           </article>
